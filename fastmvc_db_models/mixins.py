@@ -1,5 +1,6 @@
 """
-Reusable SQLAlchemy declarative mixins (timestamps, UUID PK, soft-delete columns).
+Reusable SQLAlchemy declarative mixins (timestamps, UUID PK, soft-delete, tenant scope,
+optimistic locking, audit actor FKs).
 
 Use with the package :class:`fastmvc_db_models.models.Base`::
 
@@ -18,7 +19,9 @@ from __future__ import annotations
 import uuid
 from datetime import datetime, timezone
 
-from sqlalchemy import Boolean, Column, DateTime, Uuid
+from sqlalchemy import BigInteger, Boolean, Column, DateTime, ForeignKey, Integer, Uuid, text
+
+from fastmvc_db_models.constants.db.table import Table
 
 
 def _utc_now() -> datetime:
@@ -40,6 +43,71 @@ class UUIDPrimaryKeyMixin:
     __abstract__ = True
 
     id = Column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)
+
+
+class OrganizationScopedMixin:
+    """
+    ``organization_id`` FK to :class:`~fastmvc_db_models.models.organization.Organization`.
+
+    Use for tenant-scoped rows. Add a composite index in ``__table_args__`` for
+    common queries (see package README).
+    """
+
+    __abstract__ = True
+
+    organization_id = Column(
+        BigInteger,
+        ForeignKey(f"{Table.ORGANIZATION}.id"),
+        nullable=False,
+        index=True,
+    )
+
+
+class TenantIdMixin:
+    """
+    Generic ``tenant_id`` (no FK) for multi-tenant discrimination.
+
+    Prefer :class:`OrganizationScopedMixin` when the tenant is an organization row.
+    """
+
+    __abstract__ = True
+
+    tenant_id = Column(BigInteger, nullable=False, index=True)
+
+
+class OptimisticLockMixin:
+    """
+    Integer ``version`` for optimistic concurrency.
+
+    Wire the mapper with :func:`sqlalchemy.orm.declared_attr`::
+
+        from sqlalchemy.orm import declared_attr
+
+        class Item(Base, OptimisticLockMixin):
+            __tablename__ = "items"
+            id = Column(Integer, primary_key=True)
+
+            @declared_attr
+            def __mapper_args__(cls):
+                return {"version_id_col": cls.version}
+    """
+
+    __abstract__ = True
+
+    version = Column(Integer, nullable=False, default=1, server_default=text("1"))
+
+
+class AuditActorMixin:
+    """
+    Optional ``created_by_id`` / ``updated_by_id`` FK to ``user.id``.
+
+    Nullable so inserts can omit actor; services set IDs from the current user.
+    """
+
+    __abstract__ = True
+
+    created_by_id = Column(BigInteger, ForeignKey("user.id"), nullable=True, index=True)
+    updated_by_id = Column(BigInteger, ForeignKey("user.id"), nullable=True, index=True)
 
 
 class SoftDeleteMixin:
