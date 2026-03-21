@@ -1,6 +1,9 @@
+LICENSE
 README.md
 pyproject.toml
 fastmvc_db_models/__init__.py
+fastmvc_db_models/mixins.py
+fastmvc_db_models/soft_delete.py
 fastmvc_db_models.egg-info/PKG-INFO
 fastmvc_db_models.egg-info/SOURCES.txt
 fastmvc_db_models.egg-info/dependency_links.txt
@@ -22,6 +25,7 @@ fastmvc_db_models/models/coupon.py
 fastmvc_db_models/models/document.py
 fastmvc_db_models/models/education_level_lk.py
 fastmvc_db_models/models/gender_lk.py
+fastmvc_db_models/models/interview_reminder.py
 fastmvc_db_models/models/invoice.py
 fastmvc_db_models/models/language_lk.py
 fastmvc_db_models/models/ledger_balance_alert.py
@@ -38,6 +42,7 @@ fastmvc_db_models/models/ledger_transaction.py
 fastmvc_db_models/models/ledger_vault_entry.py
 fastmvc_db_models/models/ledger_workspace.py
 fastmvc_db_models/models/location_lk.py
+fastmvc_db_models/models/messaging_chat.py
 fastmvc_db_models/models/notification_history.py
 fastmvc_db_models/models/order.py
 fastmvc_db_models/models/organization.py
@@ -52,6 +57,7 @@ fastmvc_db_models/models/profile.py
 fastmvc_db_models/models/reaction_type_lk.py
 fastmvc_db_models/models/refresh_token.py
 fastmvc_db_models/models/reminder.py
+fastmvc_db_models/models/session.py
 fastmvc_db_models/models/shipment.py
 fastmvc_db_models/models/shipment_tracking_log.py
 fastmvc_db_models/models/status_lk.py
@@ -69,3 +75,9 @@ fastmvc_db_models/models/user_subscription.py
 fastmvc_db_models/models/user_type_lk.py
 fastmvc_db_models/models/user_usage_alert_preference.py
 fastmvc_db_models/models/webhook.py
+tests/__init__.py
+tests/test_imports.py
+tests/test_mixins.py
+tests/test_model_smoke.py
+tests/test_public_api.py
+tests/test_table_constants.py

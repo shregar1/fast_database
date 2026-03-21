@@ -10,6 +10,13 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = ["sqlalchemy>=2.0,<3.0"]
 
+[project.optional-dependencies]
+dev = ["pytest>=7.0.0"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
 [tool.setuptools]
 include-package-data = true
 

@@ -1,1 +1,2 @@
 fastmvc_db_models
+tests
