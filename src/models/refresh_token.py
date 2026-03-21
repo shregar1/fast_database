@@ -6,7 +6,7 @@ SQLAlchemy ORM model for refresh token rotation and revocation. Stores jti
 invalidation. Used for refresh token rotation and "log out all devices".
 
 Usage:
-    >>> from fastmvc_db_models.models.refresh_token import RefreshToken
+    >>> from fast_db_models.models.refresh_token import RefreshToken
 """
 
 

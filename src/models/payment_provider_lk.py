@@ -6,7 +6,7 @@ Code is unique; is_active allows disabling a provider. Referenced by
 payment_transaction, user_payment_method, invoice.
 
 Usage:
-    >>> from fastmvc_db_models.models.payment_provider_lk import PaymentProviderLk
+    >>> from fast_db_models.models.payment_provider_lk import PaymentProviderLk
     >>> # code used in integrations (e.g. 'stripe', 'razorpay')
 """
 

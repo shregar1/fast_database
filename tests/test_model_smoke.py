@@ -1,6 +1,6 @@
 """Smoke tests for selected ORM models (no live DB required)."""
 
-from fastmvc_db_models import Base
+from fast_db_models import Base
 from src.constants.db.table import Table
 from src.models.messaging_chat import Chat
 from src.models.status_lk import StatusLk

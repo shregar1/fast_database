@@ -5,7 +5,7 @@ Maps `Workspace` from API_AND_DATA_REFERENCE.md. `client_workspace_id` is the
 stable id from the client (e.g. `default`, `biz`).
 
 Usage:
-    >>> from fastmvc_db_models.models.ledger_workspace import LedgerWorkspace
+    >>> from fast_db_models.models.ledger_workspace import LedgerWorkspace
 """
 
 from datetime import datetime

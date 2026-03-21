@@ -6,7 +6,7 @@ one refund: amount, status, optional provider_refund_id and reason, plus
 metadata. Unique on (payment_transaction_id, provider_refund_id).
 
 Usage:
-    >>> from fastmvc_db_models.models.payment_refund import PaymentRefund
+    >>> from fast_db_models.models.payment_refund import PaymentRefund
     >>> # status_id -> payment_status_lk; payment_transaction_id -> payment_transaction
 """
 

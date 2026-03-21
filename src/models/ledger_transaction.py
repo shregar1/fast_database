@@ -4,7 +4,7 @@ Ledger transaction model (Pure.cam).
 Maps `Transaction` in API_AND_DATA_REFERENCE.md (sync API).
 
 Usage:
-    >>> from fastmvc_db_models.models.ledger_transaction import LedgerTransaction
+    >>> from fast_db_models.models.ledger_transaction import LedgerTransaction
 """
 
 from datetime import datetime

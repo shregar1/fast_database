@@ -1,5 +1,5 @@
 """
-Helpers for optimistic locking with :class:`~fastmvc_db_models.mixins.OptimisticLockMixin`.
+Helpers for optimistic locking with :class:`~fast_db_models.mixins.OptimisticLockMixin`.
 
 SQLAlchemy can enforce version checks when ``__mapper_args__`` includes
 ``version_id_col``; these helpers cover manual checks in services.

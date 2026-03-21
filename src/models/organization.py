@@ -5,7 +5,7 @@ SQLAlchemy ORM models for organizations (workspaces), organization members,
 and pending invites. Referenced by document.organization_id and subscription.organization_id.
 
 Usage:
-    >>> from fastmvc_db_models.models.organization import Organization, OrganizationMember, OrganizationInvite
+    >>> from fast_db_models.models.organization import Organization, OrganizationMember, OrganizationInvite
 """
 
 

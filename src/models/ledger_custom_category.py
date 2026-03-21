@@ -4,7 +4,7 @@ Ledger custom category model (Pure.cam).
 Maps `CustomCategory`.
 
 Usage:
-    >>> from fastmvc_db_models.models.ledger_custom_category import LedgerCustomCategory
+    >>> from fast_db_models.models.ledger_custom_category import LedgerCustomCategory
 """
 
 from sqlalchemy import BigInteger, Column, ForeignKey, String, UniqueConstraint

@@ -6,7 +6,7 @@ provider. One row per (user_id, provider_id, provider_payment_method_id).
 Stores last4, brand, expiry, is_default, and is_deleted.
 
 Usage:
-    >>> from fastmvc_db_models.models.user_payment_method import UserPaymentMethod
+    >>> from fast_db_models.models.user_payment_method import UserPaymentMethod
     >>> # payment_method_type_id -> payment_method_type_lk; provider_id -> payment_provider_lk
 """
 

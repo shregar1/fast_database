@@ -6,7 +6,7 @@ and shipping hints. `product_metadata` holds industry-specific attributes (attri
 categories, external IDs) without schema churn.
 
 Usage:
-    >>> from fastmvc_db_models.models.product import Product
+    >>> from fast_db_models.models.product import Product
 """
 
 from datetime import datetime

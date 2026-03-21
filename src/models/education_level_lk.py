@@ -5,7 +5,7 @@ SQLAlchemy ORM model for education level codes (e.g. high_school, bachelor,
 master). Referenced by profile.education_level_id. Code is unique.
 
 Usage:
-    >>> from fastmvc_db_models.models.education_level_lk import EducationLevelLk
+    >>> from fast_db_models.models.education_level_lk import EducationLevelLk
     >>> # Used in profile for highest education level
 """
 

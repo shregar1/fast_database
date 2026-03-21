@@ -6,7 +6,7 @@ resource_id, and JSONB metadata. Alternative or legacy definition for the
 audit table; actor_id has no FK here. Used for compliance and debugging.
 
 Usage:
-    >>> from fastmvc_db_models.models.audit import AuditLog
+    >>> from fast_db_models.models.audit import AuditLog
     >>> # metadata_ holds optional diff or context; column name in DB is "metadata"
 
 Note: Table name matches models.audit_log; extend_existing=True allows both

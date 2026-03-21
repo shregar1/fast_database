@@ -5,7 +5,7 @@ SQLAlchemy ORM model for announcement reaction types (e.g. Like, Love, Celebrate
 Code and emoji identify the reaction; display_order controls UI ordering.
 
 Usage:
-    >>> from fastmvc_db_models.models.reaction_type_lk import ReactionTypeLk
+    >>> from fast_db_models.models.reaction_type_lk import ReactionTypeLk
     >>> # Used for announcement reactions (emoji, description, display_order)
 """
 

@@ -7,7 +7,7 @@ headers (JSONB or encrypted binary), timestamps, HTTP status, IP. Unique on
 (api_id, reference_number). Used for audit and debugging.
 
 Usage:
-    >>> from fastmvc_db_models.models.transaction_log import TransactionLog
+    >>> from fast_db_models.models.transaction_log import TransactionLog
     >>> # api_id -> api_lk; reference_number is idempotency or request id
 """
 

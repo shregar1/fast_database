@@ -6,7 +6,7 @@ demographics (name, gender, DoB, education, location), verification and
 visibility flags, and optional primary photo reference.
 
 Usage:
-    >>> from fastmvc_db_models.models.profile import Profile
+    >>> from fast_db_models.models.profile import Profile
     >>> # Linked to User via user_id; gender_id, education_level_id, location_id use lk tables
 """
 

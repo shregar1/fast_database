@@ -6,7 +6,7 @@ can speak multiple languages). One row per (user_id, language_id). Unique
 constraint on (user_id, language_id). language_id references language_lk.
 
 Usage:
-    >>> from fastmvc_db_models.models.user_language import UserLanguage
+    >>> from fast_db_models.models.user_language import UserLanguage
     >>> # Used for profile languages spoken; is_deleted for soft remove
 """
 

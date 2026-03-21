@@ -6,7 +6,7 @@ distinct device (identified by device_fingerprint): type, OS, user agent, IP,
 last_seen_at, and is_current for the active device. Unique on (user_id, device_fingerprint).
 
 Usage:
-    >>> from fastmvc_db_models.models.user_device import UserDevice
+    >>> from fast_db_models.models.user_device import UserDevice
     >>> # Used for device management and security (e.g. list/revoke devices)
 """
 

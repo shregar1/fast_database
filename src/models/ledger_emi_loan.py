@@ -4,7 +4,7 @@ Ledger EMI loan model (Pure.cam).
 Maps `EmiLoan`.
 
 Usage:
-    >>> from fastmvc_db_models.models.ledger_emi_loan import LedgerEmiLoan
+    >>> from fast_db_models.models.ledger_emi_loan import LedgerEmiLoan
 """
 
 from datetime import date, datetime

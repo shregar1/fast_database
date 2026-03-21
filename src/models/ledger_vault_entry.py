@@ -5,7 +5,7 @@ Maps `VaultEntry` shape at the **metadata** level only. Secrets live encrypted
 client-side; `encrypted_payload` can store an opaque blob for cloud backup.
 
 Usage:
-    >>> from fastmvc_db_models.models.ledger_vault_entry import LedgerVaultEntry
+    >>> from fast_db_models.models.ledger_vault_entry import LedgerVaultEntry
 """
 
 from datetime import datetime

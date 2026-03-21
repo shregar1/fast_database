@@ -5,7 +5,7 @@ SQLAlchemy ORM model for gender options (e.g. Male, Female, Non-binary). Code
 is unique. Referenced by profile.gender_id.
 
 Usage:
-    >>> from fastmvc_db_models.models.gender_lk import GenderLk
+    >>> from fast_db_models.models.gender_lk import GenderLk
     >>> # Used in profile for user's gender
 """
 

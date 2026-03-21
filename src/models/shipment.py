@@ -5,7 +5,7 @@ Tracks outbound fulfillment for a commerce order: carrier, tracking, and
 delivery lifecycle. One order may have several shipments (partial fulfillments).
 
 Usage:
-    >>> from fastmvc_db_models.models.shipment import Shipment
+    >>> from fast_db_models.models.shipment import Shipment
 """
 
 from datetime import datetime

@@ -5,7 +5,7 @@ Represents a placed purchase: immutable snapshots of customer, addresses, and
 money totals, with optional links back to cart and payment rows.
 
 Usage:
-    >>> from fastmvc_db_models.models.order import Order, OrderItem
+    >>> from fast_db_models.models.order import Order, OrderItem
 """
 
 from datetime import datetime

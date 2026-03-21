@@ -10,22 +10,22 @@ install-dev:
 	pre-commit install || true
 
 test:
-	pytest tests/ -v --cov=fastmvc_db_models --cov-report=term-missing || pytest -v
+	pytest tests/ -v --cov=fast_db_models --cov-report=term-missing || pytest -v
 
 test-fast:
 	pytest tests/ -v -x --tb=short -q || true
 
 lint:
-	ruff check fastmvc_db_models tests || true
+	ruff check fast_db_models tests || true
 
 format:
-	ruff format fastmvc_db_models tests || true
+	ruff format fast_db_models tests || true
 
 type-check:
-	mypy fastmvc_db_models --ignore-missing-imports || true
+	mypy fast_db_models --ignore-missing-imports || true
 
 security:
-	bandit -r fastmvc_db_models -q || true
+	bandit -r fast_db_models -q || true
 
 clean:
 	rm -rf build dist *.egg-info .pytest_cache .mypy_cache .ruff_cache htmlcov .coverage coverage.xml

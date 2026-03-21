@@ -1,7 +1,7 @@
 """
-Example :class:`~factory.alchemy.SQLAlchemyModelFactory` for :class:`~fastmvc_db_models.models.plan.Plan`.
+Example :class:`~factory.alchemy.SQLAlchemyModelFactory` for :class:`~fast_db_models.models.plan.Plan`.
 
-Requires ``factory-boy`` (``fastmvc-db-models[dev]``).
+Requires ``factory-boy`` (``fast-db-models[dev]``).
 """
 
 from __future__ import annotations

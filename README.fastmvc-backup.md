@@ -1,9 +1,9 @@
-# fastmvc-db-models
+# fast-db-models
 
 **Shared SQLAlchemy 2.x ORM models** for FastMVC-based services: one declarative `Base`, consistent `urn` + audit columns where applicable, and centralized table name constants.
 
-**PyPI name:** `fastmvc-db-models`  
-**Import package:** `fastmvc_db_models`
+**PyPI name:** `fast-db-models`  
+**Import package:** `fast_db_models`
 
 ---
 
@@ -15,8 +15,8 @@ This package is meant to be imported by **multiple applications** (API workers, 
 
 | Path | Contents |
 |------|----------|
-| `fastmvc_db_models.models` | `Base` and all ORM classes |
-| `fastmvc_db_models.constants.db.table` | `Table` class with `Final[str]` table names |
+| `fast_db_models.models` | `Base` and all ORM classes |
+| `fast_db_models.constants.db.table` | `Table` class with `Final[str]` table names |
 
 ### Model groups (illustrative)
 
@@ -36,7 +36,7 @@ This package is meant to be imported by **multiple applications** (API workers, 
 ## Installation
 
 ```bash
-python -m pip install -e ./fastmvc_db_models
+python -m pip install -e ./fast_db_models
 ```
 
 **Dependency:** `sqlalchemy>=2,<3`.
@@ -46,15 +46,15 @@ python -m pip install -e ./fastmvc_db_models
 ## Usage
 
 ```python
-from fastmvc_db_models.models import Base
-from fastmvc_db_models.models.user import User
-from fastmvc_db_models.constants.db.table import Table
+from fast_db_models.models import Base
+from fast_db_models.models.user import User
+from fast_db_models.constants.db.table import Table
 
 # Alembic / create_all
 # Base.metadata.create_all(engine)
 ```
 
-Use the same `Base` in **`fastmvc_db`** so Alembic sees every table your app registers.
+Use the same `Base` in **`fast_db`** so Alembic sees every table your app registers.
 
 ---
 
@@ -70,7 +70,7 @@ Use the same `Base` in **`fastmvc_db`** so Alembic sees every table your app reg
 ## Development
 
 ```bash
-cd fastmvc_db_models
+cd fast_db_models
 pytest  # if tests are present
 ```
 
@@ -79,4 +79,4 @@ pytest  # if tests are present
 ## See also
 
 - [../README.md](../README.md) — monorepo index
-- `fastmvc_db_models/models/README.md` — additional notes if present
+- `fast_db_models/models/README.md` — additional notes if present

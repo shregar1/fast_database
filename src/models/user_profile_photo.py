@@ -6,7 +6,7 @@ SQLAlchemy ORM model for profile photos. Schema allows one user_id per row
 profile.primary_photo_id pointing to the main photo.
 
 Usage:
-    >>> from fastmvc_db_models.models.user_profile_photo import UserProfilePhoto
+    >>> from fast_db_models.models.user_profile_photo import UserProfilePhoto
     >>> # profile.primary_photo_id references this; order_sequence for display order
 """
 

@@ -4,7 +4,7 @@ Ledger recurring transaction model (Pure.cam).
 Maps `RecurringTransaction`.
 
 Usage:
-    >>> from fastmvc_db_models.models.ledger_recurring_transaction import LedgerRecurringTransaction
+    >>> from fast_db_models.models.ledger_recurring_transaction import LedgerRecurringTransaction
 """
 
 from sqlalchemy import BigInteger, Column, Date, DateTime, ForeignKey, Numeric, String, Text, UniqueConstraint

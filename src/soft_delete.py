@@ -1,7 +1,7 @@
 """
 Helpers for querying and mutating soft-deleted rows.
 
-Expects models using :class:`fastmvc_db_models.mixins.SoftDeleteMixin` or any
+Expects models using :class:`fast_db_models.mixins.SoftDeleteMixin` or any
 model with an ``is_deleted`` boolean column (and optionally ``deleted_at``).
 """
 

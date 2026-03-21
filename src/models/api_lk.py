@@ -6,7 +6,7 @@ One row per (method, endpoint): name, common_name, description. Unique on
 (method, endpoint). Referenced by transaction_log.api_id.
 
 Usage:
-    >>> from fastmvc_db_models.models.api_lk import ApiLk
+    >>> from fast_db_models.models.api_lk import ApiLk
     >>> # Used to identify which API was called in TransactionLog
 """
 

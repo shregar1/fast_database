@@ -6,7 +6,7 @@ Stores start/end dates, usage (number_of_session_used), active flag, and the
 payment transaction that created the subscription.
 
 Usage:
-    >>> from fastmvc_db_models.models.user_subscription import UserSubscription
+    >>> from fast_db_models.models.user_subscription import UserSubscription
     >>> # subscription_plan_id -> subscription_plan_lk; one payment_transaction per subscription
 """
 

@@ -4,7 +4,7 @@ Ledger scheduled reminder model (Pure.cam).
 Maps `ScheduledReminder`.
 
 Usage:
-    >>> from fastmvc_db_models.models.ledger_scheduled_reminder import LedgerScheduledReminder
+    >>> from fast_db_models.models.ledger_scheduled_reminder import LedgerScheduledReminder
 """
 
 from sqlalchemy import BigInteger, Column, ForeignKey, Integer, String, UniqueConstraint

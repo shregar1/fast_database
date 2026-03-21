@@ -54,7 +54,7 @@ class MyModel(Base):
 Model for user accounts and authentication.
 
 ```python
-from fastmvc_db_models.user import User
+from fast_db_models.user import User
 
 # Create a new user
 user = User(
@@ -119,7 +119,7 @@ All models should include:
 ### Creating Records
 
 ```python
-from fastmvc_db_models.user import User
+from fast_db_models.user import User
 from datetime import datetime
 
 user = User(

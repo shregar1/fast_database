@@ -6,7 +6,7 @@ SQLAlchemy ORM model for an immutable audit trail. Each row records an actor
 resource_id, plus optional JSONB metadata. Used for compliance and debugging.
 
 Usage:
-    >>> from fastmvc_db_models.models.audit_log import AuditLog
+    >>> from fast_db_models.models.audit_log import AuditLog
     >>> # Written by middleware or services; actor_id/actor_urn identify who performed the action
 """
 

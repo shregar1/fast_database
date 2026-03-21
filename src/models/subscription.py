@@ -5,7 +5,7 @@ SQLAlchemy ORM model for subscription lifecycle: user, plan_code, status,
 start/end dates, grace period. Used by v1 subscription API and billing.
 
 Usage:
-    >>> from fastmvc_db_models.models.subscription import Subscription
+    >>> from fast_db_models.models.subscription import Subscription
 """
 
 

@@ -6,7 +6,7 @@ identity: login credentials (email, phone, hashed password), user type (e.g.
 candidate, employer via user_type_lk), and soft-delete / audit timestamps.
 
 Usage:
-    >>> from fastmvc_db_models.models.user import User
+    >>> from fast_db_models.models.user import User
     >>> # Typically accessed via repositories; created_by/updated_by track audit
 """
 

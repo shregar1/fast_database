@@ -6,7 +6,7 @@ table: id, urn, code (unique), description, created_at, updated_at. Referenced
 by user.user_type_id.
 
 Usage:
-    >>> from fastmvc_db_models.models.user_type_lk import UserTypeLk
+    >>> from fast_db_models.models.user_type_lk import UserTypeLk
     >>> # Seed data; code is used in business logic and APIs
 """
 

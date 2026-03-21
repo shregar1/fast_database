@@ -4,7 +4,7 @@ Ledger savings goal models (Pure.cam).
 Maps `Goal`, `GoalContribution`.
 
 Usage:
-    >>> from fastmvc_db_models.models.ledger_goal import LedgerGoal, LedgerGoalContribution
+    >>> from fast_db_models.models.ledger_goal import LedgerGoal, LedgerGoalContribution
 """
 
 from datetime import datetime

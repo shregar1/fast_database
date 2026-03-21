@@ -6,7 +6,7 @@ guest via token). `CartItem` stores denormalized product fields so cart survives
 catalog edits. Totals on the cart are caches maintained by the application.
 
 Usage:
-    >>> from fastmvc_db_models.models.cart import Cart, CartItem
+    >>> from fast_db_models.models.cart import Cart, CartItem
 """
 
 from datetime import datetime

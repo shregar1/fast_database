@@ -5,7 +5,7 @@ Maps `Invoice` and `BusinessInfo` from API_AND_DATA_REFERENCE.md. Distinct from
 provider billing `Invoice` (Stripe) in `invoice.py`.
 
 Usage:
-    >>> from fastmvc_db_models.models.ledger_invoice_document import (
+    >>> from fast_db_models.models.ledger_invoice_document import (
     ...     LedgerInvoiceDocument,
     ...     LedgerBusinessInfo,
     ... )

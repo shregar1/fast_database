@@ -1,7 +1,7 @@
 
 
 [tool.coverage.run]
-source = ["fastmvc_db_models"]
+source = ["fast_db_models"]
 branch = false
 omit = ["*/tests/*"]
 
@@ -20,7 +20,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "fastmvc-db-models"
+name = "fast-db-models"
 version = "0.1.0"
 description = "Shared SQLAlchemy ORM models for FastMVC apps (user/auth, payments, conversations, webhooks, etc.)"
 readme = "README.md"
@@ -39,6 +39,5 @@ pythonpath = ["."]
 
 [tool.setuptools]
 include-package-data = true
-
-[tool.setuptools.packages.find]
-where = ["."]
+package-dir = { "fast_db_models" = "src" }
+packages = ["fast_db_models"]

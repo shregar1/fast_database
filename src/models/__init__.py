@@ -8,9 +8,9 @@ tables (e.g. user_type_lk, subscription_plan_lk), core entities (user, profile,
 session), payment and subscription models, and audit/transaction log models.
 
 Usage:
-    >>> from fastmvc_db_models.models import Base
-    >>> from fastmvc_db_models.models.user import User
-    >>> from fastmvc_db_models.models.user_type_lk import UserTypeLk
+    >>> from fast_db_models.models import Base
+    >>> from fast_db_models.models.user import User
+    >>> from fast_db_models.models.user_type_lk import UserTypeLk
     >>>
     >>> # Create all tables (e.g. in migrations or tests)
     >>> Base.metadata.create_all(engine)

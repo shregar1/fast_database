@@ -6,7 +6,7 @@ payment provider, linked to a user and optionally to a payment transaction
 or user subscription. Unique on (provider_id, external_id) for idempotency.
 
 Usage:
-    >>> from fastmvc_db_models.models.invoice import Invoice
+    >>> from fast_db_models.models.invoice import Invoice
     >>> # amount_cents and currency; status_id references status_lk
 """
 

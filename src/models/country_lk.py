@@ -5,7 +5,7 @@ SQLAlchemy ORM model for countries. Code is typically ISO 3166-1 alpha-2
 (e.g. US, IN, GB). Used for profile country, location, or address data.
 
 Usage:
-    >>> from fastmvc_db_models.models.country_lk import CountryLk
+    >>> from fast_db_models.models.country_lk import CountryLk
     >>> # code is ISO 3166-1 alpha-2 country code
 """
 

@@ -6,7 +6,7 @@ LLM threads (role + content). These tables support direct/group chat, delivery
 tracking, and per-recipient read status.
 
 Usage:
-    >>> from fastmvc_db_models.models.messaging_chat import Chat, ChatMessage
+    >>> from fast_db_models.models.messaging_chat import Chat, ChatMessage
 """
 
 from __future__ import annotations

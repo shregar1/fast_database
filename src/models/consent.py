@@ -6,7 +6,7 @@ Service, Privacy Policy). Each row is one acceptance event: type (e.g. tos,
 privacy), version string, and accepted_at timestamp.
 
 Usage:
-    >>> from fastmvc_db_models.models.consent import ConsentRecord
+    >>> from fast_db_models.models.consent import ConsentRecord
     >>> # type is typically 'tos' or 'privacy'; version tracks policy version
 """
 

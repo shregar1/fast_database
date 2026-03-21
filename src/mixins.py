@@ -2,10 +2,10 @@
 Reusable SQLAlchemy declarative mixins (timestamps, UUID PK, soft-delete, tenant scope,
 optimistic locking, audit actor FKs).
 
-Use with the package :class:`fastmvc_db_models.models.Base`::
+Use with the package :class:`fast_db_models.models.Base`::
 
-    from fastmvc_db_models import Base
-    from fastmvc_db_models.mixins import TimestampMixin, UUIDPrimaryKeyMixin
+    from fast_db_models import Base
+    from fast_db_models.mixins import TimestampMixin, UUIDPrimaryKeyMixin
 
     class Item(Base, UUIDPrimaryKeyMixin, TimestampMixin):
         __tablename__ = "items"
@@ -47,7 +47,7 @@ class UUIDPrimaryKeyMixin:
 
 class OrganizationScopedMixin:
     """
-    ``organization_id`` FK to :class:`~fastmvc_db_models.models.organization.Organization`.
+    ``organization_id`` FK to :class:`~fast_db_models.models.organization.Organization`.
 
     Use for tenant-scoped rows. Add a composite index in ``__table_args__`` for
     common queries (see package README).
@@ -114,9 +114,9 @@ class SoftDeleteMixin:
     """
     ``is_deleted`` flag and optional ``deleted_at`` for soft-delete rows.
 
-    Existing models (e.g. :class:`~fastmvc_db_models.models.user.User`) may define
+    Existing models (e.g. :class:`~fast_db_models.models.user.User`) may define
     only ``is_deleted``; new tables can use this mixin for both columns and use
-    helpers in :mod:`fastmvc_db_models.soft_delete`.
+    helpers in :mod:`fast_db_models.soft_delete`.
     """
 
     __abstract__ = True

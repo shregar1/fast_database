@@ -6,7 +6,7 @@ optional pin_code. Unique on (city, state, country_code, pin_code). Referenced
 by profile.location_id.
 
 Usage:
-    >>> from fastmvc_db_models.models.location_lk import LocationLk
+    >>> from fast_db_models.models.location_lk import LocationLk
     >>> # Used for profile location (e.g. city, state, country)
 """
 

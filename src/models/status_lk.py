@@ -6,7 +6,7 @@ Referenced by invoice.status_id and other entities. Code is unique and used
 in business logic.
 
 Usage:
-    >>> from fastmvc_db_models.models.status_lk import StatusLk
+    >>> from fast_db_models.models.status_lk import StatusLk
     >>> # Shared across invoices and other status-carrying entities
 """
 

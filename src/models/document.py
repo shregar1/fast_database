@@ -6,7 +6,7 @@ Actual file content lives in object storage; this table stores path, type,
 size, content type, virus scan status, and optional links to user/session/organisation.
 
 Usage:
-    >>> from fastmvc_db_models.models.document import Document
+    >>> from fast_db_models.models.document import Document
     >>> # document_type: 'resume' | 'jd'; virus_scan_status: 'pending' | 'clean' | 'infected'
 """
 

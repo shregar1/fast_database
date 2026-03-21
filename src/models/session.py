@@ -4,7 +4,7 @@ Interview session model.
 SQLAlchemy ORM for interview sessions (linked from documents and conversations).
 
 Usage:
-    >>> from fastmvc_db_models.models.session import Session
+    >>> from fast_db_models.models.session import Session
 """
 
 from datetime import datetime

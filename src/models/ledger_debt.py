@@ -4,7 +4,7 @@ Ledger debt and adjustment models (Pure.cam).
 Maps `Debt`, `DebtPayment`, `DebtCredit`.
 
 Usage:
-    >>> from fastmvc_db_models.models.ledger_debt import LedgerDebt, LedgerDebtPayment, LedgerDebtCredit
+    >>> from fast_db_models.models.ledger_debt import LedgerDebt, LedgerDebtPayment, LedgerDebtCredit
 """
 
 from datetime import datetime

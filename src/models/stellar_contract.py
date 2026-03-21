@@ -4,7 +4,7 @@ Stellar hourly contract models (Pure.cam SQLite parity).
 Maps `contracts`, `contract_hours`, `contract_payments` from API_AND_DATA_REFERENCE.md.
 
 Usage:
-    >>> from fastmvc_db_models.models.stellar_contract import (
+    >>> from fast_db_models.models.stellar_contract import (
     ...     StellarContract,
     ...     StellarContractHours,
     ...     StellarContractPayment,

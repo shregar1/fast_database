@@ -4,7 +4,7 @@ Ledger linked account model (Pure.cam).
 Maps `LinkedAccount` — SMS/notification import rules.
 
 Usage:
-    >>> from fastmvc_db_models.models.ledger_linked_account import LedgerLinkedAccount
+    >>> from fast_db_models.models.ledger_linked_account import LedgerLinkedAccount
 """
 
 from datetime import datetime

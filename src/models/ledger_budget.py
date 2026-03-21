@@ -4,7 +4,7 @@ Ledger budget model (Pure.cam).
 Maps `Budget` — category cap or total-expense cap (`category` empty string).
 
 Usage:
-    >>> from fastmvc_db_models.models.ledger_budget import LedgerBudget
+    >>> from fast_db_models.models.ledger_budget import LedgerBudget
 """
 
 from datetime import datetime

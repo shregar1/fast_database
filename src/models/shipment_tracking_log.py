@@ -5,7 +5,7 @@ One row per carrier or aggregator event (scan, status change, exception). Used t
 render timelines, reconcile webhooks, and debug integrations. Typically append-only.
 
 Usage:
-    >>> from fastmvc_db_models.models.shipment_tracking_log import ShipmentTrackingLog
+    >>> from fast_db_models.models.shipment_tracking_log import ShipmentTrackingLog
 """
 
 from datetime import datetime

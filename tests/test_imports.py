@@ -2,7 +2,7 @@
 
 
 def test_mixin_and_soft_delete_exported_from_package():
-    from fastmvc_db_models import (
+    from fast_db_models import (
         Base,
         SoftDeleteMixin,
         TimestampMixin,

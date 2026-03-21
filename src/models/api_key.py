@@ -6,7 +6,7 @@ one-way hashes; the raw key is shown only at creation time. Scopes (e.g. read_on
 restrict what operations the key can perform.
 
 Usage:
-    >>> from fastmvc_db_models.models.api_key import ApiKey
+    >>> from fast_db_models.models.api_key import ApiKey
     >>> # Keys are created via repository; auth middleware validates key_hash and scopes
 """
 

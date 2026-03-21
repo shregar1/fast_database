@@ -4,7 +4,7 @@ Ledger balance alert model (Pure.cam).
 Maps `BalanceAlert` — at most one row per workspace (sync payload).
 
 Usage:
-    >>> from fastmvc_db_models.models.ledger_balance_alert import LedgerBalanceAlert
+    >>> from fast_db_models.models.ledger_balance_alert import LedgerBalanceAlert
 """
 
 from datetime import datetime

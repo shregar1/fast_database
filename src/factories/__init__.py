@@ -1,9 +1,9 @@
 """
-factory_boy examples for tests (install ``pip install 'fastmvc-db-models[dev]'``).
+factory_boy examples for tests (install ``pip install 'fast-db-models[dev]'``).
 
 ::
 
-    from fastmvc_db_models.factories import PlanFactory
+    from fast_db_models.factories import PlanFactory
 """
 
 from src.factories.plan_factory import PlanFactory

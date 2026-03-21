@@ -6,7 +6,7 @@ price_usd, description, and optional JSONB features. Referenced by
 user_subscription.subscription_plan_id. Seed data defines available plans.
 
 Usage:
-    >>> from fastmvc_db_models.models.subscription_plan_lk import SubscriptionPlanLk
+    >>> from fast_db_models.models.subscription_plan_lk import SubscriptionPlanLk
     >>> # number_sessions and price_usd drive billing and limits
 """
 

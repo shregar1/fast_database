@@ -5,7 +5,7 @@ SQLAlchemy ORM models for persisted LLM conversations: one conversation per
 thread (user_id, optional session_id), with messages in order (role + content).
 
 Usage:
-    >>> from fastmvc_db_models.models.conversation import Conversation, ConversationMessage
+    >>> from fast_db_models.models.conversation import Conversation, ConversationMessage
 """
 
 from datetime import datetime

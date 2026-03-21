@@ -6,7 +6,7 @@ scheduled_at (when the interview is) and reminder_minutes_before; a nightly
 job sends a notification when the reminder is due (scheduled_at - reminder_minutes_before <= now).
 
 Usage:
-    >>> from fastmvc_db_models.models.interview_reminder import InterviewReminder
+    >>> from fast_db_models.models.interview_reminder import InterviewReminder
 """
 
 

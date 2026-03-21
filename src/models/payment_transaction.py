@@ -6,7 +6,7 @@ row per charge: amount, currency, status, provider IDs, optional failure info,
 paid_at/refunded_at, and JSONB metadata. Unique on (provider_id, provider_payment_id).
 
 Usage:
-    >>> from fastmvc_db_models.models.payment_transaction import PaymentTransaction
+    >>> from fast_db_models.models.payment_transaction import PaymentTransaction
     >>> # status_id -> payment_status_lk; payment_method_type_id -> payment_method_type_lk
 """
 

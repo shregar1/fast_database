@@ -6,7 +6,7 @@ import importlib
 
 import pytest
 
-PACKAGE = "fastmvc_db_models"
+PACKAGE = "fast_db_models"
 
 
 def test_package_imports():

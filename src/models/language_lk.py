@@ -5,7 +5,7 @@ SQLAlchemy ORM model for supported languages. Code (e.g. en, hi) is unique.
 Referenced by user_language.language_id for languages a user speaks.
 
 Usage:
-    >>> from fastmvc_db_models.models.language_lk import LanguageLk
+    >>> from fast_db_models.models.language_lk import LanguageLk
     >>> # code is typically ISO 639 or similar
 """
 

@@ -6,7 +6,7 @@ wallet). Code is unique. Referenced by payment_transaction.payment_method_type_i
 and user_payment_method.payment_method_type_id.
 
 Usage:
-    >>> from fastmvc_db_models.models.payment_method_type_lk import PaymentMethodTypeLk
+    >>> from fast_db_models.models.payment_method_type_lk import PaymentMethodTypeLk
     >>> # Identifies type of saved or used payment method
 """
 

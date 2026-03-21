@@ -6,7 +6,7 @@ failed, refunded). Code is unique. Referenced by payment_transaction.status_id
 and payment_refund.status_id.
 
 Usage:
-    >>> from fastmvc_db_models.models.payment_status_lk import PaymentStatusLk
+    >>> from fast_db_models.models.payment_status_lk import PaymentStatusLk
     >>> # Shared by PaymentTransaction and PaymentRefund
 """
 
