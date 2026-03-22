@@ -1,4 +1,4 @@
-# Security policy — fast-db-models
+# Security policy — fast-database
 
 ## Reporting a vulnerability
 

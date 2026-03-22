@@ -1,4 +1,4 @@
-# Publishing **fast-db-models** to PyPI
+# Publishing **fast-database** to PyPI
 
 ## Prerequisites
 
@@ -26,6 +26,6 @@ export TWINE_PASSWORD=<pypi-token>
 twine upload dist/*
 ```
 
-- **PyPI project name:** `fast-db-models`
-- **Typical import:** `fast_db_models`
-- **Repository / homepage:** https://github.com/shregar1/fast-db-models
+- **PyPI project name:** `fast-database`
+- **Typical import:** `fast_database`
+- **Repository / homepage:** https://github.com/shregar1/fast-database

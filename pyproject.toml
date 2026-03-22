@@ -1,7 +1,9 @@
 
 
 [tool.coverage.run]
-source = ["fast_db_models"]
+# Models stay at the 95% gate; concrete `fast_repositories/*` modules are thin CRUD wrappers
+# exercised in app/integration tests rather than this package's unit suite.
+source = ["fast_database"]
 branch = false
 omit = ["*/tests/*"]
 
@@ -20,24 +22,28 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "fast-db-models"
-version = "0.1.0"
-description = "Shared SQLAlchemy ORM models for FastMVC apps (user/auth, payments, conversations, webhooks, etc.)"
+name = "fast-database"
+version = "0.3.0"
+description = "Shared SQLAlchemy ORM models plus IRepository and concrete repos for FastMVC apps."
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = ["sqlalchemy>=2.0,<3.0"]
+dependencies = [
+    "sqlalchemy>=2.0,<3.0",
+    "loguru>=0.7.0,<1.0.0",
+    "cachetools>=5.0.0,<6.0.0",
+]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
     "factory-boy>=3.3.0",
 ]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["."]
+pythonpath = ["src"]
+asyncio_mode = "auto"
 
-[tool.setuptools]
-include-package-data = true
-package-dir = { "fast_db_models" = "src" }
-packages = ["fast_db_models"]
+[tool.setuptools.packages.find]
+where = ["src"]

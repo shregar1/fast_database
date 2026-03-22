@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from src.optimistic_lock import (
+from fast_database.optimistic_lock import (
     StaleVersionError,
     assert_version_matches,
     expected_version,

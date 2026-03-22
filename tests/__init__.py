@@ -1,1 +1,1 @@
-"""Tests for fast_db_models."""
+"""Tests for fast_database."""
