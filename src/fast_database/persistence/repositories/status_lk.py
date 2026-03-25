@@ -2,65 +2,47 @@
 Status Lookup Repository.
 
 Data access for the StatusLk model (generic status codes: e.g. draft, paid,
-cancelled). IRepository wrapper; use for retrieve by id or code, list all.
+cancelled). Uses LookupRepositoryBase for standard lookup operations.
 Referenced by Invoice and other status-carrying entities.
 
 Usage:
     >>> from fast_database.persistence.repositories.status_lk import StatusLkRepository
     >>> repo = StatusLkRepository(session=db_session)
+    >>> all_statuses = repo.list_all()
+    >>> active_status = repo.find_by_code("active")
 """
-
-
 
 from sqlalchemy.orm import Session
 
-from fast_database.persistence.repositories.abstraction import IRepository
 from fast_database.persistence.models.status_lk import StatusLk
+from fast_database.persistence.repositories.lookup_base import LookupRepositoryBase
 
 
-class StatusLkRepository(IRepository):
+class StatusLkRepository(LookupRepositoryBase[StatusLk]):
     """
     Repository for StatusLk (generic status) records.
 
-    Provides session and IRepository base. Use for resolving status_id by
-    code or listing statuses for dropdowns.
+    Provides standard lookup operations inherited from LookupRepositoryBase:
+    - list_all(): Get all statuses ordered by code
+    - find_by_code(code): Find status by unique code
+    - find_by_urn(urn): Find status by URN
+    - All IRepository CRUD methods
     """
-
-
 
     def __init__(
         self,
-        session: Session = None,
-        urn: str = None,
-        user_urn: str = None,
-        api_name: str = None,
-        user_id: str = None,
+        session: Session,
+        urn: str | None = None,
+        user_urn: str | None = None,
+        api_name: str | None = None,
+        user_id: str | None = None,
     ):
-        self._cache = None
         super().__init__(
+            model=StatusLk,
+            session=session,
+            order_by="code",
             urn=urn,
             user_urn=user_urn,
             api_name=api_name,
             user_id=user_id,
-            cache=self._cache,
-            model=StatusLk,
-        )
-        self._session = session
-
-    @property
-    def session(self) -> Session:
-
-        return self._session
-
-    @session.setter
-    def session(self, value: Session):
-        self._session = value
-
-    def list_all(self):
-        """Return all status lookup entries ordered by code."""
-
-        return (
-            self.session.query(StatusLk)
-            .order_by(StatusLk.code)
-            .all()
         )

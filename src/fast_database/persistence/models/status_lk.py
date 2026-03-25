@@ -5,26 +5,25 @@ SQLAlchemy ORM model for generic status codes (e.g. draft, paid, cancelled).
 Referenced by invoice.status_id and other entities. Code is unique and used
 in business logic.
 
+Uses LookupModelMixin for standard lookup table schema:
+- id, urn, code, description, created_at, updated_at
+- to_dict() serialization method
+
 Usage:
     >>> from fast_database.persistence.models.status_lk import StatusLk
     >>> # Shared across invoices and other status-carrying entities
 """
 
-
-
-from datetime import datetime
-
-from sqlalchemy import BigInteger, Column, DateTime, String
-
 from fast_database.core.constants.table import Table
+from fast_database.core.mixins import LookupModelMixin
 from fast_database.persistence.models import Base
 
 
-class StatusLk(Base):
+class StatusLk(Base, LookupModelMixin):
     """
     Lookup: generic status (e.g. draft, paid, cancelled).
 
-    Attributes:
+    Attributes (from LookupModelMixin):
         id: Primary key.
         urn: Unique Resource Name.
         code: Unique status code.
@@ -32,23 +31,4 @@ class StatusLk(Base):
         created_at, updated_at: Timestamps.
     """
 
-
-
     __tablename__ = Table.STATUS_LK
-
-    id = Column(BigInteger, primary_key=True, autoincrement=True)
-    urn = Column(String(128), nullable=False, unique=True, index=True)
-    code = Column(String(64), nullable=False, unique=True, index=True)
-    description = Column(String(255), nullable=False)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow)
-
-    def to_dict(self) -> dict:
-
-        return {
-            "urn": self.urn,
-            "code": self.code,
-            "description": self.description,
-            "created_at": self.created_at.isoformat() if self.created_at else None,
-            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
-        }

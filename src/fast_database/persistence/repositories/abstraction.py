@@ -20,20 +20,22 @@ Example:
     ...         )
 """
 
-from abc import ABC
+from __future__ import annotations
+
 from datetime import datetime
 from operator import attrgetter
 from typing import Any
 
 from cachetools import LRUCache, cachedmethod
-from loguru import logger
 from sqlalchemy import and_, or_
 from sqlalchemy.orm import DeclarativeMeta
 
+# Import ContextMixin from fast_platform to eliminate duplication
+from core.utils.context import ContextMixin
 from fast_database.persistence.repositories.filter_operator import FilterOperator
 
 
-class IRepository(ABC):
+class IRepository(ContextMixin):
     """
     Abstract base class for database repository pattern implementation.
 
@@ -44,6 +46,9 @@ class IRepository(ABC):
         - Query result caching with LRU cache
         - Execution time logging for performance monitoring
         - Soft delete support via is_deleted flag
+
+    This class extends ContextMixin to eliminate duplication of context fields
+    (urn, user_urn, api_name, user_id, logger) across the framework.
 
     Attributes:
         urn (str): Unique Request Number for tracing.
@@ -78,105 +83,52 @@ class IRepository(ABC):
 
     def __init__(
         self,
-        urn: str = None,
-        user_urn: str = None,
-        api_name: str = None,
-        user_id: str = None,
-        model: DeclarativeMeta = None,
-        cache: LRUCache = None,
+        urn: str | None = None,
+        user_urn: str | None = None,
+        api_name: str | None = None,
+        user_id: str | None = None,
+        model: DeclarativeMeta | None = None,
+        cache: LRUCache | None = None,
+        **kwargs: Any,
     ) -> None:
         """
         Initialize the repository with model and optional caching.
 
         Args:
-            urn (str, optional): Unique Request Number for tracing. Defaults to None.
-            user_urn (str, optional): User's unique resource name. Defaults to None.
-            api_name (str, optional): Name of the API endpoint. Defaults to None.
-            user_id (str, optional): Database ID of the user. Defaults to None.
-            model (DeclarativeMeta, optional): SQLAlchemy model class. Defaults to None.
-            cache (LRUCache, optional): Cache instance for results. Defaults to None.
+            urn: Unique Request Number for tracing.
+            user_urn: User's unique resource name.
+            api_name: Name of the API endpoint.
+            user_id: Database ID of the user.
+            model: SQLAlchemy model class.
+            cache: Cache instance for results.
+            **kwargs: Additional arguments for parent classes.
         """
-        self._urn = urn
-        self._user_urn = user_urn
-        self._api_name = api_name
-        self._user_id = user_id
-        self._logger = logger.bind(
-            urn=self._urn,
-            user_urn=self._user_urn,
-            api_name=self._api_name,
-            user_id=self._user_id,
+        super().__init__(
+            urn=urn,
+            user_urn=user_urn,
+            api_name=api_name,
+            user_id=user_id,
+            **kwargs,
         )
         self._model = model
         self._cache = cache
 
     @property
-    def urn(self) -> str:
-        """str: Get the Unique Request Number."""
-        return self._urn
-
-    @urn.setter
-    def urn(self, value: str) -> None:
-        """Set the Unique Request Number."""
-        self._urn = value
-
-    @property
-    def user_urn(self) -> str:
-        """str: Get the user's unique resource name."""
-        return self._user_urn
-
-    @user_urn.setter
-    def user_urn(self, value: str) -> None:
-        """Set the user's unique resource name."""
-        self._user_urn = value
-
-    @property
-    def api_name(self) -> str:
-        """str: Get the API endpoint name."""
-        return self._api_name
-
-    @api_name.setter
-    def api_name(self, value: str) -> None:
-        """Set the API endpoint name."""
-        self._api_name = value
-
-    @property
-    def logger(self):
-        """loguru.Logger: Get the structured logger instance."""
-        return self._logger
-
-    @logger.setter
-    def logger(self, value) -> None:
-        """Set the structured logger instance."""
-        self._logger = value
-
-    @property
-    def user_id(self) -> str:
-        """str: Get the user's database identifier."""
-        return self._user_id
-
-    @user_id.setter
-    def user_id(self, value: str) -> None:
-        """Set the user's database identifier."""
-        self._user_id = value
-
-    @property
-    def model(self) -> DeclarativeMeta:
-        """DeclarativeMeta: Get the SQLAlchemy model class."""
+    def model(self) -> DeclarativeMeta | None:
+        """SQLAlchemy model class for this repository."""
         return self._model
 
     @model.setter
-    def model(self, value: DeclarativeMeta) -> None:
-        """Set the SQLAlchemy model class."""
+    def model(self, value: DeclarativeMeta | None) -> None:
         self._model = value
 
     @property
-    def cache(self) -> LRUCache:
-        """LRUCache: Get the cache instance."""
+    def cache(self) -> LRUCache | None:
+        """Cache instance for query result caching."""
         return self._cache
 
     @cache.setter
-    def cache(self, value: LRUCache) -> None:
-        """Set the cache instance."""
+    def cache(self, value: LRUCache | None) -> None:
         self._cache = value
 
     def _build_filter_condition(
@@ -281,16 +233,16 @@ class IRepository(ABC):
         return conditions
 
     def _filter_active_non_deleted(self, query):
-        """Exclude soft-deleted rows when the model defines ``is_deleted``."""
+        """Exclude soft-deleted rows when the model defines ``is_deleted`` ."""
         if hasattr(self.model, "is_deleted"):
             return query.filter(self.model.is_deleted.is_(False))
         return query
 
     def retrieve_record_by_filter(
         self,
-        filters: dict[str, Any] | list[tuple] = None,
+        filters: dict[str, Any] | list[tuple] | None = None,
         use_or: bool = False,
-        order_by: str | list[str] = None,
+        order_by: str | list[str] | None = None,
         order_desc: bool = False,
         include_deleted: bool = False,
     ) -> DeclarativeMeta | None:
@@ -374,12 +326,12 @@ class IRepository(ABC):
 
     def retrieve_records_by_filter(
         self,
-        filters: dict[str, Any] | list[tuple] = None,
+        filters: dict[str, Any] | list[tuple] | None = None,
         use_or: bool = False,
-        order_by: str | list[str] = None,
+        order_by: str | list[str] | None = None,
         order_desc: bool = False,
-        limit: int = None,
-        offset: int = None,
+        limit: int | None = None,
+        offset: int | None = None,
         include_deleted: bool = False,
     ) -> list[DeclarativeMeta]:
         """
@@ -465,7 +417,7 @@ class IRepository(ABC):
 
     def count_by_filter(
         self,
-        filters: dict[str, Any] | list[tuple] = None,
+        filters: dict[str, Any] | list[tuple] | None = None,
         use_or: bool = False,
         include_deleted: bool = False,
     ) -> int:
@@ -515,7 +467,7 @@ class IRepository(ABC):
 
     def exists_by_filter(
         self,
-        filters: dict[str, Any] | list[tuple] = None,
+        filters: dict[str, Any] | list[tuple] | None = None,
         use_or: bool = False,
         include_deleted: bool = False,
     ) -> bool:
@@ -555,10 +507,10 @@ class IRepository(ABC):
         Logs the execution time for performance monitoring.
 
         Args:
-            record (DeclarativeMeta): The model instance to persist.
+            record: The model instance to persist.
 
         Returns:
-            DeclarativeMeta: The persisted record with generated ID.
+            The persisted record with generated ID.
 
         Raises:
             SQLAlchemyError: If database operation fails.
@@ -591,12 +543,12 @@ class IRepository(ABC):
         on repeated queries. Uses retrieve_record_by_filter internally.
 
         Args:
-            id (str): The primary key ID of the record.
-            is_deleted (bool, optional): Filter by soft-delete status.
+            id: The primary key ID of the record.
+            is_deleted: Filter by soft-delete status.
                 Defaults to False (only active records).
 
         Returns:
-            Optional[DeclarativeMeta]: The found record or None if not found.
+            The found record or None if not found.
 
         Example:
             >>> user = repository.retrieve_record_by_id("user-123")
@@ -621,12 +573,12 @@ class IRepository(ABC):
         on repeated queries. Uses retrieve_record_by_filter internally.
 
         Args:
-            urn (str): The unique resource name of the record.
-            is_deleted (bool, optional): Filter by soft-delete status.
+            urn: The unique resource name of the record.
+            is_deleted: Filter by soft-delete status.
                 Defaults to False (only active records).
 
         Returns:
-            Optional[DeclarativeMeta]: The found record or None if not found.
+            The found record or None if not found.
 
         Example:
             >>> user = repository.retrieve_record_by_urn("urn:user:abc123")
@@ -650,11 +602,11 @@ class IRepository(ABC):
         Commits the transaction and logs execution time.
 
         Args:
-            id (str): The primary key ID of the record to update.
-            new_data (dict): Dictionary of attribute names to new values.
+            id: The primary key ID of the record to update.
+            new_data: Dictionary of attribute names to new values.
 
         Returns:
-            DeclarativeMeta: The updated record.
+            The updated record.
 
         Raises:
             ValueError: If no record with the given ID exists.

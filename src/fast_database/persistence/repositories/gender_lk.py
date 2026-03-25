@@ -2,65 +2,47 @@
 Gender Lookup Repository.
 
 Data access for the GenderLk model (gender options: e.g. Male, Female,
-Non-binary). IRepository wrapper; use for retrieve by id or code, list all.
+Non-binary). Uses LookupRepositoryBase for standard lookup operations.
 Used by Profile for gender_id.
 
 Usage:
     >>> from fast_database.persistence.repositories.gender_lk import GenderLkRepository
     >>> repo = GenderLkRepository(session=db_session)
+    >>> all_genders = repo.list_all()
+    >>> male = repo.find_by_code("male")
 """
-
-
 
 from sqlalchemy.orm import Session
 
-from fast_database.persistence.repositories.abstraction import IRepository
 from fast_database.persistence.models.gender_lk import GenderLk
+from fast_database.persistence.repositories.lookup_base import LookupRepositoryBase
 
 
-class GenderLkRepository(IRepository):
+class GenderLkRepository(LookupRepositoryBase[GenderLk]):
     """
     Repository for GenderLk (gender) records.
 
-    Provides session and IRepository base. Use for profile forms and
-    resolving gender_id by code.
+    Provides standard lookup operations inherited from LookupRepositoryBase:
+    - list_all(): Get all genders ordered by code
+    - find_by_code(code): Find gender by unique code
+    - find_by_urn(urn): Find gender by URN
+    - All IRepository CRUD methods
     """
-
-
 
     def __init__(
         self,
-        session: Session = None,
-        urn: str = None,
-        user_urn: str = None,
-        api_name: str = None,
-        user_id: str = None,
+        session: Session,
+        urn: str | None = None,
+        user_urn: str | None = None,
+        api_name: str | None = None,
+        user_id: str | None = None,
     ):
-        self._cache = None
         super().__init__(
+            model=GenderLk,
+            session=session,
+            order_by="code",
             urn=urn,
             user_urn=user_urn,
             api_name=api_name,
             user_id=user_id,
-            cache=self._cache,
-            model=GenderLk,
-        )
-        self._session = session
-
-    @property
-    def session(self) -> Session:
-
-        return self._session
-
-    @session.setter
-    def session(self, value: Session):
-        self._session = value
-
-    def list_all(self):
-        """Return all gender lookup entries ordered by code."""
-
-        return (
-            self.session.query(GenderLk)
-            .order_by(GenderLk.code)
-            .all()
         )

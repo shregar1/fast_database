@@ -1,125 +1,150 @@
 """
-Reusable SQLAlchemy declarative mixins (timestamps, UUID PK, soft-delete, tenant scope,
-optimistic locking, audit actor FKs).
+Core Mixins for Fast Database Models.
 
-Use with the package :class:`fast_database.persistence.models.Base`::
+Provides reusable mixins for common model patterns like lookup tables,
+timestamp handling, and serialization.
 
-    from fast_database import Base
-    from fast_database.core.mixins import TimestampMixin, UUIDPrimaryKeyMixin
+This module follows DRY principles to eliminate code duplication across
+model definitions.
 
-    class Item(Base, UUIDPrimaryKeyMixin, TimestampMixin):
-        __tablename__ = "items"
-        name = Column(String(255), nullable=False)
-
-**Mixin order:** put ``Base`` first, then mixins, then your columns.
+Example:
+    >>> from fast_database.core.mixins import LookupModelMixin
+    >>> from fast_database.persistence.models import Base
+    >>> 
+    >>> class StatusLk(Base, LookupModelMixin):
+    ...     __tablename__ = "status_lk"
+    ...     # id, urn, code, description, created_at, updated_at are provided
+    ...     # to_dict() method is provided
 """
 
 from __future__ import annotations
 
-import uuid
-from datetime import datetime, timezone
+from datetime import datetime
+from typing import Any
 
-from sqlalchemy import BigInteger, Boolean, Column, DateTime, ForeignKey, Integer, Uuid, text
-
-from fast_database.core.constants.table import Table
+from sqlalchemy import BigInteger, Column, DateTime, String
 
 
-def _utc_now() -> datetime:
-    return datetime.now(timezone.utc)
+class LookupModelMixin:
+    """
+    Mixin for lookup table models with standard schema.
+    
+    Provides common lookup table columns:
+    - id: Primary key (BigInteger, autoincrement)
+    - urn: Unique Resource Name (String 128, unique, indexed)
+    - code: Unique code (String 64, unique, indexed)
+    - description: Human-readable label (String 255)
+    - created_at: Timestamp (DateTime, not null, default utcnow)
+    - updated_at: Timestamp (DateTime, nullable, onupdate utcnow)
+    
+    Also provides a standard to_dict() serialization method.
+    
+    Attributes:
+        id (int): Primary key
+        urn (str): Unique Resource Name
+        code (str): Unique code for business logic
+        description (str): Human-readable description
+        created_at (datetime): Creation timestamp
+        updated_at (datetime): Last update timestamp
+    
+    Example:
+        >>> from fast_database.persistence.models import Base
+        >>> from fast_database.core.mixins import LookupModelMixin
+        >>> from fast_database.core.constants.table import Table
+        >>> 
+        >>> class StatusLk(Base, LookupModelMixin):
+        ...     __tablename__ = Table.STATUS_LK
+        ...     # All columns and methods provided by mixin
+        ...     pass
+        >>> 
+        >>> status = StatusLk(urn="urn:status:active", code="active", description="Active")
+        >>> status.to_dict()
+        {'urn': 'urn:status:active', 'code': 'active', 'description': 'Active', 
+         'created_at': '2024-01-01T00:00:00', 'updated_at': None}
+    """
+
+    # Primary key
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    
+    # Unique identifiers
+    urn = Column(String(128), nullable=False, unique=True, index=True)
+    code = Column(String(64), nullable=False, unique=True, index=True)
+    
+    # Description
+    description = Column(String(255), nullable=False)
+    
+    # Timestamps
+    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
+    updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow)
+
+    def to_dict(self) -> dict[str, Any]:
+        """
+        Serialize the lookup record to a dictionary.
+        
+        Returns:
+            Dictionary with urn, code, description, created_at, updated_at.
+            Datetimes are ISO-formatted strings.
+            
+        Example:
+            >>> status = StatusLk(urn="urn:status:active", code="active", 
+            ...                   description="Active status")
+            >>> status.to_dict()
+            {'urn': 'urn:status:active', 'code': 'active', 
+             'description': 'Active status', 'created_at': '2024-01-01T00:00:00', 
+             'updated_at': None}
+        """
+        return {
+            "urn": self.urn,
+            "code": self.code,
+            "description": self.description,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
+        }
 
 
 class TimestampMixin:
-    """``created_at`` / ``updated_at`` with UTC-aware datetimes."""
-
-    __abstract__ = True
-
-    created_at = Column(DateTime(timezone=True), nullable=False, default=_utc_now)
-    updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=_utc_now)
-
-
-class UUIDPrimaryKeyMixin:
-    """Primary key ``id`` as UUID (SQLAlchemy :class:`Uuid` type)."""
-
-    __abstract__ = True
-
-    id = Column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)
-
-
-class OrganizationScopedMixin:
     """
-    ``organization_id`` FK to :class:`~fast_database.persistence.models.organization.Organization`.
-
-    Use for tenant-scoped rows. Add a composite index in ``__table_args__`` for
-    common queries (see package README).
+    Mixin for models requiring created_at and updated_at timestamps.
+    
+    Provides:
+    - created_at: Timestamp (DateTime, not null, default utcnow)
+    - updated_at: Timestamp (DateTime, nullable, onupdate utcnow)
+    
+    Example:
+        >>> from fast_database.persistence.models import Base
+        >>> from fast_database.core.mixins import TimestampMixin
+        >>> 
+        >>> class MyModel(Base, TimestampMixin):
+        ...     __tablename__ = "my_model"
+        ...     # created_at and updated_at columns provided
     """
 
-    __abstract__ = True
-
-    organization_id = Column(
-        BigInteger,
-        ForeignKey(f"{Table.ORGANIZATION}.id"),
-        nullable=False,
-        index=True,
+    created_at = Column(
+        DateTime(timezone=True), 
+        nullable=False, 
+        default=datetime.utcnow
+    )
+    updated_at = Column(
+        DateTime(timezone=True), 
+        nullable=True, 
+        onupdate=datetime.utcnow
     )
 
 
-class TenantIdMixin:
+class URNMixin:
     """
-    Generic ``tenant_id`` (no FK) for multi-tenant discrimination.
-
-    Prefer :class:`OrganizationScopedMixin` when the tenant is an organization row.
-    """
-
-    __abstract__ = True
-
-    tenant_id = Column(BigInteger, nullable=False, index=True)
-
-
-class OptimisticLockMixin:
-    """
-    Integer ``version`` for optimistic concurrency.
-
-    Wire the mapper with :func:`sqlalchemy.orm.declared_attr`::
-
-        from sqlalchemy.orm import declared_attr
-
-        class Item(Base, OptimisticLockMixin):
-            __tablename__ = "items"
-            id = Column(Integer, primary_key=True)
-
-            @declared_attr
-            def __mapper_args__(cls):
-                return {"version_id_col": cls.version}
+    Mixin for models requiring a URN (Unique Resource Name).
+    
+    Provides:
+    - urn: Unique Resource Name (String 128, unique, indexed)
+    
+    Example:
+        >>> from fast_database.persistence.models import Base
+        >>> from fast_database.core.mixins import URNMixin
+        >>> 
+        >>> class MyModel(Base, URNMixin):
+        ...     __tablename__ = "my_model"
+        ...     # urn column provided
     """
 
-    __abstract__ = True
-
-    version = Column(Integer, nullable=False, default=1, server_default=text("1"))
-
-
-class AuditActorMixin:
-    """
-    Optional ``created_by_id`` / ``updated_by_id`` FK to ``user.id``.
-
-    Nullable so inserts can omit actor; services set IDs from the current user.
-    """
-
-    __abstract__ = True
-
-    created_by_id = Column(BigInteger, ForeignKey("user.id"), nullable=True, index=True)
-    updated_by_id = Column(BigInteger, ForeignKey("user.id"), nullable=True, index=True)
-
-
-class SoftDeleteMixin:
-    """
-    ``is_deleted`` flag and optional ``deleted_at`` for soft-delete rows.
-
-    Existing models (e.g. :class:`~fast_database.persistence.models.user.User`) may define
-    only ``is_deleted``; new tables can use this mixin for both columns and use
-    helpers in :mod:`fast_database.core.soft_delete`.
-    """
-
-    __abstract__ = True
-
-    is_deleted = Column(Boolean, nullable=False, default=False)
-    deleted_at = Column(DateTime(timezone=True), nullable=True)
+    urn = Column(String(128), nullable=False, unique=True, index=True)
