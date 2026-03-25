@@ -23,6 +23,15 @@ from fast_database.core.mixins import (
     TimestampMixin,
     UUIDPrimaryKeyMixin,
 )
+
+# Model migrations - imported when models are imported
+from fast_database.migrations import (
+    ModelMigration,
+    get_model_migration,
+    get_registered_models,
+    register_model_migration,
+    run_model_migrations,
+)
 from fast_database.core.optimistic_lock import (
     StaleVersionError,
     assert_version_matches,
@@ -37,6 +46,7 @@ from fast_database.core.soft_delete import (
 )
 
 __all__ = [
+    # Mixins
     "AuditActorMixin",
     "Base",
     "OptimisticLockMixin",
@@ -46,6 +56,7 @@ __all__ = [
     "TenantIdMixin",
     "TimestampMixin",
     "UUIDPrimaryKeyMixin",
+    # Soft delete helpers
     "assert_version_matches",
     "expected_version",
     "where_not_deleted",
@@ -53,4 +64,10 @@ __all__ = [
     "mark_soft_deleted",
     "restore_soft_deleted",
     "filter_active",
+    # Migrations
+    "ModelMigration",
+    "get_model_migration",
+    "get_registered_models",
+    "register_model_migration",
+    "run_model_migrations",
 ]

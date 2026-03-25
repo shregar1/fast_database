@@ -155,3 +155,31 @@ from fast_database.persistence.models.user_provider_key import UserProviderKey
 
 # Backward-compatible alias for code that still imports ``UserLlmProviderKey``
 UserLlmProviderKey = UserProviderKey
+
+# =============================================================================
+# Auto-register model migrations
+# =============================================================================
+# When models are imported, their migrations are automatically discovered
+# and registered with the migration registry. This allows migrations to be
+# imported alongside models.
+#
+# Usage:
+#   >>> from fast_database.persistence.models import User
+#   >>> from fast_database.migrations import get_model_migration
+#   >>> migration = get_model_migration(User)
+#   >>> migration.upgrade(engine)
+
+def _auto_register_migrations():
+    """Auto-discover and register migrations for all imported models."""
+    try:
+        from fast_database.migrations.discovery import discover_model_migrations
+        discover_model_migrations(auto_register=True)
+    except Exception:
+        # Silently fail if migrations module is not available
+        pass
+
+# Run auto-registration
+_auto_register_migrations()
+
+# Clean up to avoid polluting namespace
+del _auto_register_migrations
