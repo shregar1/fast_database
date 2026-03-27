@@ -157,8 +157,10 @@ class SoftDeleteMixin:
     Mixin for models requiring soft delete functionality.
     
     Provides:
-    - is_deleted: Boolean flag (default False)
+    - is_deleted: Boolean flag as String(1) (default 'N')
     - deleted_at: Timestamp when deleted (nullable)
+    - delete() / restore() / force_delete() methods
+    - Query filtering helpers
     
     Example:
         >>> from fast_database.persistence.models import Base
@@ -167,6 +169,13 @@ class SoftDeleteMixin:
         >>> class MyModel(Base, SoftDeleteMixin):
         ...     __tablename__ = "my_model"
         ...     # is_deleted and deleted_at columns provided
+        >>> 
+        >>> item = MyModel(name="Test")
+        >>> item.delete()  # Soft delete
+        >>> db.commit()
+        >>> 
+        >>> item.restore()  # Restore
+        >>> db.commit()
     """
 
     __abstract__ = True
@@ -179,6 +188,37 @@ class SoftDeleteMixin:
         server_default="N"
     )
     deleted_at = Column(DateTime(timezone=True), nullable=True)
+    
+    def delete(self) -> None:
+        """
+        Soft delete the record.
+        
+        Sets deleted_at timestamp and is_deleted flag.
+        Does not actually remove from database.
+        """
+        from datetime import datetime
+        self.deleted_at = datetime.utcnow()
+        self.is_deleted = "Y"
+    
+    def restore(self) -> None:
+        """
+        Restore a soft-deleted record.
+        
+        Clears deleted_at timestamp and is_deleted flag.
+        """
+        self.deleted_at = None
+        self.is_deleted = "N"
+    
+    def force_delete(self) -> None:
+        """
+        Actually delete the record from database.
+        
+        Use with caution - this permanently removes data.
+        Must be overridden or use db.delete(obj).
+        """
+        raise NotImplementedError(
+            "force_delete must be implemented by the model or use db.delete(obj)"
+        )
 
 
 class AuditActorMixin:

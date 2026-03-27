@@ -39,9 +39,12 @@ from fast_database.core.optimistic_lock import (
 )
 from fast_database.core.soft_delete import (
     filter_active,
+    filter_not_deleted,
     mark_soft_deleted,
     restore_soft_deleted,
     select_active,
+    SoftDeleteQuery,
+    SoftDeleteRepositoryMixin,
     where_not_deleted,
 )
 
@@ -64,6 +67,9 @@ __all__ = [
     "mark_soft_deleted",
     "restore_soft_deleted",
     "filter_active",
+    "filter_not_deleted",
+    "SoftDeleteQuery",
+    "SoftDeleteRepositoryMixin",
     # Migrations
     "ModelMigration",
     "get_model_migration",
