@@ -1,5 +1,4 @@
-"""
-fast_database
+"""fast_database.
 ==================
 
 Shared SQLAlchemy ORM models intended to be reused across multiple apps.

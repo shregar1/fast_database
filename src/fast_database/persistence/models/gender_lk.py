@@ -1,5 +1,4 @@
-"""
-Gender Lookup Model.
+"""Gender Lookup Model.
 
 SQLAlchemy ORM model for gender options (e.g. Male, Female, Non-binary).
 Referenced by profile.gender_id.
@@ -25,8 +24,7 @@ from fast_database.persistence.models import Base
 
 
 class GenderLk(Base, LookupModelMixin):
-    """
-    Lookup: gender (e.g. Male, Female, Non-binary).
+    """Lookup: gender (e.g. Male, Female, Non-binary).
 
     Attributes (from LookupModelMixin, with code length 32):
         id: Primary key.

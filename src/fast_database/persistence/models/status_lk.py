@@ -1,5 +1,4 @@
-"""
-Status Lookup Model.
+"""Status Lookup Model.
 
 SQLAlchemy ORM model for generic status codes (e.g. draft, paid, cancelled).
 Referenced by invoice.status_id and other entities. Code is unique and used
@@ -20,8 +19,7 @@ from fast_database.persistence.models import Base
 
 
 class StatusLk(Base, LookupModelMixin):
-    """
-    Lookup: generic status (e.g. draft, paid, cancelled).
+    """Lookup: generic status (e.g. draft, paid, cancelled).
 
     Attributes (from LookupModelMixin):
         id: Primary key.

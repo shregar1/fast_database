@@ -1,5 +1,4 @@
-"""
-Compatibility alias for :mod:`fast_database.persistence.models.consent_record`.
+"""Compatibility alias for :mod:`fast_database.persistence.models.consent_record`.
 
 The canonical model is :class:`~fast_database.persistence.models.consent_record.ConsentRecord`.
 """

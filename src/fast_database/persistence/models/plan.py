@@ -1,5 +1,4 @@
-"""
-Plan Model.
+"""Plan Model.
 
 SQLAlchemy ORM model for plan definitions and entitlement limits keyed by plan_code.
 Used by:
@@ -20,8 +19,7 @@ from fast_database.persistence.models import Base
 
 
 class Plan(Base):
-    """
-    Plan definition and limits.
+    """Plan definition and limits.
 
     Attributes:
         id: Primary key.
@@ -31,6 +29,7 @@ class Plan(Base):
         models_allowed: List of allowed model identifiers (JSON array).
         is_active: Whether plan is currently offered.
         created_at, updated_at: Timestamps.
+
     """
 
     __tablename__ = Table.PLAN
@@ -42,10 +41,19 @@ class Plan(Base):
     models_allowed = Column(JSON, nullable=False, default=list)
     is_active = Column(Boolean, nullable=False, default=True, index=True)
 
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
+    updated_at = Column(
+        DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow
+    )
 
     def to_dict(self) -> dict[str, Any]:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "id": self.id,
             "plan_code": self.plan_code,
@@ -56,4 +64,3 @@ class Plan(Base):
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
         }
-

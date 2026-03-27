@@ -1,5 +1,4 @@
-"""
-Notification history model for in-app "last 30 days" view.
+"""Notification history model for in-app "last 30 days" view.
 
 Persisted notifications per user; list via GET /me/notifications.
 """
@@ -13,8 +12,7 @@ from fast_database.persistence.models import Base
 
 
 class NotificationHistory(Base):
-    """
-    One row per in-app notification for a user (last 30 days or configurable).
+    """One row per in-app notification for a user (last 30 days or configurable).
 
     channel: in_app, email, push, slack (for display).
     category: billing, security, product (for filtering).
@@ -30,9 +28,16 @@ class NotificationHistory(Base):
     title = Column(String(256), nullable=True)
     body = Column(String(2048), nullable=True)
     read_at = Column(DateTime(timezone=True), nullable=True)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "id": self.id,
             "user_id": self.user_id,

@@ -1,5 +1,4 @@
-"""
-Payment Refund Model.
+"""Payment Refund Model.
 
 SQLAlchemy ORM model for a refund against a payment transaction. Each row is
 one refund: amount, status, optional provider_refund_id and reason, plus
@@ -10,11 +9,16 @@ Usage:
     >>> # status_id -> payment_status_lk; payment_transaction_id -> payment_transaction
 """
 
-
-
 from datetime import datetime
 
-from sqlalchemy import BigInteger, Column, DateTime, ForeignKey, String, UniqueConstraint
+from sqlalchemy import (
+    BigInteger,
+    Column,
+    DateTime,
+    ForeignKey,
+    String,
+    UniqueConstraint,
+)
 from sqlalchemy.dialects.postgresql import JSONB
 
 from fast_database.core.constants.table import Table
@@ -22,8 +26,7 @@ from fast_database.persistence.models import Base
 
 
 class PaymentRefund(Base):
-    """
-    Refund against a single payment transaction.
+    """Refund against a single payment transaction.
 
     Tracks refund amount, status, optional provider_refund_id for reconciliation,
     reason, and JSONB metadata. One transaction can have multiple refund rows
@@ -39,9 +42,8 @@ class PaymentRefund(Base):
         reason: Optional refund reason.
         refund_metadata: JSONB; DB column "metadata".
         created_at, updated_at, created_by, updated_by: Audit fields.
+
     """
-
-
 
     __tablename__ = Table.PAYMENT_REFUND
     __table_args__ = (
@@ -67,13 +69,21 @@ class PaymentRefund(Base):
     provider_refund_id = Column(String(128), nullable=True, index=True)
     reason = Column(String(255), nullable=True)
     refund_metadata = Column("metadata", JSONB, nullable=True)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
     created_by = Column(BigInteger, ForeignKey("user.id"), nullable=False)
-    updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow)
+    updated_at = Column(
+        DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow
+    )
     updated_by = Column(BigInteger, ForeignKey("user.id"), nullable=True)
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
 
+        Returns:
+            The result of the operation.
+        """
         return {
             "urn": self.urn,
             "payment_transaction_id": self.payment_transaction_id,

@@ -1,5 +1,4 @@
-"""
-Refresh Token Model.
+"""Refresh Token Model.
 
 SQLAlchemy ORM model for refresh token rotation and revocation. Stores jti
 (unique token id) and family (chain id for rotation); revoked_at for
@@ -8,8 +7,6 @@ invalidation. Used for refresh token rotation and "log out all devices".
 Usage:
     >>> from fast_database.persistence.models.refresh_token import RefreshToken
 """
-
-
 
 from datetime import datetime
 
@@ -20,8 +17,7 @@ from fast_database.persistence.models import Base
 
 
 class RefreshToken(Base):
-    """
-    Stored refresh token for rotation and revocation.
+    """Stored refresh token for rotation and revocation.
 
     jti: Unique token id (in JWT); used to validate and revoke.
     family_id: Same for a chain of rotated tokens; revoke family to revoke all.
@@ -36,9 +32,16 @@ class RefreshToken(Base):
     family_id = Column(String(64), nullable=False, index=True)
     revoked_at = Column(DateTime(timezone=True), nullable=True)
     expires_at = Column(DateTime(timezone=True), nullable=False)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "jti": self.jti,
             "user_id": self.user_id,

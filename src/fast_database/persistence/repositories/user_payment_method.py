@@ -1,5 +1,4 @@
-"""
-User Payment Method Repository.
+"""User Payment Method Repository.
 
 Data access for the UserPaymentMethod model (saved payment methods: card
 last4, brand, expiry, is_default). IRepository wrapper; use for list by user,
@@ -11,8 +10,6 @@ Usage:
     >>> repo = UserPaymentMethodRepository(session=db_session)
 """
 
-
-
 from sqlalchemy.orm import Session
 
 from fast_database.persistence.repositories.abstraction import IRepository
@@ -20,14 +17,11 @@ from fast_database.persistence.models.user_payment_method import UserPaymentMeth
 
 
 class UserPaymentMethodRepository(IRepository):
-    """
-    Repository for UserPaymentMethod (saved payment method) records.
+    """Repository for UserPaymentMethod (saved payment method) records.
 
     Provides session and IRepository base for UserPaymentMethod. Use for
     listing methods per user/provider, adding/updating/deleting in services.
     """
-
-
 
     def __init__(
         self,
@@ -37,6 +31,15 @@ class UserPaymentMethodRepository(IRepository):
         api_name: str = None,
         user_id: str = None,
     ):
+        """Execute __init__ operation.
+
+        Args:
+            session: The session parameter.
+            urn: The urn parameter.
+            user_urn: The user_urn parameter.
+            api_name: The api_name parameter.
+            user_id: The user_id parameter.
+        """
         self._cache = None
         super().__init__(
             urn=urn,
@@ -50,9 +53,21 @@ class UserPaymentMethodRepository(IRepository):
 
     @property
     def session(self) -> Session:
+        """Execute session operation.
 
+        Returns:
+            The result of the operation.
+        """
         return self._session
 
     @session.setter
     def session(self, value: Session):
+        """Execute session operation.
+
+        Args:
+            value: The value parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self._session = value

@@ -1,5 +1,4 @@
-"""
-Transactional outbox — publish domain events after commit without losing messages.
+"""Transactional outbox — publish domain events after commit without losing messages.
 
 Workers poll or subscribe to rows where ``published_at`` is null; on success set
 ``published_at``; on failure increment ``retry_count`` and set ``last_error``.
@@ -21,8 +20,7 @@ from fast_database.persistence.models import Base
 
 
 class OutboxEvent(Base):
-    """
-    Outbox row written in the same DB transaction as business data.
+    """Outbox row written in the same DB transaction as business data.
 
     Attributes:
         id: Primary key.
@@ -36,6 +34,7 @@ class OutboxEvent(Base):
         published_at: When a worker successfully handed off the message; null if pending.
         retry_count: Failed delivery attempts.
         last_error: Last broker/HTTP error text for debugging.
+
     """
 
     __tablename__ = Table.OUTBOX_EVENT
@@ -47,7 +46,9 @@ class OutboxEvent(Base):
     payload = Column(JSONB, nullable=False)
     destination = Column(String(256), nullable=False, index=True)
     headers = Column(JSONB, nullable=True)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow, index=True)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow, index=True
+    )
     published_at = Column(DateTime(timezone=True), nullable=True, index=True)
     retry_count = Column(Integer, nullable=False, default=0)
     last_error = Column(Text, nullable=True)

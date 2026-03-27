@@ -11,10 +11,20 @@ from fast_database.persistence.models.user import User
 
 
 def test_user_tablename():
+    """Execute test_user_tablename operation.
+
+    Returns:
+        The result of the operation.
+    """
     assert User.__tablename__ == Table.USER
 
 
 def test_status_lk_has_code_column():
+    """Execute test_status_lk_has_code_column operation.
+
+    Returns:
+        The result of the operation.
+    """
     assert any(c.name == "code" for c in StatusLk.__table__.columns)
 
 
@@ -30,16 +40,36 @@ def test_metadata_registers_core_tables():
 
 
 def test_chat_tablename():
+    """Execute test_chat_tablename operation.
+
+    Returns:
+        The result of the operation.
+    """
     assert Chat.__tablename__ == Table.CHAT
 
 
 def test_crowdfunding_campaign_tablename():
+    """Execute test_crowdfunding_campaign_tablename operation.
+
+    Returns:
+        The result of the operation.
+    """
     assert CrowdfundingCampaign.__tablename__ == Table.CROWDFUNDING_CAMPAIGN
 
 
 def test_industrial_facility_tablename():
+    """Execute test_industrial_facility_tablename operation.
+
+    Returns:
+        The result of the operation.
+    """
     assert IndustrialFacility.__tablename__ == Table.INDUSTRIAL_FACILITY
 
 
 def test_healthcare_facility_tablename():
+    """Execute test_healthcare_facility_tablename operation.
+
+    Returns:
+        The result of the operation.
+    """
     assert HealthcareFacility.__tablename__ == Table.HEALTHCARE_FACILITY

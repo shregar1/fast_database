@@ -1,5 +1,4 @@
-"""
-Interview session model.
+"""Interview session model.
 
 SQLAlchemy ORM for interview sessions (linked from documents and conversations).
 
@@ -16,14 +15,14 @@ from fast_database.persistence.models import Base
 
 
 class Session(Base):
-    """
-    Interview session record.
+    """Interview session record.
 
     Attributes:
         id: Primary key.
         user_id: Owner FK.
         title: Optional session label.
         created_at, updated_at: Timestamps.
+
     """
 
     __tablename__ = Table.SESSION
@@ -31,5 +30,9 @@ class Session(Base):
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     user_id = Column(BigInteger, ForeignKey("user.id"), nullable=False, index=True)
     title = Column(String(512), nullable=True)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
+    updated_at = Column(
+        DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow
+    )

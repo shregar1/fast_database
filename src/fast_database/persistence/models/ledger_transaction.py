@@ -1,5 +1,4 @@
-"""
-Ledger transaction model (Pure.cam).
+"""Ledger transaction model (Pure.cam).
 
 Maps `Transaction` in API_AND_DATA_REFERENCE.md (sync API).
 
@@ -9,7 +8,16 @@ Usage:
 
 from datetime import datetime
 
-from sqlalchemy import BigInteger, Column, DateTime, ForeignKey, Numeric, String, Text, UniqueConstraint
+from sqlalchemy import (
+    BigInteger,
+    Column,
+    DateTime,
+    ForeignKey,
+    Numeric,
+    String,
+    Text,
+    UniqueConstraint,
+)
 
 from sqlalchemy.dialects.postgresql import JSONB
 
@@ -18,8 +26,7 @@ from fast_database.persistence.models import Base
 
 
 class LedgerTransaction(Base):
-    """
-    Income or expense line with optional category splits and SMS link.
+    """Income or expense line with optional category splits and SMS link.
 
     `client_transaction_id` matches the mobile `Transaction.id` for idempotent sync.
     """
@@ -35,7 +42,12 @@ class LedgerTransaction(Base):
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     urn = Column(String(128), nullable=False, unique=True, index=True)
-    user_id = Column(BigInteger, ForeignKey("user.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(
+        BigInteger,
+        ForeignKey("user.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
     ledger_workspace_id = Column(
         BigInteger,
         ForeignKey(Table.LEDGER_WORKSPACE + ".id", ondelete="CASCADE"),
@@ -49,13 +61,20 @@ class LedgerTransaction(Base):
     note = Column(Text, nullable=True)
     tags = Column(JSONB, nullable=True)
     created_at = Column(DateTime(timezone=True), nullable=False, index=True)
-    source = Column(String(32), nullable=False, default="MANUAL")  # MANUAL | SMS | NOTIFICATION
+    source = Column(
+        String(32), nullable=False, default="MANUAL"
+    )  # MANUAL | SMS | NOTIFICATION
     linked_account_client_id = Column(String(128), nullable=True)
     currency = Column(String(8), nullable=True)
     splits = Column(JSONB, nullable=True)
     updated_at = Column(DateTime(timezone=True), nullable=True)
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "id": self.id,
             "urn": self.urn,

@@ -1,5 +1,4 @@
-"""
-User Model.
+"""User Model.
 
 SQLAlchemy ORM model for the core user (account) table. Represents a single
 identity: login credentials (email, phone, hashed password), user type (e.g.
@@ -10,8 +9,6 @@ Usage:
     >>> # Typically accessed via repositories; created_by/updated_by track audit
 """
 
-
-
 from datetime import datetime
 
 from sqlalchemy import BigInteger, Boolean, Column, DateTime, ForeignKey, String
@@ -21,8 +18,7 @@ from fast_database.persistence.models import Base
 
 
 class User(Base):
-    """
-    Core user account and authentication entity.
+    """Core user account and authentication entity.
 
     One row per user. URN is the stable external identifier; email and phone
     are unique and used for login. user_type_id references user_type_lk (e.g.
@@ -41,9 +37,8 @@ class User(Base):
         created_at,         updated_at: Audit timestamps.
         created_by, updated_by: FK to user.id (audit).
         Signing key material (Ed25519 PEM) lives in :class:`~fast_database.persistence.models.user_signing_key.UserSigningKey`.
+
     """
-
-
 
     __tablename__ = Table.USER
 
@@ -52,24 +47,36 @@ class User(Base):
     email = Column(String(255), nullable=False, unique=True, index=True)
     password = Column(String(255), nullable=False)
     phone = Column(String(32), nullable=False, unique=True, index=True)
-    user_type_id = Column(BigInteger, ForeignKey("user_type_lk.id"), nullable=False, index=True)
+    user_type_id = Column(
+        BigInteger, ForeignKey("user_type_lk.id"), nullable=False, index=True
+    )
     is_deleted = Column(Boolean, nullable=False, default=False)
     email_verified_at = Column(DateTime(timezone=True), nullable=True)
     last_login = Column(DateTime(timezone=True), nullable=True)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
     created_by = Column(BigInteger, ForeignKey("user.id"), nullable=False)
-    updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow)
+    updated_at = Column(
+        DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow
+    )
     updated_by = Column(BigInteger, ForeignKey("user.id"), nullable=True)
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
 
+        Returns:
+            The result of the operation.
+        """
         return {
             "urn": self.urn,
             "email": self.email,
             "phone": self.phone,
             "user_type_id": self.user_type_id,
             "is_deleted": self.is_deleted,
-            "email_verified_at": self.email_verified_at.isoformat() if self.email_verified_at else None,
+            "email_verified_at": self.email_verified_at.isoformat()
+            if self.email_verified_at
+            else None,
             "last_login": self.last_login.isoformat() if self.last_login else None,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,

@@ -1,9 +1,10 @@
+"""Module filter_operator.py."""
+
 from typing import Final
 
 
 class FilterOperator:
-    """
-    Enumeration of filter operators for flexible querying.
+    """Enumeration of filter operators for flexible querying.
 
     Provides constants for common SQL comparison operators
     that can be used with retrieve_record_by_filter.
@@ -13,6 +14,7 @@ class FilterOperator:
         ...     ("age", FilterOperator.GTE, 18),
         ...     ("status", FilterOperator.IN, ["active", "pending"]),
         ... ]
+
     """
 
     EQ: Final[str] = "eq"  # Equal (default)

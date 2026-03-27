@@ -1,5 +1,4 @@
-"""
-Product Repository.
+"""Product Repository.
 
 Data access layer for the Product model. Provides CRUD, retrieve by id/urn,
 filtered listing (category, is_active, search), and soft delete when the
@@ -17,10 +16,23 @@ from fast_database.persistence.models.product import Product
 
 
 def _has_soft_delete() -> bool:
+    """Execute _has_soft_delete operation.
+
+    Returns:
+        The result of the operation.
+    """
     return hasattr(Product, "is_deleted")
 
 
 def _active_products_query(session: Session):
+    """Execute _active_products_query operation.
+
+    Args:
+        session: The session parameter.
+
+    Returns:
+        The result of the operation.
+    """
     q = session.query(Product)
     if _has_soft_delete():
         q = filter_active(q, Product.is_deleted)
@@ -28,9 +40,7 @@ def _active_products_query(session: Session):
 
 
 class ProductRepository(IRepository):
-    """
-    Repository for Product database operations.
-    """
+    """Repository for Product database operations."""
 
     def __init__(
         self,
@@ -40,6 +50,15 @@ class ProductRepository(IRepository):
         api_name: str | None = None,
         user_id: str | None = None,
     ) -> None:
+        """Execute __init__ operation.
+
+        Args:
+            session: The session parameter.
+            urn: The urn parameter.
+            user_urn: The user_urn parameter.
+            api_name: The api_name parameter.
+            user_id: The user_id parameter.
+        """
         self._cache = None
         super().__init__(
             urn=urn,
@@ -53,10 +72,23 @@ class ProductRepository(IRepository):
 
     @property
     def session(self) -> Session | None:
+        """Execute session operation.
+
+        Returns:
+            The result of the operation.
+        """
         return self._session
 
     @session.setter
     def session(self, value: Session | None) -> None:
+        """Execute session operation.
+
+        Args:
+            value: The value parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self._session = value
 
     def create_record(self, record: Product) -> Product:
@@ -145,9 +177,7 @@ class ProductRepository(IRepository):
         return record
 
     def delete_record(self, record_id: int, deleted_by: int) -> bool:
-        """
-        Soft delete when `is_deleted` exists; otherwise hard-delete the row.
-        """
+        """Soft delete when `is_deleted` exists; otherwise hard-delete the row."""
         self.logger.debug(f"Deleting product: {record_id}")
         record = self.retrieve_record_by_id(record_id)
 

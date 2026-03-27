@@ -1,5 +1,4 @@
-"""
-Reaction Type Lookup Model.
+"""Reaction Type Lookup Model.
 
 SQLAlchemy ORM model for announcement reaction types (e.g. Like, Love, Celebrate).
 Code and emoji identify the reaction; display_order controls UI ordering.
@@ -8,9 +7,6 @@ Usage:
     >>> from fast_database.persistence.models.reaction_type_lk import ReactionTypeLk
     >>> # Used for announcement reactions (emoji, description, display_order)
 """
-
-
-
 
 from datetime import datetime
 
@@ -21,8 +17,7 @@ from fast_database.persistence.models import Base
 
 
 class ReactionTypeLk(Base):
-    """
-    Lookup: reaction type (code, emoji, description, display order).
+    """Lookup: reaction type (code, emoji, description, display order).
 
     Attributes:
         id: Primary key.
@@ -32,10 +27,8 @@ class ReactionTypeLk(Base):
         description: Human-readable label.
         display_order: Sort order for UI.
         created_at, updated_at: Timestamps.
+
     """
-
-
-
 
     __tablename__ = Table.REACTION_TYPE_LK
 
@@ -45,11 +38,19 @@ class ReactionTypeLk(Base):
     emoji = Column(String(32), nullable=False)
     description = Column(String(255), nullable=False)
     display_order = Column(Integer, nullable=False, default=0)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
+    updated_at = Column(
+        DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow
+    )
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
 
+        Returns:
+            The result of the operation.
+        """
         return {
             "urn": self.urn,
             "code": self.code,

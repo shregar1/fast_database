@@ -1,5 +1,4 @@
-"""
-Repository Abstraction Module.
+"""Repository Abstraction Module.
 
 This module defines the base repository interface implementing the
 Repository design pattern. Repositories abstract database operations,
@@ -18,6 +17,7 @@ Example:
     ...         return self.retrieve_record_by_filter(
     ...             filters={"email": email}
     ...         )
+
 """
 
 from __future__ import annotations
@@ -36,8 +36,7 @@ from fast_database.persistence.repositories.filter_operator import FilterOperato
 
 
 class IRepository(ContextMixin):
-    """
-    Abstract base class for database repository pattern implementation.
+    """Abstract base class for database repository pattern implementation.
 
     The IRepository class provides a standardized interface for data access
     operations in the FastMVC framework. It includes built-in support for:
@@ -79,6 +78,7 @@ class IRepository(ContextMixin):
         ...             filters={"category": category, "is_active": True},
         ...             order_by="name"
         ...         )
+
     """
 
     def __init__(
@@ -91,8 +91,7 @@ class IRepository(ContextMixin):
         cache: LRUCache | None = None,
         **kwargs: Any,
     ) -> None:
-        """
-        Initialize the repository with model and optional caching.
+        """Initialize the repository with model and optional caching.
 
         Args:
             urn: Unique Request Number for tracing.
@@ -102,6 +101,7 @@ class IRepository(ContextMixin):
             model: SQLAlchemy model class.
             cache: Cache instance for results.
             **kwargs: Additional arguments for parent classes.
+
         """
         super().__init__(
             urn=urn,
@@ -120,6 +120,14 @@ class IRepository(ContextMixin):
 
     @model.setter
     def model(self, value: DeclarativeMeta | None) -> None:
+        """Execute model operation.
+
+        Args:
+            value: The value parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self._model = value
 
     @property
@@ -129,6 +137,14 @@ class IRepository(ContextMixin):
 
     @cache.setter
     def cache(self, value: LRUCache | None) -> None:
+        """Execute cache operation.
+
+        Args:
+            value: The value parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self._cache = value
 
     def _build_filter_condition(
@@ -137,8 +153,7 @@ class IRepository(ContextMixin):
         operator: str,
         value: Any,
     ):
-        """
-        Build a SQLAlchemy filter condition from field, operator, and value.
+        """Build a SQLAlchemy filter condition from field, operator, and value.
 
         Args:
             field: Model attribute name.
@@ -151,6 +166,7 @@ class IRepository(ContextMixin):
         Raises:
             AttributeError: If field doesn't exist on model.
             ValueError: If operator is not supported.
+
         """
         column = getattr(self.model, field)
 
@@ -180,8 +196,7 @@ class IRepository(ContextMixin):
         filters: dict[str, Any] | list[tuple],
         use_or: bool = False,
     ) -> list:
-        """
-        Build a list of SQLAlchemy filter conditions from filters specification.
+        """Build a list of SQLAlchemy filter conditions from filters specification.
 
         Supports two filter formats:
         1. Simple dict: {"field": value} - uses equality operator
@@ -204,6 +219,7 @@ class IRepository(ContextMixin):
             ...     ("status", FilterOperator.IN, ["active", "pending"]),
             ...     ("name", FilterOperator.LIKE, "%john%"),
             ... ]
+
         """
         conditions = []
 
@@ -226,9 +242,7 @@ class IRepository(ContextMixin):
                 else:
                     raise ValueError(f"Invalid filter specification: {filter_spec}")
 
-                conditions.append(
-                    self._build_filter_condition(field, operator, value)
-                )
+                conditions.append(self._build_filter_condition(field, operator, value))
 
         return conditions
 
@@ -246,8 +260,7 @@ class IRepository(ContextMixin):
         order_desc: bool = False,
         include_deleted: bool = False,
     ) -> DeclarativeMeta | None:
-        """
-        Retrieve a single record matching the filter criteria.
+        """Retrieve a single record matching the filter criteria.
 
         This is the core flexible filtering method that can be used
         to build any kind of query. It supports simple equality filters
@@ -287,6 +300,7 @@ class IRepository(ContextMixin):
             ...     ("email", FilterOperator.EQ, email),
             ...     ("phone", FilterOperator.EQ, phone),
             ... ], use_or=True)
+
         """
         start_time = datetime.now()
 
@@ -334,8 +348,7 @@ class IRepository(ContextMixin):
         offset: int | None = None,
         include_deleted: bool = False,
     ) -> list[DeclarativeMeta]:
-        """
-        Retrieve multiple records matching the filter criteria.
+        """Retrieve multiple records matching the filter criteria.
 
         Similar to retrieve_record_by_filter but returns all matching
         records with optional pagination support.
@@ -372,6 +385,7 @@ class IRepository(ContextMixin):
             ...     order_desc=True,
             ...     limit=100
             ... )
+
         """
         start_time = datetime.now()
 
@@ -421,8 +435,7 @@ class IRepository(ContextMixin):
         use_or: bool = False,
         include_deleted: bool = False,
     ) -> int:
-        """
-        Count records matching the filter criteria.
+        """Count records matching the filter criteria.
 
         Args:
             filters: Filter criteria (dict or list of tuples).
@@ -437,6 +450,7 @@ class IRepository(ContextMixin):
             >>> recent_orders = repo.count_by_filter([
             ...     ("created_at", FilterOperator.GTE, last_week),
             ... ])
+
         """
         start_time = datetime.now()
 
@@ -471,8 +485,7 @@ class IRepository(ContextMixin):
         use_or: bool = False,
         include_deleted: bool = False,
     ) -> bool:
-        """
-        Check if any record exists matching the filter criteria.
+        """Check if any record exists matching the filter criteria.
 
         More efficient than count_by_filter when you just need to
         know if a record exists.
@@ -488,6 +501,7 @@ class IRepository(ContextMixin):
         Example:
             >>> if repo.exists_by_filter({"email": email}):
             ...     raise ValueError("Email already registered")
+
         """
         record = self.retrieve_record_by_filter(
             filters=filters,
@@ -500,8 +514,7 @@ class IRepository(ContextMixin):
         self,
         record: DeclarativeMeta,
     ) -> DeclarativeMeta:
-        """
-        Create a new record in the database.
+        """Create a new record in the database.
 
         Adds the record to the session and commits the transaction.
         Logs the execution time for performance monitoring.
@@ -519,6 +532,7 @@ class IRepository(ContextMixin):
             >>> user = UserModel(email="user@example.com", name="John")
             >>> created_user = repository.create_record(user)
             >>> print(created_user.id)  # Auto-generated ID
+
         """
         start_time = datetime.now()
         self.session.add(record)
@@ -530,14 +544,11 @@ class IRepository(ContextMixin):
 
         return record
 
-    @cachedmethod(attrgetter('_cache'))
+    @cachedmethod(attrgetter("_cache"))
     def retrieve_record_by_id(
-        self,
-        id: str,
-        is_deleted: bool = False
+        self, id: str, is_deleted: bool = False
     ) -> DeclarativeMeta | None:
-        """
-        Retrieve a record by its primary key ID.
+        """Retrieve a record by its primary key ID.
 
         Results are cached using LRU cache for improved performance
         on repeated queries. Uses retrieve_record_by_filter internally.
@@ -554,20 +565,20 @@ class IRepository(ContextMixin):
             >>> user = repository.retrieve_record_by_id("user-123")
             >>> if user:
             ...     print(user.email)
+
         """
         return self.retrieve_record_by_filter(
             filters={"id": id},
             include_deleted=is_deleted,
         )
 
-    @cachedmethod(attrgetter('_cache'))
+    @cachedmethod(attrgetter("_cache"))
     def retrieve_record_by_urn(
         self,
         urn: str,
         is_deleted: bool = False,
     ) -> DeclarativeMeta | None:
-        """
-        Retrieve a record by its Unique Resource Name (URN).
+        """Retrieve a record by its Unique Resource Name (URN).
 
         Results are cached using LRU cache for improved performance
         on repeated queries. Uses retrieve_record_by_filter internally.
@@ -584,6 +595,7 @@ class IRepository(ContextMixin):
             >>> user = repository.retrieve_record_by_urn("urn:user:abc123")
             >>> if user:
             ...     print(user.name)
+
         """
         return self.retrieve_record_by_filter(
             filters={"urn": urn},
@@ -595,8 +607,7 @@ class IRepository(ContextMixin):
         id: str,
         new_data: dict[str, Any],
     ) -> DeclarativeMeta:
-        """
-        Update an existing record with new data.
+        """Update an existing record with new data.
 
         Finds the record by ID and updates the specified attributes.
         Commits the transaction and logs execution time.
@@ -617,6 +628,7 @@ class IRepository(ContextMixin):
             ...     id="user-123",
             ...     new_data={"name": "Jane Doe", "email": "jane@example.com"}
             ... )
+
         """
         start_time = datetime.now()
         record = self.retrieve_record_by_filter(
@@ -643,8 +655,7 @@ class IRepository(ContextMixin):
         new_data: dict[str, Any],
         use_or: bool = False,
     ) -> DeclarativeMeta | None:
-        """
-        Update a record matching the filter criteria.
+        """Update a record matching the filter criteria.
 
         Finds the first record matching the filters and updates it.
 
@@ -661,6 +672,7 @@ class IRepository(ContextMixin):
             ...     filters={"email": "old@example.com"},
             ...     new_data={"email": "new@example.com", "updated_at": datetime.now()}
             ... )
+
         """
         start_time = datetime.now()
         record = self.retrieve_record_by_filter(
@@ -689,8 +701,7 @@ class IRepository(ContextMixin):
         hard_delete: bool = False,
         deleted_by: Any = None,
     ) -> bool:
-        """
-        Delete a record matching the filter criteria.
+        """Delete a record matching the filter criteria.
 
         By default performs a soft delete (sets is_deleted=True).
         Use hard_delete=True for permanent deletion.
@@ -716,6 +727,7 @@ class IRepository(ContextMixin):
             ...     filters={"status": "expired"},
             ...     hard_delete=True
             ... )
+
         """
         start_time = datetime.now()
         record = self.retrieve_record_by_filter(
@@ -731,7 +743,7 @@ class IRepository(ContextMixin):
             self.session.delete(record)
         else:
             record.is_deleted = True
-            if deleted_by is not None and hasattr(record, 'updated_by'):
+            if deleted_by is not None and hasattr(record, "updated_by"):
                 record.updated_by = deleted_by
             now = datetime.now()
             if hasattr(record, "updated_at"):

@@ -1,5 +1,4 @@
-"""
-Ledger invoice/bill document and business info (Pure.cam).
+"""Ledger invoice/bill document and business info (Pure.cam).
 
 Maps `Invoice` and `BusinessInfo` from API_AND_DATA_REFERENCE.md. Distinct from
 provider billing `Invoice` (Stripe) in `invoice.py`.
@@ -13,7 +12,16 @@ Usage:
 
 from datetime import datetime
 
-from sqlalchemy import BigInteger, Column, DateTime, ForeignKey, Numeric, String, Text, UniqueConstraint
+from sqlalchemy import (
+    BigInteger,
+    Column,
+    DateTime,
+    ForeignKey,
+    Numeric,
+    String,
+    Text,
+    UniqueConstraint,
+)
 
 from sqlalchemy.dialects.postgresql import JSONB
 
@@ -35,7 +43,12 @@ class LedgerInvoiceDocument(Base):
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     urn = Column(String(128), nullable=False, unique=True, index=True)
-    user_id = Column(BigInteger, ForeignKey("user.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(
+        BigInteger,
+        ForeignKey("user.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
     ledger_workspace_id = Column(
         BigInteger,
         ForeignKey(Table.LEDGER_WORKSPACE + ".id", ondelete="CASCADE"),
@@ -58,9 +71,16 @@ class LedgerInvoiceDocument(Base):
     tax_percent = Column(Numeric(9, 4), nullable=True)
     notes = Column(Text, nullable=True)
     currency = Column(String(8), nullable=False, default="INR")
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "id": self.client_invoice_id,
             "number": self.number,
@@ -75,7 +95,9 @@ class LedgerInvoiceDocument(Base):
             "toPhone": self.to_phone,
             "toEmail": self.to_email,
             "lineItems": self.line_items,
-            "taxPercent": float(self.tax_percent) if self.tax_percent is not None else None,
+            "taxPercent": float(self.tax_percent)
+            if self.tax_percent is not None
+            else None,
             "notes": self.notes,
             "currency": self.currency,
             "createdAt": self.created_at.isoformat() if self.created_at else None,
@@ -90,9 +112,22 @@ class LedgerBusinessInfo(Base):
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     urn = Column(String(128), nullable=False, unique=True, index=True)
-    user_id = Column(BigInteger, ForeignKey("user.id", ondelete="CASCADE"), nullable=False, unique=True, index=True)
+    user_id = Column(
+        BigInteger,
+        ForeignKey("user.id", ondelete="CASCADE"),
+        nullable=False,
+        unique=True,
+        index=True,
+    )
     business_json = Column(JSONB, nullable=False)
-    updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow)
+    updated_at = Column(
+        DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow
+    )
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return self.business_json if isinstance(self.business_json, dict) else {}

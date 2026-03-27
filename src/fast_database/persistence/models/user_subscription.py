@@ -1,5 +1,4 @@
-"""
-User Subscription Model.
+"""User Subscription Model.
 
 SQLAlchemy ORM model linking a user to a subscription plan and a billing period.
 Stores start/end dates, usage (number_of_session_used), active flag, and the
@@ -10,19 +9,24 @@ Usage:
     >>> # subscription_plan_id -> subscription_plan_lk; one payment_transaction per subscription
 """
 
-
-
 from datetime import datetime
 
-from sqlalchemy import BigInteger, Boolean, Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy import (
+    BigInteger,
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+)
 
 from fast_database.core.constants.table import Table
 from fast_database.persistence.models import Base
 
 
 class UserSubscription(Base):
-    """
-    User's subscription to a plan for a given billing period.
+    """User's subscription to a plan for a given billing period.
 
     Links user, plan (subscription_plan_lk), and the payment transaction that
     paid for it. number_of_session_used tracks consumption; is_active indicates
@@ -38,9 +42,8 @@ class UserSubscription(Base):
         is_active: Whether subscription is currently active.
         payment_transaction_id: FK to payment_transaction (unique).
         created_at, updated_at, created_by, updated_by: Audit fields.
+
     """
-
-
 
     __tablename__ = Table.USER_SUBSCRIPTION
 
@@ -61,13 +64,21 @@ class UserSubscription(Base):
         unique=True,
         index=True,
     )
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
     created_by = Column(BigInteger, ForeignKey("user.id"), nullable=False)
-    updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow)
+    updated_at = Column(
+        DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow
+    )
     updated_by = Column(BigInteger, ForeignKey("user.id"), nullable=True)
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
 
+        Returns:
+            The result of the operation.
+        """
         return {
             "urn": self.urn,
             "user_id": self.user_id,

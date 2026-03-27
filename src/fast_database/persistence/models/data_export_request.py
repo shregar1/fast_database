@@ -1,5 +1,4 @@
-"""
-Data export / portability requests (GDPR Art. 20 style).
+"""Data export / portability requests (GDPR Art. 20 style).
 
 Track async jobs that bundle user data; store only storage keys or signed URLs, not raw PII in this row.
 
@@ -18,8 +17,7 @@ from fast_database.persistence.models import Base
 
 
 class DataExportRequest(Base):
-    """
-    Lifecycle of a user-requested data export package.
+    """Lifecycle of a user-requested data export package.
 
     Attributes:
         id: Primary key.
@@ -30,6 +28,7 @@ class DataExportRequest(Base):
         error_message: Last failure reason for ``failed`` status.
         requested_at: When the user requested the export.
         completed_at: When the archive became available (UTC).
+
     """
 
     __tablename__ = Table.DATA_EXPORT_REQUEST
@@ -45,5 +44,7 @@ class DataExportRequest(Base):
     storage_key = Column(Text, nullable=True)
     download_expires_at = Column(DateTime(timezone=True), nullable=True, index=True)
     error_message = Column(Text, nullable=True)
-    requested_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow, index=True)
+    requested_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow, index=True
+    )
     completed_at = Column(DateTime(timezone=True), nullable=True)

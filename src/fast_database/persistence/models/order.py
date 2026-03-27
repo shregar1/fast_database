@@ -1,5 +1,4 @@
-"""
-Order and order line models.
+"""Order and order line models.
 
 Represents a placed purchase: immutable snapshots of customer, addresses, and
 money totals, with optional links back to cart and payment rows.
@@ -10,7 +9,16 @@ Usage:
 
 from datetime import datetime
 
-from sqlalchemy import BigInteger, Column, DateTime, ForeignKey, Numeric, String, Text, UniqueConstraint
+from sqlalchemy import (
+    BigInteger,
+    Column,
+    DateTime,
+    ForeignKey,
+    Numeric,
+    String,
+    Text,
+    UniqueConstraint,
+)
 from sqlalchemy.dialects.postgresql import JSONB
 
 from fast_database.core.constants.table import Table
@@ -18,8 +26,7 @@ from fast_database.persistence.models import Base
 
 
 class Order(Base):
-    """
-    Customer order (invoice-like aggregate, separate from provider `invoice`).
+    """Customer order (invoice-like aggregate, separate from provider `invoice`).
 
     `order_number` is human-facing and unique. Addresses are JSONB blobs so any
     regional format or PII policy can be applied without multiple address tables.
@@ -48,6 +55,7 @@ class Order(Base):
         external_order_id: PSP or marketplace order id (idempotency / sync).
         order_metadata: JSONB (tax ids, marketplace fees, EDI refs).
         created_at, updated_at, created_by, updated_by: Audit fields.
+
     """
 
     __tablename__ = Table.COMMERCE_ORDER
@@ -69,7 +77,9 @@ class Order(Base):
         nullable=True,
         index=True,
     )
-    status_id = Column(BigInteger, ForeignKey("status_lk.id"), nullable=False, index=True)
+    status_id = Column(
+        BigInteger, ForeignKey("status_lk.id"), nullable=False, index=True
+    )
     email = Column(String(320), nullable=False)
     customer_note = Column(Text, nullable=True)
     payment_status = Column(String(32), nullable=False, default="pending", index=True)
@@ -97,12 +107,21 @@ class Order(Base):
     cancel_reason = Column(String(512), nullable=True)
     external_order_id = Column(String(128), nullable=True, index=True)
     order_metadata = Column("metadata", JSONB, nullable=True)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
+    updated_at = Column(
+        DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow
+    )
     created_by = Column(BigInteger, ForeignKey("user.id"), nullable=True)
     updated_by = Column(BigInteger, ForeignKey("user.id"), nullable=True)
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "id": self.id,
             "urn": self.urn,
@@ -128,8 +147,12 @@ class Order(Base):
             "shipping_address_json": self.shipping_address_json,
             "placed_at": self.placed_at.isoformat() if self.placed_at else None,
             "paid_at": self.paid_at.isoformat() if self.paid_at else None,
-            "cancelled_at": self.cancelled_at.isoformat() if self.cancelled_at else None,
-            "fulfilled_at": self.fulfilled_at.isoformat() if self.fulfilled_at else None,
+            "cancelled_at": self.cancelled_at.isoformat()
+            if self.cancelled_at
+            else None,
+            "fulfilled_at": self.fulfilled_at.isoformat()
+            if self.fulfilled_at
+            else None,
             "cancel_reason": self.cancel_reason,
             "external_order_id": self.external_order_id,
             "metadata": self.order_metadata,
@@ -139,8 +162,7 @@ class Order(Base):
 
 
 class OrderItem(Base):
-    """
-    Immutable line on an order.
+    """Immutable line on an order.
 
     Fulfillment fields support partial ship/return flows without a separate table
     for every industry; use `fulfillment_status` + `item_metadata` for splits.
@@ -165,6 +187,7 @@ class OrderItem(Base):
         sort_order: Display order on documents.
         item_metadata: JSONB (serial numbers, license keys, subscription term).
         created_at: Row creation (normally equals order placement).
+
     """
 
     __tablename__ = Table.ORDER_ITEM
@@ -194,12 +217,21 @@ class OrderItem(Base):
     tax_cents = Column(BigInteger, nullable=False, default=0)
     total_cents = Column(BigInteger, nullable=False)
     currency = Column(String(8), nullable=False, default="USD")
-    fulfillment_status = Column(String(32), nullable=False, default="pending", index=True)
+    fulfillment_status = Column(
+        String(32), nullable=False, default="pending", index=True
+    )
     sort_order = Column(BigInteger, nullable=False, default=0)
     item_metadata = Column("metadata", JSONB, nullable=True)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         q = float(self.quantity) if self.quantity is not None else None
         return {
             "id": self.id,

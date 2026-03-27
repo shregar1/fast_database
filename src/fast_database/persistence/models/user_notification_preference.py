@@ -1,5 +1,4 @@
-"""
-User notification preference: per-user toggles for channel and category.
+"""User notification preference: per-user toggles for channel and category.
 
 One row per (user_id, channel, category); enabled = True/False.
 Channels: email, push, slack. Categories: billing, security, product.
@@ -7,15 +6,22 @@ Channels: email, push, slack. Categories: billing, security, product.
 
 from datetime import datetime
 
-from sqlalchemy import BigInteger, Boolean, Column, DateTime, ForeignKey, String, UniqueConstraint
+from sqlalchemy import (
+    BigInteger,
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    String,
+    UniqueConstraint,
+)
 
 from fast_database.core.constants.table import Table
 from fast_database.persistence.models import Base
 
 
 class UserNotificationPreference(Base):
-    """
-    Per-user preference: enable/disable a channel for a category.
+    """Per-user preference: enable/disable a channel for a category.
 
     Unique on (user_id, channel, category). Default when missing: enabled=True.
     """
@@ -35,10 +41,19 @@ class UserNotificationPreference(Base):
     channel = Column(String(32), nullable=False, index=True)
     category = Column(String(32), nullable=False, index=True)
     enabled = Column(Boolean, nullable=False, default=True)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
+    updated_at = Column(
+        DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow
+    )
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "id": self.id,
             "user_id": self.user_id,

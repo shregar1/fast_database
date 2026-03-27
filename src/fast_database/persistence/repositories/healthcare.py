@@ -1,6 +1,4 @@
-"""
-Repositories for generic healthcare: facilities, patients, practitioners, encounters.
-"""
+"""Repositories for generic healthcare: facilities, patients, practitioners, encounters."""
 
 from __future__ import annotations
 
@@ -29,6 +27,15 @@ class HealthcareFacilityRepository(IRepository):
         api_name: str | None = None,
         user_id: str | None = None,
     ) -> None:
+        """Execute __init__ operation.
+
+        Args:
+            session: The session parameter.
+            urn: The urn parameter.
+            user_urn: The user_urn parameter.
+            api_name: The api_name parameter.
+            user_id: The user_id parameter.
+        """
         super().__init__(
             urn=urn,
             user_urn=user_urn,
@@ -41,23 +48,65 @@ class HealthcareFacilityRepository(IRepository):
 
     @property
     def session(self) -> Session | None:
+        """Execute session operation.
+
+        Returns:
+            The result of the operation.
+        """
         return self._session
 
     @session.setter
     def session(self, value: Session | None) -> None:
+        """Execute session operation.
+
+        Args:
+            value: The value parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self._session = value
 
     def _active_query(self):
+        """Execute _active_query operation.
+
+        Returns:
+            The result of the operation.
+        """
         q = self.session.query(HealthcareFacility)
         return filter_active(q, HealthcareFacility.is_deleted)
 
     def retrieve_record_by_id(self, record_id: int) -> HealthcareFacility | None:
+        """Execute retrieve_record_by_id operation.
+
+        Args:
+            record_id: The record_id parameter.
+
+        Returns:
+            The result of the operation.
+        """
         return self._active_query().filter(HealthcareFacility.id == record_id).first()
 
     def retrieve_record_by_urn(self, urn: str) -> HealthcareFacility | None:
+        """Execute retrieve_record_by_urn operation.
+
+        Args:
+            urn: The urn parameter.
+
+        Returns:
+            The result of the operation.
+        """
         return self._active_query().filter(HealthcareFacility.urn == urn).first()
 
     def find_by_facility_code(self, facility_code: str) -> HealthcareFacility | None:
+        """Execute find_by_facility_code operation.
+
+        Args:
+            facility_code: The facility_code parameter.
+
+        Returns:
+            The result of the operation.
+        """
         return (
             self._active_query()
             .filter(HealthcareFacility.facility_code == facility_code)
@@ -71,6 +120,16 @@ class HealthcareFacilityRepository(IRepository):
         skip: int = 0,
         limit: int = 200,
     ) -> list[HealthcareFacility]:
+        """Execute list_by_organization operation.
+
+        Args:
+            organization_id: The organization_id parameter.
+            skip: The skip parameter.
+            limit: The limit parameter.
+
+        Returns:
+            The result of the operation.
+        """
         return (
             self._active_query()
             .filter(HealthcareFacility.organization_id == organization_id)
@@ -81,6 +140,14 @@ class HealthcareFacilityRepository(IRepository):
         )
 
     def create_record(self, record: HealthcareFacility) -> HealthcareFacility:
+        """Execute create_record operation.
+
+        Args:
+            record: The record parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self.session.add(record)
         self.session.commit()
         self.session.refresh(record)
@@ -98,6 +165,15 @@ class HealthcarePatientRepository(IRepository):
         api_name: str | None = None,
         user_id: str | None = None,
     ) -> None:
+        """Execute __init__ operation.
+
+        Args:
+            session: The session parameter.
+            urn: The urn parameter.
+            user_urn: The user_urn parameter.
+            api_name: The api_name parameter.
+            user_id: The user_id parameter.
+        """
         super().__init__(
             urn=urn,
             user_urn=user_urn,
@@ -110,20 +186,54 @@ class HealthcarePatientRepository(IRepository):
 
     @property
     def session(self) -> Session | None:
+        """Execute session operation.
+
+        Returns:
+            The result of the operation.
+        """
         return self._session
 
     @session.setter
     def session(self, value: Session | None) -> None:
+        """Execute session operation.
+
+        Args:
+            value: The value parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self._session = value
 
     def _active_query(self):
+        """Execute _active_query operation.
+
+        Returns:
+            The result of the operation.
+        """
         q = self.session.query(HealthcarePatient)
         return filter_active(q, HealthcarePatient.is_deleted)
 
     def retrieve_record_by_id(self, record_id: int) -> HealthcarePatient | None:
+        """Execute retrieve_record_by_id operation.
+
+        Args:
+            record_id: The record_id parameter.
+
+        Returns:
+            The result of the operation.
+        """
         return self._active_query().filter(HealthcarePatient.id == record_id).first()
 
     def retrieve_record_by_urn(self, urn: str) -> HealthcarePatient | None:
+        """Execute retrieve_record_by_urn operation.
+
+        Args:
+            urn: The urn parameter.
+
+        Returns:
+            The result of the operation.
+        """
         return self._active_query().filter(HealthcarePatient.urn == urn).first()
 
     def find_by_organization_and_patient_key(
@@ -131,6 +241,15 @@ class HealthcarePatientRepository(IRepository):
         organization_id: int,
         patient_key: str,
     ) -> HealthcarePatient | None:
+        """Execute find_by_organization_and_patient_key operation.
+
+        Args:
+            organization_id: The organization_id parameter.
+            patient_key: The patient_key parameter.
+
+        Returns:
+            The result of the operation.
+        """
         return (
             self._active_query()
             .filter(
@@ -141,11 +260,15 @@ class HealthcarePatientRepository(IRepository):
         )
 
     def find_by_user_id(self, user_id: int) -> HealthcarePatient | None:
-        return (
-            self._active_query()
-            .filter(HealthcarePatient.user_id == user_id)
-            .first()
-        )
+        """Execute find_by_user_id operation.
+
+        Args:
+            user_id: The user_id parameter.
+
+        Returns:
+            The result of the operation.
+        """
+        return self._active_query().filter(HealthcarePatient.user_id == user_id).first()
 
     def list_by_organization(
         self,
@@ -154,16 +277,36 @@ class HealthcarePatientRepository(IRepository):
         skip: int = 0,
         limit: int = 200,
     ) -> list[HealthcarePatient]:
+        """Execute list_by_organization operation.
+
+        Args:
+            organization_id: The organization_id parameter.
+            skip: The skip parameter.
+            limit: The limit parameter.
+
+        Returns:
+            The result of the operation.
+        """
         return (
             self._active_query()
             .filter(HealthcarePatient.organization_id == organization_id)
-            .order_by(HealthcarePatient.family_name.asc(), HealthcarePatient.given_name.asc())
+            .order_by(
+                HealthcarePatient.family_name.asc(), HealthcarePatient.given_name.asc()
+            )
             .offset(skip)
             .limit(limit)
             .all()
         )
 
     def create_record(self, record: HealthcarePatient) -> HealthcarePatient:
+        """Execute create_record operation.
+
+        Args:
+            record: The record parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self.session.add(record)
         self.session.commit()
         self.session.refresh(record)
@@ -181,6 +324,15 @@ class HealthcarePractitionerRepository(IRepository):
         api_name: str | None = None,
         user_id: str | None = None,
     ) -> None:
+        """Execute __init__ operation.
+
+        Args:
+            session: The session parameter.
+            urn: The urn parameter.
+            user_urn: The user_urn parameter.
+            api_name: The api_name parameter.
+            user_id: The user_id parameter.
+        """
         super().__init__(
             urn=urn,
             user_urn=user_urn,
@@ -193,20 +345,56 @@ class HealthcarePractitionerRepository(IRepository):
 
     @property
     def session(self) -> Session | None:
+        """Execute session operation.
+
+        Returns:
+            The result of the operation.
+        """
         return self._session
 
     @session.setter
     def session(self, value: Session | None) -> None:
+        """Execute session operation.
+
+        Args:
+            value: The value parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self._session = value
 
     def _active_query(self):
+        """Execute _active_query operation.
+
+        Returns:
+            The result of the operation.
+        """
         q = self.session.query(HealthcarePractitioner)
         return filter_active(q, HealthcarePractitioner.is_deleted)
 
     def retrieve_record_by_id(self, record_id: int) -> HealthcarePractitioner | None:
-        return self._active_query().filter(HealthcarePractitioner.id == record_id).first()
+        """Execute retrieve_record_by_id operation.
+
+        Args:
+            record_id: The record_id parameter.
+
+        Returns:
+            The result of the operation.
+        """
+        return (
+            self._active_query().filter(HealthcarePractitioner.id == record_id).first()
+        )
 
     def retrieve_record_by_urn(self, urn: str) -> HealthcarePractitioner | None:
+        """Execute retrieve_record_by_urn operation.
+
+        Args:
+            urn: The urn parameter.
+
+        Returns:
+            The result of the operation.
+        """
         return self._active_query().filter(HealthcarePractitioner.urn == urn).first()
 
     def find_by_organization_and_practitioner_key(
@@ -214,6 +402,15 @@ class HealthcarePractitionerRepository(IRepository):
         organization_id: int,
         practitioner_key: str,
     ) -> HealthcarePractitioner | None:
+        """Execute find_by_organization_and_practitioner_key operation.
+
+        Args:
+            organization_id: The organization_id parameter.
+            practitioner_key: The practitioner_key parameter.
+
+        Returns:
+            The result of the operation.
+        """
         return (
             self._active_query()
             .filter(
@@ -224,6 +421,14 @@ class HealthcarePractitionerRepository(IRepository):
         )
 
     def find_by_national_provider_id(self, npi: str) -> HealthcarePractitioner | None:
+        """Execute find_by_national_provider_id operation.
+
+        Args:
+            npi: The npi parameter.
+
+        Returns:
+            The result of the operation.
+        """
         if not npi:
             return None
         return (
@@ -239,6 +444,16 @@ class HealthcarePractitionerRepository(IRepository):
         skip: int = 0,
         limit: int = 200,
     ) -> list[HealthcarePractitioner]:
+        """Execute list_by_organization operation.
+
+        Args:
+            organization_id: The organization_id parameter.
+            skip: The skip parameter.
+            limit: The limit parameter.
+
+        Returns:
+            The result of the operation.
+        """
         return (
             self._active_query()
             .filter(HealthcarePractitioner.organization_id == organization_id)
@@ -249,6 +464,14 @@ class HealthcarePractitionerRepository(IRepository):
         )
 
     def create_record(self, record: HealthcarePractitioner) -> HealthcarePractitioner:
+        """Execute create_record operation.
+
+        Args:
+            record: The record parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self.session.add(record)
         self.session.commit()
         self.session.refresh(record)
@@ -266,6 +489,15 @@ class ClinicalEncounterRepository(IRepository):
         api_name: str | None = None,
         user_id: str | None = None,
     ) -> None:
+        """Execute __init__ operation.
+
+        Args:
+            session: The session parameter.
+            urn: The urn parameter.
+            user_urn: The user_urn parameter.
+            api_name: The api_name parameter.
+            user_id: The user_id parameter.
+        """
         super().__init__(
             urn=urn,
             user_urn=user_urn,
@@ -278,20 +510,54 @@ class ClinicalEncounterRepository(IRepository):
 
     @property
     def session(self) -> Session | None:
+        """Execute session operation.
+
+        Returns:
+            The result of the operation.
+        """
         return self._session
 
     @session.setter
     def session(self, value: Session | None) -> None:
+        """Execute session operation.
+
+        Args:
+            value: The value parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self._session = value
 
     def _active_query(self):
+        """Execute _active_query operation.
+
+        Returns:
+            The result of the operation.
+        """
         q = self.session.query(ClinicalEncounter)
         return filter_active(q, ClinicalEncounter.is_deleted)
 
     def retrieve_record_by_id(self, record_id: int) -> ClinicalEncounter | None:
+        """Execute retrieve_record_by_id operation.
+
+        Args:
+            record_id: The record_id parameter.
+
+        Returns:
+            The result of the operation.
+        """
         return self._active_query().filter(ClinicalEncounter.id == record_id).first()
 
     def retrieve_record_by_urn(self, urn: str) -> ClinicalEncounter | None:
+        """Execute retrieve_record_by_urn operation.
+
+        Args:
+            urn: The urn parameter.
+
+        Returns:
+            The result of the operation.
+        """
         return self._active_query().filter(ClinicalEncounter.urn == urn).first()
 
     def find_by_facility_and_encounter_key(
@@ -299,6 +565,15 @@ class ClinicalEncounterRepository(IRepository):
         facility_id: int,
         encounter_key: str,
     ) -> ClinicalEncounter | None:
+        """Execute find_by_facility_and_encounter_key operation.
+
+        Args:
+            facility_id: The facility_id parameter.
+            encounter_key: The encounter_key parameter.
+
+        Returns:
+            The result of the operation.
+        """
         return (
             self._active_query()
             .filter(
@@ -315,6 +590,16 @@ class ClinicalEncounterRepository(IRepository):
         skip: int = 0,
         limit: int = 100,
     ) -> list[ClinicalEncounter]:
+        """Execute list_by_patient operation.
+
+        Args:
+            patient_id: The patient_id parameter.
+            skip: The skip parameter.
+            limit: The limit parameter.
+
+        Returns:
+            The result of the operation.
+        """
         return (
             self._active_query()
             .filter(ClinicalEncounter.patient_id == patient_id)
@@ -331,6 +616,16 @@ class ClinicalEncounterRepository(IRepository):
         skip: int = 0,
         limit: int = 200,
     ) -> list[ClinicalEncounter]:
+        """Execute list_by_facility operation.
+
+        Args:
+            facility_id: The facility_id parameter.
+            skip: The skip parameter.
+            limit: The limit parameter.
+
+        Returns:
+            The result of the operation.
+        """
         return (
             self._active_query()
             .filter(ClinicalEncounter.facility_id == facility_id)
@@ -341,6 +636,14 @@ class ClinicalEncounterRepository(IRepository):
         )
 
     def create_record(self, record: ClinicalEncounter) -> ClinicalEncounter:
+        """Execute create_record operation.
+
+        Args:
+            record: The record parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self.session.add(record)
         self.session.commit()
         self.session.refresh(record)
@@ -358,6 +661,15 @@ class ClinicalEncounterParticipantRepository(IRepository):
         api_name: str | None = None,
         user_id: str | None = None,
     ) -> None:
+        """Execute __init__ operation.
+
+        Args:
+            session: The session parameter.
+            urn: The urn parameter.
+            user_urn: The user_urn parameter.
+            api_name: The api_name parameter.
+            user_id: The user_id parameter.
+        """
         super().__init__(
             urn=urn,
             user_urn=user_urn,
@@ -370,27 +682,78 @@ class ClinicalEncounterParticipantRepository(IRepository):
 
     @property
     def session(self) -> Session | None:
+        """Execute session operation.
+
+        Returns:
+            The result of the operation.
+        """
         return self._session
 
     @session.setter
     def session(self, value: Session | None) -> None:
+        """Execute session operation.
+
+        Args:
+            value: The value parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self._session = value
 
     def _active_query(self):
+        """Execute _active_query operation.
+
+        Returns:
+            The result of the operation.
+        """
         q = self.session.query(ClinicalEncounterParticipant)
         return filter_active(q, ClinicalEncounterParticipant.is_deleted)
 
-    def retrieve_record_by_id(self, record_id: int) -> ClinicalEncounterParticipant | None:
-        return self._active_query().filter(ClinicalEncounterParticipant.id == record_id).first()
+    def retrieve_record_by_id(
+        self, record_id: int
+    ) -> ClinicalEncounterParticipant | None:
+        """Execute retrieve_record_by_id operation.
+
+        Args:
+            record_id: The record_id parameter.
+
+        Returns:
+            The result of the operation.
+        """
+        return (
+            self._active_query()
+            .filter(ClinicalEncounterParticipant.id == record_id)
+            .first()
+        )
 
     def retrieve_record_by_urn(self, urn: str) -> ClinicalEncounterParticipant | None:
-        return self._active_query().filter(ClinicalEncounterParticipant.urn == urn).first()
+        """Execute retrieve_record_by_urn operation.
+
+        Args:
+            urn: The urn parameter.
+
+        Returns:
+            The result of the operation.
+        """
+        return (
+            self._active_query().filter(ClinicalEncounterParticipant.urn == urn).first()
+        )
 
     def find_by_encounter_and_practitioner(
         self,
         encounter_id: int,
         practitioner_id: int,
     ) -> ClinicalEncounterParticipant | None:
+        """Execute find_by_encounter_and_practitioner operation.
+
+        Args:
+            encounter_id: The encounter_id parameter.
+            practitioner_id: The practitioner_id parameter.
+
+        Returns:
+            The result of the operation.
+        """
         return (
             self._active_query()
             .filter(
@@ -400,7 +763,17 @@ class ClinicalEncounterParticipantRepository(IRepository):
             .first()
         )
 
-    def list_by_encounter(self, encounter_id: int) -> list[ClinicalEncounterParticipant]:
+    def list_by_encounter(
+        self, encounter_id: int
+    ) -> list[ClinicalEncounterParticipant]:
+        """Execute list_by_encounter operation.
+
+        Args:
+            encounter_id: The encounter_id parameter.
+
+        Returns:
+            The result of the operation.
+        """
         return (
             self._active_query()
             .filter(ClinicalEncounterParticipant.encounter_id == encounter_id)
@@ -415,6 +788,16 @@ class ClinicalEncounterParticipantRepository(IRepository):
         skip: int = 0,
         limit: int = 200,
     ) -> list[ClinicalEncounterParticipant]:
+        """Execute list_by_practitioner operation.
+
+        Args:
+            practitioner_id: The practitioner_id parameter.
+            skip: The skip parameter.
+            limit: The limit parameter.
+
+        Returns:
+            The result of the operation.
+        """
         return (
             self._active_query()
             .filter(ClinicalEncounterParticipant.practitioner_id == practitioner_id)
@@ -424,7 +807,17 @@ class ClinicalEncounterParticipantRepository(IRepository):
             .all()
         )
 
-    def create_record(self, record: ClinicalEncounterParticipant) -> ClinicalEncounterParticipant:
+    def create_record(
+        self, record: ClinicalEncounterParticipant
+    ) -> ClinicalEncounterParticipant:
+        """Execute create_record operation.
+
+        Args:
+            record: The record parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self.session.add(record)
         self.session.commit()
         self.session.refresh(record)

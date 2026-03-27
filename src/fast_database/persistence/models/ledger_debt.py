@@ -1,5 +1,4 @@
-"""
-Ledger debt and adjustment models (Pure.cam).
+"""Ledger debt and adjustment models (Pure.cam).
 
 Maps `Debt`, `DebtPayment`, `DebtCredit`.
 
@@ -9,7 +8,17 @@ Usage:
 
 from datetime import datetime
 
-from sqlalchemy import BigInteger, Column, Date, DateTime, ForeignKey, Numeric, String, Text, UniqueConstraint
+from sqlalchemy import (
+    BigInteger,
+    Column,
+    Date,
+    DateTime,
+    ForeignKey,
+    Numeric,
+    String,
+    Text,
+    UniqueConstraint,
+)
 
 from fast_database.core.constants.table import Table
 from fast_database.persistence.models import Base
@@ -29,7 +38,12 @@ class LedgerDebt(Base):
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     urn = Column(String(128), nullable=False, unique=True, index=True)
-    user_id = Column(BigInteger, ForeignKey("user.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(
+        BigInteger,
+        ForeignKey("user.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
     ledger_workspace_id = Column(
         BigInteger,
         ForeignKey(Table.LEDGER_WORKSPACE + ".id", ondelete="CASCADE"),
@@ -44,15 +58,24 @@ class LedgerDebt(Base):
     due_date = Column(Date, nullable=True)
     note = Column(Text, nullable=True)
     phone = Column(String(64), nullable=True)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "id": self.client_debt_id,
             "urn": self.urn,
             "name": self.name,
             "direction": self.direction,
-            "initialAmount": float(self.initial_amount) if self.initial_amount is not None else None,
+            "initialAmount": float(self.initial_amount)
+            if self.initial_amount is not None
+            else None,
             "currency": self.currency,
             "dueDate": self.due_date.isoformat() if self.due_date else None,
             "note": self.note,
@@ -75,7 +98,12 @@ class LedgerDebtPayment(Base):
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     urn = Column(String(128), nullable=False, unique=True, index=True)
-    user_id = Column(BigInteger, ForeignKey("user.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(
+        BigInteger,
+        ForeignKey("user.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
     ledger_debt_id = Column(
         BigInteger,
         ForeignKey(Table.LEDGER_DEBT + ".id", ondelete="CASCADE"),
@@ -89,6 +117,11 @@ class LedgerDebtPayment(Base):
     note = Column(Text, nullable=True)
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "id": self.client_debt_payment_id,
             "debtId": self.client_debt_id,
@@ -112,7 +145,12 @@ class LedgerDebtCredit(Base):
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     urn = Column(String(128), nullable=False, unique=True, index=True)
-    user_id = Column(BigInteger, ForeignKey("user.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(
+        BigInteger,
+        ForeignKey("user.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
     ledger_debt_id = Column(
         BigInteger,
         ForeignKey(Table.LEDGER_DEBT + ".id", ondelete="CASCADE"),
@@ -126,6 +164,11 @@ class LedgerDebtCredit(Base):
     note = Column(Text, nullable=True)
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "id": self.client_debt_credit_id,
             "debtId": self.client_debt_id,

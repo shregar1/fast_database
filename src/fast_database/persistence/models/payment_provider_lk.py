@@ -1,5 +1,4 @@
-"""
-Payment Provider Lookup Model.
+"""Payment Provider Lookup Model.
 
 SQLAlchemy ORM model for payment providers (e.g. Stripe, Link, Razorpay).
 Code is unique; is_active allows disabling a provider. Referenced by
@@ -10,8 +9,6 @@ Usage:
     >>> # code used in integrations (e.g. 'stripe', 'razorpay')
 """
 
-
-
 from datetime import datetime
 
 from sqlalchemy import BigInteger, Boolean, Column, DateTime, String
@@ -21,8 +18,7 @@ from fast_database.persistence.models import Base
 
 
 class PaymentProviderLk(Base):
-    """
-    Lookup: payment provider (e.g. Stripe, Link, Razorpay).
+    """Lookup: payment provider (e.g. Stripe, Link, Razorpay).
 
     Attributes:
         id: Primary key.
@@ -32,9 +28,8 @@ class PaymentProviderLk(Base):
         description: Optional.
         is_active: Whether provider is enabled.
         created_at, updated_at: Timestamps.
+
     """
-
-
 
     __tablename__ = Table.PAYMENT_PROVIDER_LK
 
@@ -44,11 +39,19 @@ class PaymentProviderLk(Base):
     name = Column(String(128), nullable=False)
     description = Column(String(255), nullable=True)
     is_active = Column(Boolean, nullable=False, default=True)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
+    updated_at = Column(
+        DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow
+    )
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
 
+        Returns:
+            The result of the operation.
+        """
         return {
             "urn": self.urn,
             "code": self.code,

@@ -1,5 +1,4 @@
-"""
-Transaction Log Model.
+"""Transaction Log Model.
 
 SQLAlchemy ORM model for API request/response logging. Each row is one API
 call: api_id (from api_lk), reference_number, request/response payloads and
@@ -11,11 +10,17 @@ Usage:
     >>> # api_id -> api_lk; reference_number is idempotency or request id
 """
 
-
-
 from datetime import datetime
 
-from sqlalchemy import BigInteger, Column, DateTime, ForeignKey, LargeBinary, String, UniqueConstraint
+from sqlalchemy import (
+    BigInteger,
+    Column,
+    DateTime,
+    ForeignKey,
+    LargeBinary,
+    String,
+    UniqueConstraint,
+)
 from sqlalchemy.dialects.postgresql import JSONB
 
 from fast_database.core.constants.table import Table
@@ -23,8 +28,7 @@ from fast_database.persistence.models import Base
 
 
 class TransactionLog(Base):
-    """
-    Per-request log of an API transaction (request/response and metadata).
+    """Per-request log of an API transaction (request/response and metadata).
 
     Links to api_lk for endpoint identity. Stores request/response payloads
     and headers (plain JSONB or encrypted LargeBinary), timestamps, http_status_code,
@@ -42,9 +46,8 @@ class TransactionLog(Base):
         http_status_code: HTTP status of response.
         ip_address: Client IP.
         created_at, updated_at, created_by, updated_by: Audit fields.
+
     """
-
-
 
     __tablename__ = Table.TRANSACTION_LOG
     __table_args__ = (
@@ -69,13 +72,21 @@ class TransactionLog(Base):
     encrypted_response_payload = Column(LargeBinary, nullable=True)
     http_status_code = Column(BigInteger, nullable=True)
     ip_address = Column(String(64), nullable=True)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
     created_by = Column(BigInteger, ForeignKey("user.id"), nullable=False)
-    updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow)
+    updated_at = Column(
+        DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow
+    )
     updated_by = Column(BigInteger, ForeignKey("user.id"), nullable=True)
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
 
+        Returns:
+            The result of the operation.
+        """
         return {
             "urn": self.urn,
             "api_id": self.api_id,

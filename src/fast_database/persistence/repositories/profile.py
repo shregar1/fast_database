@@ -1,5 +1,4 @@
-"""
-Profile Repository.
+"""Profile Repository.
 
 Data access layer for the Profile model (extended user profile: name, bio,
 education, location, verification, etc.). Provides retrieve by user_id,
@@ -13,8 +12,6 @@ Usage:
     >>> profile = repo.create_for_user(user_id=1, data={"first_name": "Jane", ...})
 """
 
-
-
 from sqlalchemy.orm import Session
 
 from fast_database.persistence.repositories.abstraction import IRepository
@@ -22,8 +19,7 @@ from fast_database.persistence.models.profile import Profile
 
 
 class ProfileRepository(IRepository):
-    """
-    Repository for Profile (extended user profile) database operations.
+    """Repository for Profile (extended user profile) database operations.
 
     One profile per user. Supports fetch by user_id, create for a new user, and
     update (upsert-style: update existing or create if missing). All mutations
@@ -33,9 +29,8 @@ class ProfileRepository(IRepository):
         retrieve_by_user_id: Get profile by user_id (one_or_none).
         create_for_user: Create a new profile for user_id with given data.
         update_for_user: Update existing profile or create if none; returns profile.
+
     """
-
-
 
     def __init__(
         self,
@@ -45,6 +40,15 @@ class ProfileRepository(IRepository):
         api_name: str = None,
         user_id: str = None,
     ) -> None:
+        """Execute __init__ operation.
+
+        Args:
+            session: The session parameter.
+            urn: The urn parameter.
+            user_urn: The user_urn parameter.
+            api_name: The api_name parameter.
+            user_id: The user_id parameter.
+        """
         self._cache = None
         super().__init__(
             urn=urn,
@@ -58,20 +62,38 @@ class ProfileRepository(IRepository):
 
     @property
     def session(self) -> Session:
+        """Execute session operation.
 
+        Returns:
+            The result of the operation.
+        """
         return self._session
 
     @session.setter
     def session(self, value: Session) -> None:
+        """Execute session operation.
+
+        Args:
+            value: The value parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self._session = value
 
     def retrieve_by_user_id(self, user_id: int) -> Profile | None:
+        """Execute retrieve_by_user_id operation.
+
+        Args:
+            user_id: The user_id parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self.logger.debug(f"Retrieving profile by user_id={user_id}")
 
         return (
-            self.session.query(Profile)
-            .filter(Profile.user_id == user_id)
-            .one_or_none()
+            self.session.query(Profile).filter(Profile.user_id == user_id).one_or_none()
         )
 
     def create_for_user(
@@ -79,6 +101,15 @@ class ProfileRepository(IRepository):
         user_id: int,
         data: dict,
     ) -> Profile:
+        """Execute create_for_user operation.
+
+        Args:
+            user_id: The user_id parameter.
+            data: The data parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self.logger.debug(f"Creating profile for user_id={user_id}")
         profile = Profile(user_id=user_id, **data)
         self.session.add(profile)
@@ -92,6 +123,15 @@ class ProfileRepository(IRepository):
         user_id: int,
         data: dict,
     ) -> Profile:
+        """Execute update_for_user operation.
+
+        Args:
+            user_id: The user_id parameter.
+            data: The data parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self.logger.debug(f"Updating profile for user_id={user_id}")
         profile = self.retrieve_by_user_id(user_id)
         if profile is None:
@@ -105,4 +145,3 @@ class ProfileRepository(IRepository):
         self.session.refresh(profile)
 
         return profile
-

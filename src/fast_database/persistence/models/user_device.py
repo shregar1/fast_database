@@ -1,5 +1,4 @@
-"""
-User Device Model.
+"""User Device Model.
 
 SQLAlchemy ORM model for devices associated with a user account. One row per
 distinct device (identified by device_fingerprint): type, OS, user agent, IP,
@@ -10,19 +9,24 @@ Usage:
     >>> # Used for device management and security (e.g. list/revoke devices)
 """
 
-
-
 from datetime import datetime
 
-from sqlalchemy import BigInteger, Boolean, Column, DateTime, ForeignKey, String, UniqueConstraint
+from sqlalchemy import (
+    BigInteger,
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    String,
+    UniqueConstraint,
+)
 
 from fast_database.core.constants.table import Table
 from fast_database.persistence.models import Base
 
 
 class UserDevice(Base):
-    """
-    One registered device per user (identified by fingerprint).
+    """One registered device per user (identified by fingerprint).
 
     Tracks device_fingerprint, device_type, os, user_agent, ip_address,
     last_seen_at, and is_current (current session's device). Unique constraint
@@ -39,13 +43,14 @@ class UserDevice(Base):
         is_current: True for the device used in current session.
         is_deleted: Soft-delete flag.
         created_at, updated_at, created_by, updated_by: Audit fields.
+
     """
-
-
 
     __tablename__ = Table.USER_DEVICE
     __table_args__ = (
-        UniqueConstraint("user_id", "device_fingerprint", name="uq_user_device_user_fingerprint"),
+        UniqueConstraint(
+            "user_id", "device_fingerprint", name="uq_user_device_user_fingerprint"
+        ),
     )
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
@@ -59,12 +64,21 @@ class UserDevice(Base):
     last_seen_at = Column(DateTime(timezone=True), nullable=True)
     is_current = Column(Boolean, nullable=False, default=False)
     is_deleted = Column(Boolean, nullable=False, default=False)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
     created_by = Column(BigInteger, ForeignKey("user.id"), nullable=False)
-    updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow)
+    updated_at = Column(
+        DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow
+    )
     updated_by = Column(BigInteger, ForeignKey("user.id"), nullable=True)
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "urn": self.urn,
             "user_id": self.user_id,
@@ -73,7 +87,9 @@ class UserDevice(Base):
             "os": self.os,
             "user_agent": self.user_agent,
             "ip_address": self.ip_address,
-            "last_seen_at": self.last_seen_at.isoformat() if self.last_seen_at else None,
+            "last_seen_at": self.last_seen_at.isoformat()
+            if self.last_seen_at
+            else None,
             "is_current": self.is_current,
             "is_deleted": self.is_deleted,
             "created_at": self.created_at.isoformat() if self.created_at else None,

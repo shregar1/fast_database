@@ -1,5 +1,4 @@
-"""
-Document Model.
+"""Document Model.
 
 SQLAlchemy ORM model for uploaded file metadata (resumes, job descriptions).
 Actual file content lives in object storage; this table stores path, type,
@@ -9,8 +8,6 @@ Usage:
     >>> from fast_database.persistence.models.document import Document
     >>> # document_type: 'resume' | 'jd'; virus_scan_status: 'pending' | 'clean' | 'infected'
 """
-
-
 
 from datetime import datetime
 
@@ -26,8 +23,7 @@ from fast_database.persistence.models import Base
 
 
 class Document(Base):
-    """
-    Uploaded document metadata; file bytes are stored in object storage.
+    """Uploaded document metadata; file bytes are stored in object storage.
 
     One row per uploaded file. storage_path is the backend key/path; storage_url
     optional public or signed URL. virus_scan_status and checksum_sha256 support
@@ -46,9 +42,8 @@ class Document(Base):
         virus_scan_status: pending | clean | infected.
         checksum_sha256: Optional integrity hash.
         created_at: When the file was uploaded.
+
     """
-
-
 
     __tablename__ = Table.DOCUMENT
 
@@ -87,10 +82,16 @@ class Document(Base):
 
     checksum_sha256 = Column(String(64), nullable=True)
 
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
 
+        Returns:
+            The result of the operation.
+        """
         return {
             "user_id": self.user_id,
             "session_id": self.session_id,

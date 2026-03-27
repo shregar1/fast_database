@@ -9,6 +9,8 @@ from fast_database.persistence.models.notification_history import NotificationHi
 
 
 class NotificationHistoryRepository(IRepository):
+    """Represents the NotificationHistoryRepository class."""
+
     def __init__(
         self,
         session: Session | None = None,
@@ -18,6 +20,15 @@ class NotificationHistoryRepository(IRepository):
         api_name: str | None = None,
         user_id: str | None = None,
     ) -> None:
+        """Execute __init__ operation.
+
+        Args:
+            session: The session parameter.
+            urn: The urn parameter.
+            user_urn: The user_urn parameter.
+            api_name: The api_name parameter.
+            user_id: The user_id parameter.
+        """
         super().__init__(
             urn=urn,
             user_urn=user_urn,
@@ -32,6 +43,11 @@ class NotificationHistoryRepository(IRepository):
 
     @property
     def session(self) -> Session:
+        """Execute session operation.
+
+        Returns:
+            The result of the operation.
+        """
         return self._session
 
     def create(
@@ -42,6 +58,18 @@ class NotificationHistoryRepository(IRepository):
         title: str | None = None,
         body: str | None = None,
     ) -> NotificationHistory:
+        """Execute create operation.
+
+        Args:
+            user_id: The user_id parameter.
+            channel: The channel parameter.
+            category: The category parameter.
+            title: The title parameter.
+            body: The body parameter.
+
+        Returns:
+            The result of the operation.
+        """
         rec = NotificationHistory(
             user_id=user_id,
             channel=channel,
@@ -63,6 +91,19 @@ class NotificationHistoryRepository(IRepository):
         skip: int = 0,
         limit: int = 100,
     ) -> tuple[list[NotificationHistory], int]:
+        """Execute list_by_user operation.
+
+        Args:
+            user_id: The user_id parameter.
+            days: The days parameter.
+            category: The category parameter.
+            unread_only: The unread_only parameter.
+            skip: The skip parameter.
+            limit: The limit parameter.
+
+        Returns:
+            The result of the operation.
+        """
         since = datetime.now(timezone.utc) - timedelta(days=days)
         q = self.session.query(NotificationHistory).filter(
             NotificationHistory.user_id == user_id,
@@ -73,7 +114,12 @@ class NotificationHistoryRepository(IRepository):
         if unread_only is True:
             q = q.filter(NotificationHistory.read_at.is_(None))
         total = q.count()
-        items = q.order_by(NotificationHistory.created_at.desc()).offset(skip).limit(limit).all()
+        items = (
+            q.order_by(NotificationHistory.created_at.desc())
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
         return list(items), total
 
     def mark_all_read(self, user_id: int) -> int:
@@ -81,17 +127,33 @@ class NotificationHistoryRepository(IRepository):
         now = datetime.now(timezone.utc)
         updated = (
             self.session.query(NotificationHistory)
-            .filter(NotificationHistory.user_id == user_id, NotificationHistory.read_at.is_(None))
+            .filter(
+                NotificationHistory.user_id == user_id,
+                NotificationHistory.read_at.is_(None),
+            )
             .update({NotificationHistory.read_at: now}, synchronize_session=False)
         )
         self.session.commit()
         return updated
 
     def mark_read(self, notification_id: int, user_id: int) -> bool:
+        """Execute mark_read operation.
+
+        Args:
+            notification_id: The notification_id parameter.
+            user_id: The user_id parameter.
+
+        Returns:
+            The result of the operation.
+        """
         from datetime import datetime, timezone
+
         n = (
             self.session.query(NotificationHistory)
-            .filter(NotificationHistory.id == notification_id, NotificationHistory.user_id == user_id)
+            .filter(
+                NotificationHistory.id == notification_id,
+                NotificationHistory.user_id == user_id,
+            )
             .first()
         )
         if not n:

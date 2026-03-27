@@ -1,5 +1,4 @@
-"""
-Usage counters for quotas, metering, and fair-use analytics.
+"""Usage counters for quotas, metering, and fair-use analytics.
 
 Increment idempotently in application code (e.g. ``INSERT ... ON CONFLICT`` in PostgreSQL
 or select-for-update). One row per (user, metric, period_start) for daily windows.
@@ -12,15 +11,22 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from sqlalchemy import BigInteger, Column, Date, DateTime, ForeignKey, String, UniqueConstraint
+from sqlalchemy import (
+    BigInteger,
+    Column,
+    Date,
+    DateTime,
+    ForeignKey,
+    String,
+    UniqueConstraint,
+)
 
 from fast_database.core.constants.table import Table
 from fast_database.persistence.models import Base
 
 
 class UsageCounter(Base):
-    """
-    Aggregated usage bucket (typically UTC calendar day).
+    """Aggregated usage bucket (typically UTC calendar day).
 
     Attributes:
         id: Primary key.
@@ -30,6 +36,7 @@ class UsageCounter(Base):
         period_start: Start of bucket (UTC date); use date-only for daily rollups.
         count: Monotonic counter for the window.
         updated_at: Last increment time (UTC).
+
     """
 
     __tablename__ = Table.USAGE_COUNTER
@@ -58,4 +65,9 @@ class UsageCounter(Base):
     metric_key = Column(String(128), nullable=False, index=True)
     period_start = Column(Date, nullable=False, index=True)
     count = Column(BigInteger, nullable=False, default=0)
-    updated_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
+    updated_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
+    )

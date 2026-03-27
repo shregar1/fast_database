@@ -3,13 +3,17 @@
 from sqlalchemy.orm import Session
 
 from fast_database.persistence.repositories.abstraction import IRepository
-from fast_database.persistence.models.user_notification_preference import UserNotificationPreference
+from fast_database.persistence.models.user_notification_preference import (
+    UserNotificationPreference,
+)
 
 CHANNELS = ("email", "push", "slack")
 CATEGORIES = ("billing", "security", "product")
 
 
 class UserNotificationPreferenceRepository(IRepository):
+    """Represents the UserNotificationPreferenceRepository class."""
+
     def __init__(
         self,
         session: Session | None = None,
@@ -19,6 +23,15 @@ class UserNotificationPreferenceRepository(IRepository):
         api_name: str | None = None,
         user_id: str | None = None,
     ) -> None:
+        """Execute __init__ operation.
+
+        Args:
+            session: The session parameter.
+            urn: The urn parameter.
+            user_urn: The user_urn parameter.
+            api_name: The api_name parameter.
+            user_id: The user_id parameter.
+        """
         super().__init__(
             urn=urn,
             user_urn=user_urn,
@@ -33,9 +46,26 @@ class UserNotificationPreferenceRepository(IRepository):
 
     @property
     def session(self) -> Session:
+        """Execute session operation.
+
+        Returns:
+            The result of the operation.
+        """
         return self._session
 
-    def get(self, user_id: int, channel: str, category: str) -> UserNotificationPreference | None:
+    def get(
+        self, user_id: int, channel: str, category: str
+    ) -> UserNotificationPreference | None:
+        """Execute get operation.
+
+        Args:
+            user_id: The user_id parameter.
+            channel: The channel parameter.
+            category: The category parameter.
+
+        Returns:
+            The result of the operation.
+        """
         return (
             self.session.query(UserNotificationPreference)
             .filter(
@@ -47,13 +77,34 @@ class UserNotificationPreferenceRepository(IRepository):
         )
 
     def list_by_user(self, user_id: int) -> list[UserNotificationPreference]:
+        """Execute list_by_user operation.
+
+        Args:
+            user_id: The user_id parameter.
+
+        Returns:
+            The result of the operation.
+        """
         return (
             self.session.query(UserNotificationPreference)
             .filter(UserNotificationPreference.user_id == user_id)
             .all()
         )
 
-    def set_enabled(self, user_id: int, channel: str, category: str, enabled: bool) -> UserNotificationPreference:
+    def set_enabled(
+        self, user_id: int, channel: str, category: str, enabled: bool
+    ) -> UserNotificationPreference:
+        """Execute set_enabled operation.
+
+        Args:
+            user_id: The user_id parameter.
+            channel: The channel parameter.
+            category: The category parameter.
+            enabled: The enabled parameter.
+
+        Returns:
+            The result of the operation.
+        """
         rec = self.get(user_id, channel, category)
         if rec:
             rec.enabled = enabled

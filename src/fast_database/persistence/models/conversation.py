@@ -1,5 +1,4 @@
-"""
-Conversation and ConversationMessage models.
+"""Conversation and ConversationMessage models.
 
 SQLAlchemy ORM models for persisted LLM conversations: one conversation per
 thread (user_id, optional session_id), with messages in order (role + content).
@@ -17,8 +16,7 @@ from fast_database.persistence.models import Base
 
 
 class Conversation(Base):
-    """
-    One conversation thread (e.g. per session or ad-hoc).
+    """One conversation thread (e.g. per session or ad-hoc).
 
     Attributes:
         id: Primary key.
@@ -26,18 +24,30 @@ class Conversation(Base):
         session_id: Optional FK to sessions (interview session).
         title: Optional title (e.g. first query truncated).
         created_at, updated_at: Timestamps.
+
     """
 
     __tablename__ = Table.CONVERSATION
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     user_id = Column(BigInteger, ForeignKey("user.id"), nullable=False, index=True)
-    session_id = Column(BigInteger, ForeignKey(Table.SESSION + ".id"), nullable=True, index=True)
+    session_id = Column(
+        BigInteger, ForeignKey(Table.SESSION + ".id"), nullable=True, index=True
+    )
     title = Column(String(512), nullable=True)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
+    updated_at = Column(
+        DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow
+    )
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "id": self.id,
             "user_id": self.user_id,
@@ -49,8 +59,7 @@ class Conversation(Base):
 
 
 class ConversationMessage(Base):
-    """
-    One message in a conversation (user or assistant).
+    """One message in a conversation (user or assistant).
 
     Attributes:
         id: Primary key.
@@ -58,6 +67,7 @@ class ConversationMessage(Base):
         role: "user" | "assistant" | "system".
         content: Message text.
         created_at: When the message was added.
+
     """
 
     __tablename__ = Table.CONVERSATION_MESSAGE
@@ -71,9 +81,16 @@ class ConversationMessage(Base):
     )
     role = Column(String(32), nullable=False, index=True)
     content = Column(Text, nullable=False)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "id": self.id,
             "conversation_id": self.conversation_id,

@@ -1,5 +1,4 @@
-"""
-Invoice Repository.
+"""Invoice Repository.
 
 Data access for the Invoice model (billing invoices from payment providers).
 Create, retrieve by id, retrieve by provider_id and external_id (idempotency),
@@ -13,8 +12,6 @@ Usage:
     >>> items, total = repo.list_by_user(user_id=1, status_id=2, skip=0, limit=20)
 """
 
-
-
 from datetime import datetime
 
 from sqlalchemy.orm import Session
@@ -25,8 +22,7 @@ from fast_database.persistence.models.payment_provider_lk import PaymentProvider
 
 
 class InvoiceRepository(IRepository):
-    """
-    Repository for Invoice (billing) create, lookup, and list.
+    """Repository for Invoice (billing) create, lookup, and list.
 
     Supports create_record, retrieve_record_by_id, retrieve_by_provider_and_external_id
     for provider reconciliation, list_by_user with filters and pagination, and
@@ -36,9 +32,8 @@ class InvoiceRepository(IRepository):
         create_record, retrieve_record_by_id, update_record: Standard CRUD.
         retrieve_by_provider_and_external_id: Find by provider and external id.
         list_by_user: Paginated list with user_subscription_id, status_id, from_date, to_date.
+
     """
-
-
 
     def __init__(
         self,
@@ -48,6 +43,15 @@ class InvoiceRepository(IRepository):
         api_name: str = None,
         user_id: str = None,
     ) -> None:
+        """Execute __init__ operation.
+
+        Args:
+            session: The session parameter.
+            urn: The urn parameter.
+            user_urn: The user_urn parameter.
+            api_name: The api_name parameter.
+            user_id: The user_id parameter.
+        """
         self._cache = None
         super().__init__(
             urn=urn,
@@ -61,14 +65,34 @@ class InvoiceRepository(IRepository):
 
     @property
     def session(self) -> Session:
+        """Execute session operation.
 
+        Returns:
+            The result of the operation.
+        """
         return self._session
 
     @session.setter
     def session(self, value: Session) -> None:
+        """Execute session operation.
+
+        Args:
+            value: The value parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self._session = value
 
     def create_record(self, record: Invoice) -> Invoice:
+        """Execute create_record operation.
+
+        Args:
+            record: The record parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self.session.add(record)
         self.session.commit()
         self.session.refresh(record)
@@ -76,13 +100,28 @@ class InvoiceRepository(IRepository):
         return record
 
     def retrieve_record_by_id(self, record_id: int) -> Invoice | None:
+        """Execute retrieve_record_by_id operation.
 
+        Args:
+            record_id: The record_id parameter.
+
+        Returns:
+            The result of the operation.
+        """
         return self.session.query(Invoice).filter(Invoice.id == record_id).first()
 
     def retrieve_by_provider_and_external_id(
         self, provider_id: int, external_id: str
     ) -> Invoice | None:
+        """Execute retrieve_by_provider_and_external_id operation.
 
+        Args:
+            provider_id: The provider_id parameter.
+            external_id: The external_id parameter.
+
+        Returns:
+            The result of the operation.
+        """
         return (
             self.session.query(Invoice)
             .filter(
@@ -95,8 +134,7 @@ class InvoiceRepository(IRepository):
     def retrieve_by_external_id(
         self, provider: str, external_id: str
     ) -> Invoice | None:
-        """
-        Find invoice by provider code (e.g. 'stripe') and external_id.
+        """Find invoice by provider code (e.g. 'stripe') and external_id.
         Used by Stripe webhook sync for idempotent upserts.
         """
         row = (
@@ -120,11 +158,23 @@ class InvoiceRepository(IRepository):
         skip: int = 0,
         limit: int = 100,
     ) -> tuple[list[Invoice], int]:
+        """Execute list_by_user operation.
+
+        Args:
+            user_id: The user_id parameter.
+            user_subscription_id: The user_subscription_id parameter.
+            status_id: The status_id parameter.
+            from_date: The from_date parameter.
+            to_date: The to_date parameter.
+            skip: The skip parameter.
+            limit: The limit parameter.
+
+        Returns:
+            The result of the operation.
+        """
         query = self.session.query(Invoice).filter(Invoice.user_id == user_id)
         if user_subscription_id is not None:
-            query = query.filter(
-                Invoice.user_subscription_id == user_subscription_id
-            )
+            query = query.filter(Invoice.user_subscription_id == user_subscription_id)
         if status_id is not None:
             query = query.filter(Invoice.status_id == status_id)
         if from_date is not None:
@@ -133,11 +183,21 @@ class InvoiceRepository(IRepository):
             query = query.filter(Invoice.created_at <= to_date)
         total = query.count()
 
-        items = query.order_by(Invoice.created_at.desc()).offset(skip).limit(limit).all()
+        items = (
+            query.order_by(Invoice.created_at.desc()).offset(skip).limit(limit).all()
+        )
 
         return list(items), total
 
     def update_record(self, record: Invoice) -> Invoice:
+        """Execute update_record operation.
+
+        Args:
+            record: The record parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self.session.commit()
         self.session.refresh(record)
 

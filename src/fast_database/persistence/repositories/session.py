@@ -1,5 +1,4 @@
-"""
-Session Repository.
+"""Session Repository.
 
 Data access layer for the Session model. Works with both the shared
 `fast_database` Session (minimal columns) and extended deployments that add
@@ -20,6 +19,11 @@ from fast_database.persistence.models.session import Session as SessionModel
 
 
 def _owner_column():
+    """Execute _owner_column operation.
+
+    Returns:
+        The result of the operation.
+    """
     if hasattr(SessionModel, "created_by"):
         return SessionModel.created_by
     if hasattr(SessionModel, "user_id"):
@@ -37,6 +41,14 @@ def _range_time_column():
 
 
 def _apply_not_deleted(query):
+    """Execute _apply_not_deleted operation.
+
+    Args:
+        query: The query parameter.
+
+    Returns:
+        The result of the operation.
+    """
     if hasattr(SessionModel, "is_deleted"):
         return filter_active(query, SessionModel.is_deleted)
     return query
@@ -61,9 +73,7 @@ def _apply_text_search(query, term: str):
 
 
 class SessionRepository(IRepository):
-    """
-    Repository for Session database operations.
-    """
+    """Repository for Session database operations."""
 
     def __init__(
         self,
@@ -73,6 +83,15 @@ class SessionRepository(IRepository):
         api_name: str | None = None,
         user_id: str | None = None,
     ) -> None:
+        """Execute __init__ operation.
+
+        Args:
+            session: The session parameter.
+            urn: The urn parameter.
+            user_urn: The user_urn parameter.
+            api_name: The api_name parameter.
+            user_id: The user_id parameter.
+        """
         self._cache = None
         super().__init__(
             urn=urn,
@@ -86,13 +105,34 @@ class SessionRepository(IRepository):
 
     @property
     def session(self) -> Session | None:
+        """Execute session operation.
+
+        Returns:
+            The result of the operation.
+        """
         return self._session
 
     @session.setter
     def session(self, value: Session | None) -> None:
+        """Execute session operation.
+
+        Args:
+            value: The value parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self._session = value
 
     def create_record(self, record: SessionModel) -> SessionModel:
+        """Execute create_record operation.
+
+        Args:
+            record: The record parameter.
+
+        Returns:
+            The result of the operation.
+        """
         uid = getattr(record, "user_id", None)
         cb = getattr(record, "created_by", None)
         self.logger.debug(f"Creating session: user_id={uid}, created_by={cb}")
@@ -104,6 +144,14 @@ class SessionRepository(IRepository):
         return record
 
     def retrieve_record_by_id(self, record_id: int) -> SessionModel | None:
+        """Execute retrieve_record_by_id operation.
+
+        Args:
+            record_id: The record_id parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self.logger.debug(f"Retrieving session by ID: {record_id}")
 
         return (
@@ -113,16 +161,20 @@ class SessionRepository(IRepository):
         )
 
     def retrieve_record_by_urn(self, urn: str) -> SessionModel | None:
+        """Execute retrieve_record_by_urn operation.
+
+        Args:
+            urn: The urn parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self.logger.debug(f"Retrieving session by URN: {urn}")
         if not hasattr(SessionModel, "urn"):
             self.logger.debug("Session model has no urn column; skipping URN lookup.")
             return None
 
-        return (
-            self.session.query(SessionModel)
-            .filter(SessionModel.urn == urn)
-            .first()
-        )
+        return self.session.query(SessionModel).filter(SessionModel.urn == urn).first()
 
     def retrieve_records(
         self,
@@ -135,8 +187,7 @@ class SessionRepository(IRepository):
         limit: int = 100,
         **kwargs: Any,
     ) -> tuple[list[SessionModel], int]:
-        """
-        List sessions with optional filters. Returns (items, total_count).
+        """List sessions with optional filters. Returns (items, total_count).
         user_id is an alias for created_by when the model uses created_by.
         """
         owner = created_by if created_by is not None else user_id
@@ -165,7 +216,9 @@ class SessionRepository(IRepository):
 
         return items, total
 
-    def count_sessions_for_user_in_month(self, created_by: int, year: int, month: int) -> int:
+    def count_sessions_for_user_in_month(
+        self, created_by: int, year: int, month: int
+    ) -> int:
         """Count sessions for user in the given calendar month (for entitlements)."""
         from calendar import monthrange
 
@@ -220,10 +273,14 @@ class SessionRepository(IRepository):
             if tc is not None:
                 agg_base = agg_base.filter(tc >= start).filter(tc <= end)
             if hasattr(SessionModel, "consumes_session_credit"):
-                agg_base = agg_base.filter(SessionModel.consumes_session_credit.is_(True))
+                agg_base = agg_base.filter(
+                    SessionModel.consumes_session_credit.is_(True)
+                )
             cols = [func.coalesce(func.sum(SessionModel.total_prompt_tokens), 0)]
             if hasattr(SessionModel, "total_completion_tokens"):
-                cols.append(func.coalesce(func.sum(SessionModel.total_completion_tokens), 0))
+                cols.append(
+                    func.coalesce(func.sum(SessionModel.total_completion_tokens), 0)
+                )
             else:
                 cols.append(literal(0))
             if hasattr(SessionModel, "total_tokens"):
@@ -299,6 +356,14 @@ class SessionRepository(IRepository):
         }
 
     def update_record(self, record: SessionModel) -> SessionModel:
+        """Execute update_record operation.
+
+        Args:
+            record: The record parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self.logger.debug(f"Updating session: {record.id}")
         self.session.commit()
         self.session.refresh(record)

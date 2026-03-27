@@ -1,5 +1,4 @@
-"""
-Ledger budget model (Pure.cam).
+"""Ledger budget model (Pure.cam).
 
 Maps `Budget` — category cap or total-expense cap (`category` empty string).
 
@@ -9,7 +8,15 @@ Usage:
 
 from datetime import datetime
 
-from sqlalchemy import BigInteger, Column, DateTime, ForeignKey, Numeric, String, UniqueConstraint
+from sqlalchemy import (
+    BigInteger,
+    Column,
+    DateTime,
+    ForeignKey,
+    Numeric,
+    String,
+    UniqueConstraint,
+)
 
 from fast_database.core.constants.table import Table
 from fast_database.persistence.models import Base
@@ -29,7 +36,12 @@ class LedgerBudget(Base):
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     urn = Column(String(128), nullable=False, unique=True, index=True)
-    user_id = Column(BigInteger, ForeignKey("user.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(
+        BigInteger,
+        ForeignKey("user.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
     ledger_workspace_id = Column(
         BigInteger,
         ForeignKey(Table.LEDGER_WORKSPACE + ".id", ondelete="CASCADE"),
@@ -44,6 +56,11 @@ class LedgerBudget(Base):
     updated_at = Column(DateTime(timezone=True), nullable=True)
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "id": self.id,
             "urn": self.urn,
@@ -51,8 +68,12 @@ class LedgerBudget(Base):
             "ledger_workspace_id": self.ledger_workspace_id,
             "client_budget_id": self.client_budget_id,
             "category": self.category,
-            "limit": float(self.limit_amount) if self.limit_amount is not None else None,
+            "limit": float(self.limit_amount)
+            if self.limit_amount is not None
+            else None,
             "period": self.period,
-            "alertAtPercent": float(self.alert_at_percent) if self.alert_at_percent is not None else None,
+            "alertAtPercent": float(self.alert_at_percent)
+            if self.alert_at_percent is not None
+            else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
         }

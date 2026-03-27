@@ -1,5 +1,4 @@
-"""
-Coupon Repository.
+"""Coupon Repository.
 
 Data access for the Coupon model (discount codes). Extends
 :class:`~fast_database.persistence.repositories.repository.IRepository`.
@@ -13,8 +12,6 @@ Usage:
     >>> coupon = repo.get_by_code("SAVE20")
 """
 
-
-
 from datetime import datetime
 
 from sqlalchemy.orm import Session
@@ -24,15 +21,12 @@ from fast_database.persistence.models.coupon import Coupon
 
 
 class CouponRepository(IRepository):
-    """
-    Repository for Coupon (discount code) lookup by code.
+    """Repository for Coupon (discount code) lookup by code.
 
     get_by_code: Return active coupon by code (case-sensitive) that is within
     valid_from/valid_until and under max_redemptions. Returns None if not found
     or invalid.
     """
-
-
 
     def __init__(
         self,
@@ -43,6 +37,15 @@ class CouponRepository(IRepository):
         api_name: str | None = None,
         user_id: str | None = None,
     ) -> None:
+        """Execute __init__ operation.
+
+        Args:
+            session: The session parameter.
+            urn: The urn parameter.
+            user_urn: The user_urn parameter.
+            api_name: The api_name parameter.
+            user_id: The user_id parameter.
+        """
         super().__init__(
             urn=urn,
             user_urn=user_urn,
@@ -55,22 +58,30 @@ class CouponRepository(IRepository):
 
     @property
     def session(self) -> Session:
+        """Execute session operation.
 
+        Returns:
+            The result of the operation.
+        """
         return self._session
 
     @session.setter
     def session(self, value: Session) -> None:
+        """Execute session operation.
+
+        Args:
+            value: The value parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self._session = value
 
     def get_by_code(self, code: str) -> Coupon | None:
-        """
-        Return an active, valid coupon by code (case-sensitive).
+        """Return an active, valid coupon by code (case-sensitive).
         Valid = within valid_from/valid_until and under max_redemptions if set.
         """
-
-
         if not (code and code.strip()):
-
             return None
         now = datetime.utcnow()
 

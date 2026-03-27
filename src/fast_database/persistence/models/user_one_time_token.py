@@ -1,5 +1,4 @@
-"""
-One-time tokens for password reset, email verification, and magic links.
+"""One-time tokens for password reset, email verification, and magic links.
 
 Store only a **hash** of the secret token; never store plaintext.
 
@@ -20,8 +19,7 @@ from fast_database.persistence.models import Base
 
 
 class UserOneTimeToken(Base):
-    """
-    Single-use token row (password reset, email verify, invite).
+    """Single-use token row (password reset, email verify, invite).
 
     Attributes:
         id: Primary key.
@@ -33,16 +31,24 @@ class UserOneTimeToken(Base):
         redirect_url: Optional safe relative path or token for post-verify redirect.
         extra: Optional JSON (e.g. device fingerprint).
         created_at: When the token was issued.
+
     """
 
     __tablename__ = Table.USER_ONE_TIME_TOKEN
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
-    user_id = Column(BigInteger, ForeignKey(f"{Table.USER}.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(
+        BigInteger,
+        ForeignKey(f"{Table.USER}.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
     purpose = Column(String(32), nullable=False, index=True)
     token_hash = Column(String(128), nullable=False, unique=True, index=True)
     expires_at = Column(DateTime(timezone=True), nullable=False, index=True)
     consumed_at = Column(DateTime(timezone=True), nullable=True, index=True)
     redirect_url = Column(Text, nullable=True)
     extra = Column(JSONB, nullable=True)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )

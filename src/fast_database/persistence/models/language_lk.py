@@ -1,5 +1,4 @@
-"""
-Language Lookup Model.
+"""Language Lookup Model.
 
 SQLAlchemy ORM model for supported languages. Code (e.g. en, hi) is unique.
 Referenced by user_language.language_id for languages a user speaks.
@@ -8,8 +7,6 @@ Usage:
     >>> from fast_database.persistence.models.language_lk import LanguageLk
     >>> # code is typically ISO 639 or similar
 """
-
-
 
 from datetime import datetime
 
@@ -20,8 +17,7 @@ from fast_database.persistence.models import Base
 
 
 class LanguageLk(Base):
-    """
-    Lookup: language (code and description).
+    """Lookup: language (code and description).
 
     Attributes:
         id: Primary key.
@@ -29,9 +25,8 @@ class LanguageLk(Base):
         code: Unique language code (e.g. en, hi).
         description: Human-readable name.
         created_at, updated_at: Timestamps.
+
     """
-
-
 
     __tablename__ = Table.LANGUAGE_LK
 
@@ -39,11 +34,19 @@ class LanguageLk(Base):
     urn = Column(String(128), nullable=False, unique=True, index=True)
     code = Column(String(16), nullable=False, unique=True, index=True)
     description = Column(String(255), nullable=False)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
+    updated_at = Column(
+        DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow
+    )
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
 
+        Returns:
+            The result of the operation.
+        """
         return {
             "urn": self.urn,
             "code": self.code,

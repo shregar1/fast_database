@@ -1,5 +1,4 @@
-"""
-Subscription Plan Lookup Model.
+"""Subscription Plan Lookup Model.
 
 SQLAlchemy ORM model for subscription plan definitions: name, number_sessions,
 price_usd, description, and optional JSONB features. Referenced by
@@ -9,8 +8,6 @@ Usage:
     >>> from fast_database.persistence.models.subscription_plan_lk import SubscriptionPlanLk
     >>> # number_sessions and price_usd drive billing and limits
 """
-
-
 
 from datetime import datetime
 
@@ -22,8 +19,7 @@ from fast_database.persistence.models import Base
 
 
 class SubscriptionPlanLk(Base):
-    """
-    Lookup: subscription plan (sessions allowance, price, features).
+    """Lookup: subscription plan (sessions allowance, price, features).
 
     Attributes:
         id: Primary key.
@@ -34,9 +30,8 @@ class SubscriptionPlanLk(Base):
         description: Optional text.
         features: Optional JSONB (feature flags or list).
         created_at, updated_at: Timestamps.
+
     """
-
-
 
     __tablename__ = Table.SUBSCRIPTION_PLAN_LK
 
@@ -47,11 +42,19 @@ class SubscriptionPlanLk(Base):
     price_usd = Column(Numeric(10, 2), nullable=False)
     description = Column(Text, nullable=True)
     features = Column(JSONB, nullable=True)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
+    updated_at = Column(
+        DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow
+    )
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
 
+        Returns:
+            The result of the operation.
+        """
         return {
             "urn": self.urn,
             "name": self.name,

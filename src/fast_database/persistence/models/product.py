@@ -1,5 +1,4 @@
-"""
-Product (catalog) model.
+"""Product (catalog) model.
 
 Generic sellable item: SKU, display fields, price in minor units, optional inventory
 and shipping hints. `product_metadata` holds industry-specific attributes (attributes,
@@ -11,7 +10,16 @@ Usage:
 
 from datetime import datetime
 
-from sqlalchemy import BigInteger, Boolean, Column, DateTime, ForeignKey, String, Text, UniqueConstraint
+from sqlalchemy import (
+    BigInteger,
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    String,
+    Text,
+    UniqueConstraint,
+)
 from sqlalchemy.dialects.postgresql import JSONB
 
 from fast_database.core.constants.table import Table
@@ -19,8 +27,7 @@ from fast_database.persistence.models import Base
 
 
 class Product(Base):
-    """
-    Catalog product or service line item.
+    """Catalog product or service line item.
 
     Designed to work for retail, SaaS add-ons, bookings, or B2B SKUs: optional
     organization scoping, optional inventory tracking, JSON for flexible facets.
@@ -45,6 +52,7 @@ class Product(Base):
         weight_grams: Shipping weight estimate.
         product_metadata: JSONB for categories, images, provider ids, custom fields.
         created_at, updated_at, created_by, updated_by: Audit fields.
+
     """
 
     __tablename__ = Table.PRODUCT
@@ -77,12 +85,21 @@ class Product(Base):
     inventory_quantity = Column(BigInteger, nullable=True)
     weight_grams = Column(BigInteger, nullable=True)
     product_metadata = Column("metadata", JSONB, nullable=True)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
+    updated_at = Column(
+        DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow
+    )
     created_by = Column(BigInteger, ForeignKey("user.id"), nullable=True)
     updated_by = Column(BigInteger, ForeignKey("user.id"), nullable=True)
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "id": self.id,
             "urn": self.urn,

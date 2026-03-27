@@ -1,5 +1,4 @@
-"""
-Repository for per-user LLM provider API keys (encrypted at rest).
+"""Repository for per-user LLM provider API keys (encrypted at rest).
 
 Usage:
     >>> from fast_database.persistence.repositories.user_llm_provider_key import UserLlmProviderKeyRepository
@@ -29,6 +28,15 @@ class UserLlmProviderKeyRepository(IRepository):
         api_name: str | None = None,
         user_id: str | None = None,
     ) -> None:
+        """Execute __init__ operation.
+
+        Args:
+            session: The session parameter.
+            urn: The urn parameter.
+            user_urn: The user_urn parameter.
+            api_name: The api_name parameter.
+            user_id: The user_id parameter.
+        """
         super().__init__(
             urn=urn,
             user_urn=user_urn,
@@ -43,9 +51,25 @@ class UserLlmProviderKeyRepository(IRepository):
 
     @property
     def session(self) -> Session:
+        """Execute session operation.
+
+        Returns:
+            The result of the operation.
+        """
         return self._session
 
-    def get_by_user_and_provider(self, user_id: int, provider: str) -> UserProviderKey | None:
+    def get_by_user_and_provider(
+        self, user_id: int, provider: str
+    ) -> UserProviderKey | None:
+        """Execute get_by_user_and_provider operation.
+
+        Args:
+            user_id: The user_id parameter.
+            provider: The provider parameter.
+
+        Returns:
+            The result of the operation.
+        """
         return (
             self.session.query(UserProviderKey)
             .filter(
@@ -56,6 +80,14 @@ class UserLlmProviderKeyRepository(IRepository):
         )
 
     def list_by_user_id(self, user_id: int) -> list[UserProviderKey]:
+        """Execute list_by_user_id operation.
+
+        Args:
+            user_id: The user_id parameter.
+
+        Returns:
+            The result of the operation.
+        """
         return list(
             self.session.query(UserProviderKey)
             .filter(UserProviderKey.user_id == user_id)
@@ -72,6 +104,18 @@ class UserLlmProviderKeyRepository(IRepository):
         is_encrypted_by_client: bool = False,
         key_last_four: str | None = None,
     ) -> UserProviderKey:
+        """Execute upsert operation.
+
+        Args:
+            user_id: The user_id parameter.
+            provider: The provider parameter.
+            secret_ciphertext: The secret_ciphertext parameter.
+            is_encrypted_by_client: The is_encrypted_by_client parameter.
+            key_last_four: The key_last_four parameter.
+
+        Returns:
+            The result of the operation.
+        """
         now = datetime.now(timezone.utc)
         existing = self.get_by_user_and_provider(user_id, provider)
         if existing:
@@ -98,6 +142,15 @@ class UserLlmProviderKeyRepository(IRepository):
         return rec
 
     def delete(self, user_id: int, provider: str) -> bool:
+        """Execute delete operation.
+
+        Args:
+            user_id: The user_id parameter.
+            provider: The provider parameter.
+
+        Returns:
+            The result of the operation.
+        """
         rec = self.get_by_user_and_provider(user_id, provider)
         if not rec:
             return False

@@ -1,5 +1,4 @@
-"""
-Ledger linked account model (Pure.cam).
+"""Ledger linked account model (Pure.cam).
 
 Maps `LinkedAccount` — SMS/notification import rules.
 
@@ -9,7 +8,14 @@ Usage:
 
 from datetime import datetime
 
-from sqlalchemy import BigInteger, Column, DateTime, ForeignKey, String, UniqueConstraint
+from sqlalchemy import (
+    BigInteger,
+    Column,
+    DateTime,
+    ForeignKey,
+    String,
+    UniqueConstraint,
+)
 
 from fast_database.core.constants.table import Table
 from fast_database.persistence.models import Base
@@ -29,7 +35,12 @@ class LedgerLinkedAccount(Base):
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     urn = Column(String(128), nullable=False, unique=True, index=True)
-    user_id = Column(BigInteger, ForeignKey("user.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(
+        BigInteger,
+        ForeignKey("user.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
     ledger_workspace_id = Column(
         BigInteger,
         ForeignKey(Table.LEDGER_WORKSPACE + ".id", ondelete="CASCADE"),
@@ -45,6 +56,11 @@ class LedgerLinkedAccount(Base):
     updated_at = Column(DateTime(timezone=True), nullable=True)
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "id": self.id,
             "urn": self.urn,

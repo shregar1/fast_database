@@ -1,5 +1,4 @@
-"""
-Generic healthcare operations models (multi-domain).
+"""Generic healthcare operations models (multi-domain).
 
 Use for hospitals, clinics, telehealth, labs, imaging centers, payers’ care management,
 or public-health programs. **PHI handling, consent, and regional regulation** belong in
@@ -18,7 +17,16 @@ Usage:
 
 from __future__ import annotations
 
-from sqlalchemy import BigInteger, Column, Date, DateTime, ForeignKey, String, Text, UniqueConstraint
+from sqlalchemy import (
+    BigInteger,
+    Column,
+    Date,
+    DateTime,
+    ForeignKey,
+    String,
+    Text,
+    UniqueConstraint,
+)
 from sqlalchemy.dialects.postgresql import JSONB
 
 from fast_database.core.constants.table import Table
@@ -27,8 +35,7 @@ from fast_database.persistence.models import Base
 
 
 class HealthcareFacility(Base, TimestampMixin, SoftDeleteMixin):
-    """
-    A care delivery site: hospital campus, clinic, lab draw site, imaging center, ward, etc.
+    """A care delivery site: hospital campus, clinic, lab draw site, imaging center, ward, etc.
 
     ``facility_code`` is a **globally unique** stable key for routing and integrations.
     """
@@ -52,8 +59,7 @@ class HealthcareFacility(Base, TimestampMixin, SoftDeleteMixin):
 
 
 class HealthcarePatient(Base, TimestampMixin, SoftDeleteMixin):
-    """
-    A person receiving care within an organization’s namespace.
+    """A person receiving care within an organization’s namespace.
 
     ``patient_key`` is the tenant-scoped medical record / MPI key (not a global national id).
     Optional ``user_id`` links a portal or app account.
@@ -91,8 +97,7 @@ class HealthcarePatient(Base, TimestampMixin, SoftDeleteMixin):
 
 
 class HealthcarePractitioner(Base, TimestampMixin, SoftDeleteMixin):
-    """
-    A licensed or credentialed care giver: physician, nurse, therapist, technician, etc.
+    """A licensed or credentialed care giver: physician, nurse, therapist, technician, etc.
 
     ``practitioner_key`` is stable within the organization (often tied to HR or NPI).
     """
@@ -129,8 +134,7 @@ class HealthcarePractitioner(Base, TimestampMixin, SoftDeleteMixin):
 
 
 class ClinicalEncounter(Base, TimestampMixin, SoftDeleteMixin):
-    """
-    A clinical interaction: visit, admission episode, telehealth session, lab order encounter, etc.
+    """A clinical interaction: visit, admission episode, telehealth session, lab order encounter, etc.
 
     ``encounter_key`` is unique per facility (external visit number / CSN).
     """
@@ -159,7 +163,9 @@ class ClinicalEncounter(Base, TimestampMixin, SoftDeleteMixin):
         index=True,
     )
     encounter_key = Column(String(128), nullable=False, index=True)
-    encounter_class = Column(String(64), nullable=False, default="ambulatory", index=True)
+    encounter_class = Column(
+        String(64), nullable=False, default="ambulatory", index=True
+    )
     status = Column(String(32), nullable=False, default="planned", index=True)
     period_start = Column(DateTime(timezone=True), nullable=True, index=True)
     period_end = Column(DateTime(timezone=True), nullable=True, index=True)
@@ -168,8 +174,7 @@ class ClinicalEncounter(Base, TimestampMixin, SoftDeleteMixin):
 
 
 class ClinicalEncounterParticipant(Base, TimestampMixin, SoftDeleteMixin):
-    """
-    Links a :class:`ClinicalEncounter` to a :class:`HealthcarePractitioner` with a role.
+    """Links a :class:`ClinicalEncounter` to a :class:`HealthcarePractitioner` with a role.
 
     Examples: attending, primary, consultant, assistant, referrer.
     """
@@ -197,5 +202,7 @@ class ClinicalEncounterParticipant(Base, TimestampMixin, SoftDeleteMixin):
         nullable=False,
         index=True,
     )
-    participation_role = Column(String(64), nullable=False, default="attending", index=True)
+    participation_role = Column(
+        String(64), nullable=False, default="attending", index=True
+    )
     participant_metadata = Column("metadata", JSONB, nullable=True)

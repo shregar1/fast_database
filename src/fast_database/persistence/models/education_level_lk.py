@@ -1,5 +1,4 @@
-"""
-Education Level Lookup Model.
+"""Education Level Lookup Model.
 
 SQLAlchemy ORM model for education level codes (e.g. high_school, bachelor,
 master). Referenced by profile.education_level_id. Code is unique.
@@ -8,8 +7,6 @@ Usage:
     >>> from fast_database.persistence.models.education_level_lk import EducationLevelLk
     >>> # Used in profile for highest education level
 """
-
-
 
 from datetime import datetime
 
@@ -20,8 +17,7 @@ from fast_database.persistence.models import Base
 
 
 class EducationLevelLk(Base):
-    """
-    Lookup: education level (e.g. high_school, bachelor, master).
+    """Lookup: education level (e.g. high_school, bachelor, master).
 
     Attributes:
         id: Primary key.
@@ -29,9 +25,8 @@ class EducationLevelLk(Base):
         code: Unique code.
         description: Human-readable label.
         created_at, updated_at: Timestamps.
+
     """
-
-
 
     __tablename__ = Table.EDUCATION_LEVEL_LK
 
@@ -39,11 +34,19 @@ class EducationLevelLk(Base):
     urn = Column(String(128), nullable=False, unique=True, index=True)
     code = Column(String(64), nullable=False, unique=True, index=True)
     description = Column(String(255), nullable=False)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
+    updated_at = Column(
+        DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow
+    )
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
 
+        Returns:
+            The result of the operation.
+        """
         return {
             "urn": self.urn,
             "code": self.code,

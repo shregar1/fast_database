@@ -1,5 +1,4 @@
-"""
-Crowdfunding domain models (campaigns, reward tiers, pledges).
+"""Crowdfunding domain models (campaigns, reward tiers, pledges).
 
 Maps creator campaigns with funding goals, discrete reward tiers, and backer pledges.
 Amounts are stored in **minor units** (e.g. cents) with an ISO currency code.
@@ -14,7 +13,16 @@ Usage:
 
 from __future__ import annotations
 
-from sqlalchemy import BigInteger, Column, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint
+from sqlalchemy import (
+    BigInteger,
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+)
 from sqlalchemy.dialects.postgresql import JSONB
 
 from fast_database.core.constants.table import Table
@@ -23,8 +31,7 @@ from fast_database.persistence.models import Base
 
 
 class CrowdfundingCampaign(Base, TimestampMixin, SoftDeleteMixin):
-    """
-    A funding campaign owned by a creator (user).
+    """A funding campaign owned by a creator (user).
 
     ``funded_amount_cents`` is typically maintained by application logic when pledges
     are captured or cancelled.
@@ -72,6 +79,11 @@ class CrowdfundingCampaign(Base, TimestampMixin, SoftDeleteMixin):
     campaign_metadata = Column("metadata", JSONB, nullable=True)
 
     def to_summary_dict(self) -> dict:
+        """Execute to_summary_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "urn": self.urn,
             "title": self.title,

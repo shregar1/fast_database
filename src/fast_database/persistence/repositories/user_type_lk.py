@@ -1,5 +1,4 @@
-"""
-User Type Lookup Repository.
+"""User Type Lookup Repository.
 
 Data access for the UserTypeLk model (user type codes: e.g. candidate,
 employer). Uses LookupRepositoryBase for standard lookup operations.
@@ -19,8 +18,7 @@ from fast_database.persistence.repositories.lookup_base import LookupRepositoryB
 
 
 class UserTypeLkRepository(LookupRepositoryBase[UserTypeLk]):
-    """
-    Repository for UserTypeLk (user type lookup) records.
+    """Repository for UserTypeLk (user type lookup) records.
 
     Provides standard lookup operations inherited from LookupRepositoryBase:
     - list_all(): Get all user types ordered by code
@@ -37,6 +35,15 @@ class UserTypeLkRepository(LookupRepositoryBase[UserTypeLk]):
         api_name: str | None = None,
         user_id: str | None = None,
     ):
+        """Execute __init__ operation.
+
+        Args:
+            session: The session parameter.
+            urn: The urn parameter.
+            user_urn: The user_urn parameter.
+            api_name: The api_name parameter.
+            user_id: The user_id parameter.
+        """
         super().__init__(
             model=UserTypeLk,
             session=session,

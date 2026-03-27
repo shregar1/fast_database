@@ -1,5 +1,4 @@
-"""
-Models Package.
+"""Models Package.
 
 SQLAlchemy ORM models that define the database schema. Every table model
 inherits from the declarative Base defined here so that metadata is shared
@@ -15,8 +14,6 @@ Usage:
     >>> # Create all tables (e.g. in migrations or tests)
     >>> Base.metadata.create_all(engine)
 """
-
-
 
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -67,9 +64,17 @@ from fast_database.persistence.models.interview_reminder import InterviewReminde
 from fast_database.persistence.models.user_device import UserDevice
 from fast_database.persistence.models.refresh_token import RefreshToken
 from fast_database.persistence.models.notification_history import NotificationHistory
-from fast_database.persistence.models.user_notification_preference import UserNotificationPreference
-from fast_database.persistence.models.user_usage_alert_preference import UserUsageAlertPreference
-from fast_database.persistence.models.organization import Organization, OrganizationMember, OrganizationInvite
+from fast_database.persistence.models.user_notification_preference import (
+    UserNotificationPreference,
+)
+from fast_database.persistence.models.user_usage_alert_preference import (
+    UserUsageAlertPreference,
+)
+from fast_database.persistence.models.organization import (
+    Organization,
+    OrganizationMember,
+    OrganizationInvite,
+)
 
 # Schema subscription & payments
 from fast_database.persistence.models.subscription import Subscription
@@ -117,13 +122,27 @@ from fast_database.persistence.models.ledger_transaction import LedgerTransactio
 from fast_database.persistence.models.ledger_linked_account import LedgerLinkedAccount
 from fast_database.persistence.models.ledger_budget import LedgerBudget
 from fast_database.persistence.models.ledger_balance_alert import LedgerBalanceAlert
-from fast_database.persistence.models.ledger_recurring_transaction import LedgerRecurringTransaction
-from fast_database.persistence.models.ledger_debt import LedgerDebt, LedgerDebtPayment, LedgerDebtCredit
-from fast_database.persistence.models.ledger_goal import LedgerGoal, LedgerGoalContribution
+from fast_database.persistence.models.ledger_recurring_transaction import (
+    LedgerRecurringTransaction,
+)
+from fast_database.persistence.models.ledger_debt import (
+    LedgerDebt,
+    LedgerDebtPayment,
+    LedgerDebtCredit,
+)
+from fast_database.persistence.models.ledger_goal import (
+    LedgerGoal,
+    LedgerGoalContribution,
+)
 from fast_database.persistence.models.ledger_emi_loan import LedgerEmiLoan
 from fast_database.persistence.models.ledger_custom_category import LedgerCustomCategory
-from fast_database.persistence.models.ledger_invoice_document import LedgerBusinessInfo, LedgerInvoiceDocument
-from fast_database.persistence.models.ledger_scheduled_reminder import LedgerScheduledReminder
+from fast_database.persistence.models.ledger_invoice_document import (
+    LedgerBusinessInfo,
+    LedgerInvoiceDocument,
+)
+from fast_database.persistence.models.ledger_scheduled_reminder import (
+    LedgerScheduledReminder,
+)
 from fast_database.persistence.models.ledger_vault_entry import LedgerVaultEntry
 from fast_database.persistence.models.stellar_contract import (
     StellarContract,
@@ -136,7 +155,10 @@ from fast_database.persistence.models.transaction_log import TransactionLog
 from fast_database.persistence.models.audit_log import AuditLog
 
 # Conversations (LLM threads)
-from fast_database.persistence.models.conversation import Conversation, ConversationMessage
+from fast_database.persistence.models.conversation import (
+    Conversation,
+    ConversationMessage,
+)
 
 # User-to-user messaging (chats, read receipts, notification delivery)
 from fast_database.persistence.models.messaging_chat import (
@@ -169,14 +191,17 @@ UserLlmProviderKey = UserProviderKey
 #   >>> migration = get_model_migration(User)
 #   >>> migration.upgrade(engine)
 
+
 def _auto_register_migrations():
     """Auto-discover and register migrations for all imported models."""
     try:
         from fast_database.migrations.discovery import discover_model_migrations
+
         discover_model_migrations(auto_register=True)
     except Exception:
         # Silently fail if migrations module is not available
         pass
+
 
 # Run auto-registration
 _auto_register_migrations()

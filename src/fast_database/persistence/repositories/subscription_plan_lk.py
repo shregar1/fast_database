@@ -1,5 +1,4 @@
-"""
-Subscription Plan Lookup Repository.
+"""Subscription Plan Lookup Repository.
 
 Data access for the SubscriptionPlanLk model (plan definitions: name,
 number_sessions, price_usd, features). IRepository wrapper; use for retrieve
@@ -10,8 +9,6 @@ Usage:
     >>> repo = SubscriptionPlanLkRepository(session=db_session)
 """
 
-
-
 from sqlalchemy.orm import Session
 
 from fast_database.persistence.repositories.abstraction import IRepository
@@ -19,14 +16,11 @@ from fast_database.persistence.models.subscription_plan_lk import SubscriptionPl
 
 
 class SubscriptionPlanLkRepository(IRepository):
-    """
-    Repository for SubscriptionPlanLk (plan definition) records.
+    """Repository for SubscriptionPlanLk (plan definition) records.
 
     Provides session and IRepository base. Use for listing plans for UI and
     resolving plan_id by name or id in subscription creation.
     """
-
-
 
     def __init__(
         self,
@@ -36,6 +30,15 @@ class SubscriptionPlanLkRepository(IRepository):
         api_name: str = None,
         user_id: str = None,
     ):
+        """Execute __init__ operation.
+
+        Args:
+            session: The session parameter.
+            urn: The urn parameter.
+            user_urn: The user_urn parameter.
+            api_name: The api_name parameter.
+            user_id: The user_id parameter.
+        """
         self._cache = None
         super().__init__(
             urn=urn,
@@ -49,16 +52,27 @@ class SubscriptionPlanLkRepository(IRepository):
 
     @property
     def session(self) -> Session:
+        """Execute session operation.
 
+        Returns:
+            The result of the operation.
+        """
         return self._session
 
     @session.setter
     def session(self, value: Session):
+        """Execute session operation.
+
+        Args:
+            value: The value parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self._session = value
 
     def list_all(self) -> list[SubscriptionPlanLk]:
         """Return all subscription plans ordered by name (catalog for pricing/checkout)."""
-
         return (
             self.session.query(SubscriptionPlanLk)
             .order_by(SubscriptionPlanLk.name)

@@ -1,5 +1,4 @@
-"""
-Gender Lookup Repository.
+"""Gender Lookup Repository.
 
 Data access for the GenderLk model (gender options: e.g. Male, Female,
 Non-binary). Uses LookupRepositoryBase for standard lookup operations.
@@ -19,8 +18,7 @@ from fast_database.persistence.repositories.lookup_base import LookupRepositoryB
 
 
 class GenderLkRepository(LookupRepositoryBase[GenderLk]):
-    """
-    Repository for GenderLk (gender) records.
+    """Repository for GenderLk (gender) records.
 
     Provides standard lookup operations inherited from LookupRepositoryBase:
     - list_all(): Get all genders ordered by code
@@ -37,6 +35,15 @@ class GenderLkRepository(LookupRepositoryBase[GenderLk]):
         api_name: str | None = None,
         user_id: str | None = None,
     ):
+        """Execute __init__ operation.
+
+        Args:
+            session: The session parameter.
+            urn: The urn parameter.
+            user_urn: The user_urn parameter.
+            api_name: The api_name parameter.
+            user_id: The user_id parameter.
+        """
         super().__init__(
             model=GenderLk,
             session=session,

@@ -1,5 +1,4 @@
-"""
-Audit Log Model.
+"""Audit Log Model.
 
 SQLAlchemy ORM model for an immutable audit trail. Each row records an actor
 (user or system), an action (e.g. create, update), a resource type and optional
@@ -9,8 +8,6 @@ Usage:
     >>> from fast_database.persistence.models.audit_log import AuditLog
     >>> # Written by middleware or services; actor_id/actor_urn identify who performed the action
 """
-
-
 
 from datetime import datetime
 
@@ -22,8 +19,7 @@ from fast_database.persistence.models import Base
 
 
 class AuditLog(Base):
-    """
-    Immutable audit trail entry: who did what to which resource.
+    """Immutable audit trail entry: who did what to which resource.
 
     Captures actor (user id/URN or null for system), action (e.g. "user.update"),
     resource type and optional resource_id, and optional metadata (diff, context).
@@ -38,9 +34,8 @@ class AuditLog(Base):
         resource_id: Optional target entity ID.
         audit_metadata: JSONB; column name in DB is "metadata".
         created_at: When the event occurred.
+
     """
-
-
 
     __tablename__ = Table.AUDIT
 
@@ -51,10 +46,16 @@ class AuditLog(Base):
     resource = Column(String(64), nullable=False, index=True)
     resource_id = Column(String(128), nullable=True, index=True)
     audit_metadata = Column("metadata", JSONB, nullable=True)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
 
+        Returns:
+            The result of the operation.
+        """
         return {
             "actor_id": self.actor_id,
             "actor_urn": self.actor_urn,

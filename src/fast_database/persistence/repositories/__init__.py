@@ -1,5 +1,4 @@
-"""
-Concrete SQLAlchemy repositories for ``fast_database`` tables.
+"""Concrete SQLAlchemy repositories for ``fast_database`` tables.
 
 Every repository class subclasses :class:`~fast_database.persistence.repositories.repository.IRepository`
 and passes the appropriate SQLAlchemy model to ``super().__init__(model=..., ...)``.
@@ -16,6 +15,7 @@ Example:
 
     from fast_database.persistence.repositories import FilterOperator, IRepository
     from fast_database.persistence.repositories.user import UserRepository
+
 """
 
 from fast_database.persistence.repositories.filter_operator import FilterOperator

@@ -1,5 +1,4 @@
-"""
-factory_boy examples for tests (install ``pip install 'fast-database[dev]'``).
+"""factory_boy examples for tests (install ``pip install 'fast-database[dev]'``).
 
 ::
 

@@ -1,5 +1,4 @@
-"""
-Logical layout of :mod:`fast_database` (aligned with ``fast_platform`` taxonomy).
+"""Logical layout of :mod:`fast_database` (aligned with ``fast_platform`` taxonomy).
 
 - **persistence** — ORM models and repository implementations
 - **core** — mixins, table constants, soft-delete helpers, optimistic locking, test factories
@@ -19,6 +18,8 @@ __all__ = [
 
 
 class FastDatabaseSection(str, Enum):
+    """Represents the FastDatabaseSection class."""
+
     PERSISTENCE = "persistence"
     CORE = "core"
 
@@ -32,7 +33,6 @@ SECTION_SUBPACKAGES: Final[dict[FastDatabaseSection, frozenset[str]]] = {
 
 def discover_leaf_subpackages(package_root: Path | None = None) -> frozenset[str]:
     """Names of subpackages under ``persistence/`` and ``core/`` (e.g. ``models``)."""
-
     root = package_root or Path(__file__).resolve().parent
     names: set[str] = set()
     for section in FastDatabaseSection:

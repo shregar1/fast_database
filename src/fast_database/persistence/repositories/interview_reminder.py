@@ -1,12 +1,9 @@
-"""
-Interview Reminder Repository.
+"""Interview Reminder Repository.
 
 CRUD and list_due_for_reminder for InterviewReminder (user-scheduled
 interview reminders). Used by the interview-reminder API and the
 nightly reminder job.
 """
-
-
 
 from datetime import datetime, timedelta, timezone
 
@@ -17,6 +14,8 @@ from fast_database.persistence.models.interview_reminder import InterviewReminde
 
 
 class InterviewReminderRepository(IRepository):
+    """Represents the InterviewReminderRepository class."""
+
     def __init__(
         self,
         session: Session | None = None,
@@ -26,6 +25,15 @@ class InterviewReminderRepository(IRepository):
         api_name: str | None = None,
         user_id: str | None = None,
     ) -> None:
+        """Execute __init__ operation.
+
+        Args:
+            session: The session parameter.
+            urn: The urn parameter.
+            user_urn: The user_urn parameter.
+            api_name: The api_name parameter.
+            user_id: The user_id parameter.
+        """
         super().__init__(
             urn=urn,
             user_urn=user_urn,
@@ -38,10 +46,23 @@ class InterviewReminderRepository(IRepository):
 
     @property
     def session(self) -> Session:
+        """Execute session operation.
+
+        Returns:
+            The result of the operation.
+        """
         return self._session
 
     @session.setter
     def session(self, value: Session) -> None:
+        """Execute session operation.
+
+        Args:
+            value: The value parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self._session = value
 
     def create(
@@ -52,6 +73,18 @@ class InterviewReminderRepository(IRepository):
         title: str | None = None,
         created_by: int | None = None,
     ) -> InterviewReminder:
+        """Execute create operation.
+
+        Args:
+            user_id: The user_id parameter.
+            scheduled_at: The scheduled_at parameter.
+            reminder_minutes_before: The reminder_minutes_before parameter.
+            title: The title parameter.
+            created_by: The created_by parameter.
+
+        Returns:
+            The result of the operation.
+        """
         created_by = created_by or user_id
         record = InterviewReminder(
             user_id=user_id,
@@ -64,11 +97,26 @@ class InterviewReminderRepository(IRepository):
         self.session.add(record)
         self.session.commit()
         self.session.refresh(record)
-        self.logger.info("Created interview reminder id=%s user_id=%s", record.id, user_id)
+        self.logger.info(
+            "Created interview reminder id=%s user_id=%s", record.id, user_id
+        )
         return record
 
-    def get_by_id(self, reminder_id: int, user_id: int | None = None) -> InterviewReminder | None:
-        q = self.session.query(InterviewReminder).filter(InterviewReminder.id == reminder_id)
+    def get_by_id(
+        self, reminder_id: int, user_id: int | None = None
+    ) -> InterviewReminder | None:
+        """Execute get_by_id operation.
+
+        Args:
+            reminder_id: The reminder_id parameter.
+            user_id: The user_id parameter.
+
+        Returns:
+            The result of the operation.
+        """
+        q = self.session.query(InterviewReminder).filter(
+            InterviewReminder.id == reminder_id
+        )
         if user_id is not None:
             q = q.filter(InterviewReminder.user_id == user_id)
         return q.first()
@@ -80,13 +128,31 @@ class InterviewReminderRepository(IRepository):
         limit: int = 50,
         upcoming_only: bool = True,
     ) -> tuple[list[InterviewReminder], int]:
-        q = self.session.query(InterviewReminder).filter(InterviewReminder.user_id == user_id)
+        """Execute list_by_user_id operation.
+
+        Args:
+            user_id: The user_id parameter.
+            skip: The skip parameter.
+            limit: The limit parameter.
+            upcoming_only: The upcoming_only parameter.
+
+        Returns:
+            The result of the operation.
+        """
+        q = self.session.query(InterviewReminder).filter(
+            InterviewReminder.user_id == user_id
+        )
         if upcoming_only:
             q = q.filter(InterviewReminder.sent_at.is_(None)).filter(
                 InterviewReminder.scheduled_at >= datetime.now(timezone.utc)
             )
         total = q.count()
-        items = q.order_by(InterviewReminder.scheduled_at.asc()).offset(skip).limit(limit).all()
+        items = (
+            q.order_by(InterviewReminder.scheduled_at.asc())
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
         return items, total
 
     def list_due_for_reminder(
@@ -95,8 +161,7 @@ class InterviewReminderRepository(IRepository):
         max_past_minutes: int = 10,
         limit: int = 500,
     ) -> list[InterviewReminder]:
-        """
-        Reminders that are due to be sent: sent_at IS NULL, reminder_due_at <= now,
+        """Reminders that are due to be sent: sent_at IS NULL, reminder_due_at <= now,
         and scheduled_at is not too far in the past (now <= scheduled_at + max_past_minutes).
         """
         now = now or datetime.now(timezone.utc)
@@ -106,10 +171,14 @@ class InterviewReminderRepository(IRepository):
             .filter(InterviewReminder.sent_at.is_(None))
             .filter(InterviewReminder.scheduled_at >= past_cutoff)
         )
-        candidates = q.order_by(InterviewReminder.scheduled_at.asc()).limit(limit * 2).all()
+        candidates = (
+            q.order_by(InterviewReminder.scheduled_at.asc()).limit(limit * 2).all()
+        )
         due = []
         for r in candidates:
-            reminder_due_at = r.scheduled_at - timedelta(minutes=r.reminder_minutes_before)
+            reminder_due_at = r.scheduled_at - timedelta(
+                minutes=r.reminder_minutes_before
+            )
             if reminder_due_at <= now:
                 due.append(r)
             if len(due) >= limit:
@@ -117,8 +186,21 @@ class InterviewReminderRepository(IRepository):
         return due
 
     def mark_sent(self, reminder_id: int, sent_at: datetime | None = None) -> bool:
+        """Execute mark_sent operation.
+
+        Args:
+            reminder_id: The reminder_id parameter.
+            sent_at: The sent_at parameter.
+
+        Returns:
+            The result of the operation.
+        """
         sent_at = sent_at or datetime.now(timezone.utc)
-        r = self.session.query(InterviewReminder).filter(InterviewReminder.id == reminder_id).first()
+        r = (
+            self.session.query(InterviewReminder)
+            .filter(InterviewReminder.id == reminder_id)
+            .first()
+        )
         if not r:
             return False
         r.sent_at = sent_at
@@ -127,7 +209,18 @@ class InterviewReminderRepository(IRepository):
         return True
 
     def delete(self, reminder_id: int, user_id: int | None = None) -> bool:
-        q = self.session.query(InterviewReminder).filter(InterviewReminder.id == reminder_id)
+        """Execute delete operation.
+
+        Args:
+            reminder_id: The reminder_id parameter.
+            user_id: The user_id parameter.
+
+        Returns:
+            The result of the operation.
+        """
+        q = self.session.query(InterviewReminder).filter(
+            InterviewReminder.id == reminder_id
+        )
         if user_id is not None:
             q = q.filter(InterviewReminder.user_id == user_id)
         r = q.first()

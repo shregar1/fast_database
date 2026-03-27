@@ -1,5 +1,4 @@
-"""
-Multi-factor authentication factors bound to a user (TOTP, WebAuthn, backup codes).
+"""Multi-factor authentication factors bound to a user (TOTP, WebAuthn, backup codes).
 
 Store only **opaque or encrypted** material; never plaintext TOTP seeds in logs.
 
@@ -20,8 +19,7 @@ from fast_database.persistence.models import Base
 
 
 class UserMfaFactor(Base):
-    """
-    One enrolled second factor (user may have several: phone TOTP + security keys).
+    """One enrolled second factor (user may have several: phone TOTP + security keys).
 
     Attributes:
         id: Primary key.
@@ -34,6 +32,7 @@ class UserMfaFactor(Base):
         is_enabled: User or admin can disable without deleting history.
         last_used_at: Last successful MFA use (UTC).
         created_at: Enrollment time (UTC).
+
     """
 
     __tablename__ = Table.USER_MFA_FACTOR
@@ -53,4 +52,6 @@ class UserMfaFactor(Base):
     is_enabled = Column(Boolean, nullable=False, default=True, index=True)
     extra = Column(JSONB, nullable=True)
     last_used_at = Column(DateTime(timezone=True), nullable=True)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )

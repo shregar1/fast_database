@@ -1,5 +1,4 @@
-"""
-User Repository.
+"""User Repository.
 
 Data access layer for the User model. Provides query and list operations for
 user accounts: by email, email+password, by ID and login status, and paginated
@@ -13,7 +12,6 @@ Usage:
     >>> user = repo.retrieve_record_by_id_and_is_logged_in(1, is_logged_in=True)
 """
 
-
 from datetime import datetime
 
 from sqlalchemy.orm import Session
@@ -23,8 +21,7 @@ from fast_database.persistence.models.user import User
 
 
 class UserRepository(IRepository):
-    """
-    Repository for User (account) data access and queries.
+    """Repository for User (account) data access and queries.
 
     Wraps the User model with methods for authentication (email/password, id +
     is_logged_in), lookup by email, and admin listing with pagination and
@@ -40,9 +37,8 @@ class UserRepository(IRepository):
         retrieve_record_by_id_and_is_logged_in: Find by id and is_logged_in (list).
         retrieve_record_by_id_is_logged_in: Same as above, single record (one_or_none).
         list_users: Paginated list with optional email_contains and include_deleted.
+
     """
-
-
 
     def __init__(
         self,
@@ -52,6 +48,15 @@ class UserRepository(IRepository):
         session: Session = None,
         user_id: str = None,
     ):
+        """Execute __init__ operation.
+
+        Args:
+            urn: The urn parameter.
+            user_urn: The user_urn parameter.
+            api_name: The api_name parameter.
+            session: The session parameter.
+            user_id: The user_id parameter.
+        """
         self._cache = None
         super().__init__(
             urn=urn,
@@ -75,49 +80,109 @@ class UserRepository(IRepository):
 
     @property
     def urn(self):
+        """Execute urn operation.
 
+        Returns:
+            The result of the operation.
+        """
         return self._urn
 
     @urn.setter
     def urn(self, value):
+        """Execute urn operation.
+
+        Args:
+            value: The value parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self._urn = value
 
     @property
     def user_urn(self):
+        """Execute user_urn operation.
 
+        Returns:
+            The result of the operation.
+        """
         return self._user_urn
 
     @user_urn.setter
     def user_urn(self, value):
+        """Execute user_urn operation.
+
+        Args:
+            value: The value parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self._user_urn = value
 
     @property
     def api_name(self):
+        """Execute api_name operation.
 
+        Returns:
+            The result of the operation.
+        """
         return self._api_name
 
     @api_name.setter
     def api_name(self, value):
+        """Execute api_name operation.
+
+        Args:
+            value: The value parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self._api_name = value
 
     @property
     def session(self):
+        """Execute session operation.
 
+        Returns:
+            The result of the operation.
+        """
         return self._session
 
     @session.setter
     def session(self, value):
+        """Execute session operation.
+
+        Args:
+            value: The value parameter.
+
+        Returns:
+            The result of the operation.
+        """
         if not isinstance(value, Session):
             raise ValueError("session must be a SQLAlchemy Session instance")
         self._session = value
 
     @property
     def user_id(self):
+        """Execute user_id operation.
 
+        Returns:
+            The result of the operation.
+        """
         return self._user_id
 
     @user_id.setter
     def user_id(self, value):
+        """Execute user_id operation.
+
+        Args:
+            value: The value parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self._user_id = value
 
     def retrieve_record_by_email_and_password(
@@ -126,17 +191,17 @@ class UserRepository(IRepository):
         password: str,
         is_deleted: bool = False,
     ) -> User:
-        """
-        Retrieve a user by email and password.
+        """Retrieve a user by email and password.
+
         Args:
             email (str): User's email address.
             password (str): User's password (hashed).
             is_deleted (bool): Whether to include deleted users.
+
         Returns:
             User: The user record if found, else None.
+
         """
-
-
         self.logger.info(f"Retrieving user by email: {email}")
         start_time = datetime.now()
         record = (
@@ -159,16 +224,16 @@ class UserRepository(IRepository):
         email: str,
         is_deleted: bool = False,
     ) -> User:
-        """
-        Retrieve a user by email.
+        """Retrieve a user by email.
+
         Args:
             email (str): User's email address.
             is_deleted (bool): Whether to include deleted users.
+
         Returns:
             User: The user record if found, else None.
+
         """
-
-
         self.logger.info(f"Retrieving user by email: {email}")
         start_time = datetime.now()
         record = (
@@ -190,9 +255,7 @@ class UserRepository(IRepository):
         phone: str,
         is_deleted: bool = False,
     ) -> User:
-        """
-        Retrieve a user by phone number.
-        """
+        """Retrieve a user by phone number."""
         if not phone or not str(phone).strip():
             return None
         normalized = str(phone).strip()
@@ -212,20 +275,18 @@ class UserRepository(IRepository):
         is_logged_in: bool,
         is_deleted: bool = False,
     ) -> User:
-        """
-        Retrieve users by ID and login status.
+        """Retrieve users by ID and login status.
+
         Args:
             id (str): User's ID.
             is_logged_in (bool): Login status to filter by.
             is_deleted (bool): Whether to include deleted users.
+
         Returns:
             list[User]: List of user records matching the criteria.
+
         """
-
-
-        self.logger.info(
-            f"Retrieving user by id: {id}, is_logged_in: {is_logged_in}"
-        )
+        self.logger.info(f"Retrieving user by id: {id}, is_logged_in: {is_logged_in}")
         start_time = datetime.now()
         records = (
             self.session.query(self.model)
@@ -248,20 +309,18 @@ class UserRepository(IRepository):
         is_logged_in: bool,
         is_deleted: bool = False,
     ) -> User:
-        """
-        Retrieve a user by ID and login status (single record).
+        """Retrieve a user by ID and login status (single record).
+
         Args:
             id (int): User's ID.
             is_logged_in (bool): Login status to filter by.
             is_deleted (bool): Whether to include deleted users.
+
         Returns:
             User: The user record if found, else None.
+
         """
-
-
-        self.logger.info(
-            f"Retrieving user by id: {id}, is_logged_in: {is_logged_in}"
-        )
+        self.logger.info(f"Retrieving user by id: {id}, is_logged_in: {is_logged_in}")
         start_time = datetime.now()
         record = (
             self.session.query(self.model)
@@ -286,7 +345,6 @@ class UserRepository(IRepository):
         include_deleted: bool = False,
     ) -> tuple[list, int]:
         """List users for admin. Returns (items, total)."""
-
         query = self.session.query(self.model)
         if not include_deleted:
             query = query.filter(self.model.is_deleted.is_(False))
@@ -296,10 +354,7 @@ class UserRepository(IRepository):
         total = query.count()
 
         items = (
-            query.order_by(self.model.created_at.desc())
-            .offset(skip)
-            .limit(limit)
-            .all()
+            query.order_by(self.model.created_at.desc()).offset(skip).limit(limit).all()
         )
 
         return items, total

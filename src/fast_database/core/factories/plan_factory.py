@@ -1,5 +1,4 @@
-"""
-Example :class:`~factory.alchemy.SQLAlchemyModelFactory` for :class:`~fast_database.persistence.models.plan.Plan`.
+"""Example :class:`~factory.alchemy.SQLAlchemyModelFactory` for :class:`~fast_database.persistence.models.plan.Plan`.
 
 Requires ``factory-boy`` (``fast-database[dev]``).
 """
@@ -15,6 +14,8 @@ class PlanFactory(factory.alchemy.SQLAlchemyModelFactory):
     """Build ``Plan`` rows in tests (minimal required fields)."""
 
     class Meta:
+        """Represents the Meta class."""
+
         model = Plan
         sqlalchemy_session_persistence = "flush"
 

@@ -1,5 +1,4 @@
-"""
-Generic Model Builder for Fast Database.
+"""Generic Model Builder for Fast Database.
 
 Provides a flexible, configurable system for creating SQLAlchemy models
 with customizable columns, mixins, and features.
@@ -18,6 +17,7 @@ Example:
     >>> 
     >>> # Use the model
     >>> user = User(email="test@example.com", name="Test User")
+
 """
 
 from __future__ import annotations
@@ -28,7 +28,17 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any, Callable, TypeVar
 
-from sqlalchemy import BigInteger, Boolean, Column, DateTime, ForeignKey, Index, Integer, String, Text
+from sqlalchemy import (
+    BigInteger,
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    Index,
+    Integer,
+    String,
+    Text,
+)
 from sqlalchemy.orm import declared_attr
 
 from fast_database.persistence.models import Base
@@ -37,6 +47,7 @@ from fast_database.persistence.models import Base
 @dataclass
 class ColumnConfig:
     """Configuration for a model column."""
+
     name: str
     type_: Any
     nullable: bool = True
@@ -47,7 +58,7 @@ class ColumnConfig:
     server_default: Any = None
     foreign_key: str | None = None
     doc: str = ""
-    
+
     def to_column(self) -> Column:
         """Convert config to SQLAlchemy Column."""
         kwargs = {
@@ -58,28 +69,30 @@ class ColumnConfig:
             "server_default": self.server_default,
             "doc": self.doc,
         }
-        
+
         if self.primary_key:
             kwargs["primary_key"] = True
             kwargs["autoincrement"] = True
-        
+
         if self.foreign_key:
             return Column(self.name, self.type_, ForeignKey(self.foreign_key), **kwargs)
-        
+
         return Column(self.name, self.type_, **kwargs)
 
 
 @dataclass
 class IndexConfig:
     """Configuration for a table index."""
+
     name: str
     columns: list[str]
     unique: bool = False
 
 
-@dataclass 
+@dataclass
 class ModelConfig:
     """Complete model configuration."""
+
     name: str
     table_name: str
     columns: dict[str, ColumnConfig] = field(default_factory=dict)
@@ -87,15 +100,14 @@ class ModelConfig:
     mixins: list[type] = field(default_factory=list)
     features: dict[str, bool] = field(default_factory=dict)
     extra_attributes: dict[str, Any] = field(default_factory=dict)
-    
+
     def copy(self) -> ModelConfig:
         """Create a deep copy of the config."""
         return deepcopy(self)
 
 
 class ModelBuilder:
-    """
-    Fluent builder for creating customizable SQLAlchemy models.
+    """Fluent builder for creating customizable SQLAlchemy models.
     
     Allows fine-grained control over model columns, indexes, mixins,
     and features through a chainable API.
@@ -111,30 +123,32 @@ class ModelBuilder:
         ...     .with_soft_delete()\
         ...     .with_index("idx_price", ["price"])\
         ...     .build()
+
     """
-    
+
     def __init__(self, name: str, table_name: str | None = None):
-        """
-        Initialize the model builder.
-        
+        """Initialize the model builder.
+
         Args:
             name: Model class name
             table_name: Database table name (defaults to snake_case of name)
+
         """
         self.config = ModelConfig(
             name=name,
             table_name=table_name or self._to_snake_case(name),
         )
-    
+
     @staticmethod
     def _to_snake_case(name: str) -> str:
         """Convert CamelCase to snake_case."""
         import re
-        s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
-        return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
-    
+
+        s1 = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", name)
+        return re.sub("([a-z0-9])([A-Z])", r"\1_\2", s1).lower()
+
     # ==================== Standard Columns ====================
-    
+
     def with_id(self, column_name: str = "id", type_: Any = BigInteger) -> ModelBuilder:
         """Add auto-incrementing primary key."""
         self.config.columns[column_name] = ColumnConfig(
@@ -142,10 +156,10 @@ class ModelBuilder:
             type_=type_,
             primary_key=True,
             nullable=False,
-            doc="Primary key"
+            doc="Primary key",
         )
         return self
-    
+
     def with_uuid_id(self, column_name: str = "id") -> ModelBuilder:
         """Add UUID primary key."""
         self.config.columns[column_name] = ColumnConfig(
@@ -153,11 +167,13 @@ class ModelBuilder:
             type_=String(36),
             primary_key=True,
             nullable=False,
-            doc="UUID primary key"
+            doc="UUID primary key",
         )
         return self
-    
-    def with_urn(self, length: int = 128, unique: bool = True, index: bool = True) -> ModelBuilder:
+
+    def with_urn(
+        self, length: int = 128, unique: bool = True, index: bool = True
+    ) -> ModelBuilder:
         """Add URN (Unique Resource Name) column."""
         self.config.columns["urn"] = ColumnConfig(
             name="urn",
@@ -165,11 +181,13 @@ class ModelBuilder:
             nullable=False,
             unique=unique,
             index=index,
-            doc="Unique Resource Name"
+            doc="Unique Resource Name",
         )
         return self
-    
-    def with_code(self, length: int = 64, unique: bool = True, index: bool = True) -> ModelBuilder:
+
+    def with_code(
+        self, length: int = 64, unique: bool = True, index: bool = True
+    ) -> ModelBuilder:
         """Add business code column."""
         self.config.columns["code"] = ColumnConfig(
             name="code",
@@ -177,32 +195,38 @@ class ModelBuilder:
             nullable=False,
             unique=unique,
             index=index,
-            doc="Business code"
+            doc="Business code",
         )
         return self
-    
-    def with_name(self, length: int = 255, nullable: bool = False, index: bool = False) -> ModelBuilder:
+
+    def with_name(
+        self, length: int = 255, nullable: bool = False, index: bool = False
+    ) -> ModelBuilder:
         """Add name column."""
         self.config.columns["name"] = ColumnConfig(
             name="name",
             type_=String(length),
             nullable=nullable,
             index=index,
-            doc="Display name"
+            doc="Display name",
         )
         return self
-    
-    def with_description(self, length: int = 500, nullable: bool = True) -> ModelBuilder:
+
+    def with_description(
+        self, length: int = 500, nullable: bool = True
+    ) -> ModelBuilder:
         """Add description column."""
         self.config.columns["description"] = ColumnConfig(
             name="description",
             type_=Text if length > 255 else String(length),
             nullable=nullable,
-            doc="Description"
+            doc="Description",
         )
         return self
-    
-    def with_email(self, unique: bool = True, index: bool = True, nullable: bool = False) -> ModelBuilder:
+
+    def with_email(
+        self, unique: bool = True, index: bool = True, nullable: bool = False
+    ) -> ModelBuilder:
         """Add email column."""
         self.config.columns["email"] = ColumnConfig(
             name="email",
@@ -210,11 +234,13 @@ class ModelBuilder:
             nullable=nullable,
             unique=unique,
             index=index,
-            doc="Email address"
+            doc="Email address",
         )
         return self
-    
-    def with_phone(self, unique: bool = True, index: bool = True, nullable: bool = True) -> ModelBuilder:
+
+    def with_phone(
+        self, unique: bool = True, index: bool = True, nullable: bool = True
+    ) -> ModelBuilder:
         """Add phone column."""
         self.config.columns["phone"] = ColumnConfig(
             name="phone",
@@ -222,20 +248,17 @@ class ModelBuilder:
             nullable=nullable,
             unique=unique,
             index=index,
-            doc="Phone number"
+            doc="Phone number",
         )
         return self
-    
+
     def with_password(self, length: int = 255) -> ModelBuilder:
         """Add password hash column."""
         self.config.columns["password"] = ColumnConfig(
-            name="password",
-            type_=String(length),
-            nullable=False,
-            doc="Password hash"
+            name="password", type_=String(length), nullable=False, doc="Password hash"
         )
         return self
-    
+
     def with_status(self, default: str = "active") -> ModelBuilder:
         """Add status column."""
         self.config.columns["status"] = ColumnConfig(
@@ -245,11 +268,13 @@ class ModelBuilder:
             default=default,
             server_default=default,
             index=True,
-            doc="Status"
+            doc="Status",
         )
         return self
-    
-    def with_boolean(self, name: str, default: bool = False, nullable: bool = False) -> ModelBuilder:
+
+    def with_boolean(
+        self, name: str, default: bool = False, nullable: bool = False
+    ) -> ModelBuilder:
         """Add boolean flag column."""
         self.config.columns[name] = ColumnConfig(
             name=name,
@@ -257,17 +282,17 @@ class ModelBuilder:
             nullable=nullable,
             default=default,
             server_default="true" if default else "false",
-            doc=f"{name} flag"
+            doc=f"{name} flag",
         )
         return self
-    
+
     def with_foreign_key(
         self,
         name: str,
         target: str,
         type_: Any = BigInteger,
         nullable: bool = False,
-        index: bool = True
+        index: bool = True,
     ) -> ModelBuilder:
         """Add foreign key column."""
         self.config.columns[name] = ColumnConfig(
@@ -276,12 +301,12 @@ class ModelBuilder:
             nullable=nullable,
             index=index,
             foreign_key=target,
-            doc=f"Foreign key to {target}"
+            doc=f"Foreign key to {target}",
         )
         return self
-    
+
     # ==================== Feature Mixins ====================
-    
+
     def with_timestamps(self) -> ModelBuilder:
         """Add created_at and updated_at timestamps."""
         self.config.columns["created_at"] = ColumnConfig(
@@ -289,18 +314,18 @@ class ModelBuilder:
             type_=DateTime(timezone=True),
             nullable=False,
             default=datetime.utcnow,
-            doc="Creation timestamp"
+            doc="Creation timestamp",
         )
         self.config.columns["updated_at"] = ColumnConfig(
             name="updated_at",
             type_=DateTime(timezone=True),
             nullable=True,
             onupdate=datetime.utcnow,
-            doc="Last update timestamp"
+            doc="Last update timestamp",
         )
         self.config.features["timestamps"] = True
         return self
-    
+
     def with_soft_delete(self) -> ModelBuilder:
         """Add soft delete columns."""
         self.config.columns["is_deleted"] = ColumnConfig(
@@ -309,46 +334,48 @@ class ModelBuilder:
             nullable=False,
             default="N",
             server_default="N",
-            doc="Soft delete flag"
+            doc="Soft delete flag",
         )
         self.config.columns["deleted_at"] = ColumnConfig(
             name="deleted_at",
             type_=DateTime(timezone=True),
             nullable=True,
-            doc="Deletion timestamp"
+            doc="Deletion timestamp",
         )
         self.config.features["soft_delete"] = True
         return self
-    
+
     def with_audit(self, user_type: Any = BigInteger) -> ModelBuilder:
         """Add audit columns (created_by_id, updated_by_id)."""
         self.config.columns["created_by_id"] = ColumnConfig(
             name="created_by_id",
             type_=user_type,
             nullable=True,
-            doc="User who created this record"
+            doc="User who created this record",
         )
         self.config.columns["updated_by_id"] = ColumnConfig(
             name="updated_by_id",
             type_=user_type,
             nullable=True,
-            doc="User who last updated this record"
+            doc="User who last updated this record",
         )
         self.config.features["audit"] = True
         return self
-    
-    def with_tenant(self, type_: Any = BigInteger, nullable: bool = False) -> ModelBuilder:
+
+    def with_tenant(
+        self, type_: Any = BigInteger, nullable: bool = False
+    ) -> ModelBuilder:
         """Add tenant_id column for multi-tenancy."""
         self.config.columns["tenant_id"] = ColumnConfig(
             name="tenant_id",
             type_=type_,
             nullable=nullable,
             index=True,
-            doc="Tenant identifier"
+            doc="Tenant identifier",
         )
         self.config.features["tenant"] = True
         return self
-    
+
     def with_organization(self, nullable: bool = False) -> ModelBuilder:
         """Add organization_id column."""
         self.config.columns["organization_id"] = ColumnConfig(
@@ -357,11 +384,11 @@ class ModelBuilder:
             nullable=nullable,
             index=True,
             foreign_key="organizations.id",
-            doc="Organization identifier"
+            doc="Organization identifier",
         )
         self.config.features["organization"] = True
         return self
-    
+
     def with_version(self) -> ModelBuilder:
         """Add optimistic locking version column."""
         self.config.columns["version"] = ColumnConfig(
@@ -370,24 +397,22 @@ class ModelBuilder:
             nullable=False,
             default=0,
             server_default="0",
-            doc="Version for optimistic locking"
+            doc="Version for optimistic locking",
         )
         self.config.features["version"] = True
         return self
-    
+
     def with_metadata(self, name: str = "meta", nullable: bool = True) -> ModelBuilder:
         """Add JSON metadata column."""
         from sqlalchemy import JSON
+
         self.config.columns[name] = ColumnConfig(
-            name=name,
-            type_=JSON,
-            nullable=nullable,
-            doc="JSON metadata"
+            name=name, type_=JSON, nullable=nullable, doc="JSON metadata"
         )
         return self
-    
+
     # ==================== Custom Columns ====================
-    
+
     def with_column(
         self,
         name: str,
@@ -398,7 +423,7 @@ class ModelBuilder:
         default: Any = None,
         server_default: Any = None,
         foreign_key: str | None = None,
-        doc: str = ""
+        doc: str = "",
     ) -> ModelBuilder:
         """Add a custom column."""
         self.config.columns[name] = ColumnConfig(
@@ -410,56 +435,60 @@ class ModelBuilder:
             default=default,
             server_default=server_default,
             foreign_key=foreign_key,
-            doc=doc
+            doc=doc,
         )
         return self
-    
+
     def without_column(self, name: str) -> ModelBuilder:
         """Remove a column by name."""
         if name in self.config.columns:
             del self.config.columns[name]
         return self
-    
-    def with_index(self, name: str, columns: list[str], unique: bool = False) -> ModelBuilder:
+
+    def with_index(
+        self, name: str, columns: list[str], unique: bool = False
+    ) -> ModelBuilder:
         """Add a table index."""
-        self.config.indexes.append(IndexConfig(name=name, columns=columns, unique=unique))
+        self.config.indexes.append(
+            IndexConfig(name=name, columns=columns, unique=unique)
+        )
         return self
-    
+
     def with_mixin(self, mixin_class: type) -> ModelBuilder:
         """Add a mixin class."""
         self.config.mixins.append(mixin_class)
         return self
-    
+
     def with_attribute(self, name: str, value: Any) -> ModelBuilder:
         """Add a custom attribute/method to the model."""
         self.config.extra_attributes[name] = value
         return self
-    
+
     # ==================== Build ====================
-    
+
     def build(self) -> type:
-        """
-        Build and return the SQLAlchemy model class.
-        
+        """Build and return the SQLAlchemy model class.
+
         Returns:
             SQLAlchemy model class
+
         """
         config = self.config
-        
+
         # Create column dict
         columns = {}
         for col_name, col_config in config.columns.items():
             columns[col_name] = col_config.to_column()
-        
+
         # Create index list
         indexes = []
         for idx_config in config.indexes:
             idx = Index(idx_config.name, *idx_config.columns, unique=idx_config.unique)
             indexes.append(idx)
-        
+
         # Determine bases
         bases = tuple(config.mixins) + (Base,)
-        
+
         # Create the class dict
         class_dict = {
             "__tablename__": config.table_name,
@@ -468,19 +497,25 @@ class ModelBuilder:
             **config.extra_attributes,
             "__config__": config,  # Store config for introspection
         }
-        
+
         # Add to_dict method if timestamps feature is enabled
         if config.features.get("timestamps"):
             class_dict["to_dict"] = self._create_to_dict_method(config.columns.keys())
-        
+
         # Create the class
         model_class = type(config.name, bases, class_dict)
-        
+
         return model_class
-    
+
     def _create_to_dict_method(self, column_names: list[str]) -> Callable:
         """Create a to_dict method for the model."""
+
         def to_dict(self) -> dict[str, Any]:
+            """Execute to_dict operation.
+
+            Returns:
+                The result of the operation.
+            """
             result = {}
             for name in column_names:
                 value = getattr(self, name, None)
@@ -488,99 +523,118 @@ class ModelBuilder:
                     value = value.isoformat() if value else None
                 result[name] = value
             return result
+
         return to_dict
 
 
 # ==================== Pre-configured Model Templates ====================
 
+
 class ModelTemplates:
     """Pre-configured model templates for common use cases."""
-    
+
     @staticmethod
     def lookup_table(name: str, table_name: str | None = None) -> type:
         """Create a standard lookup table model."""
-        return ModelBuilder(name, table_name or f"{ModelBuilder._to_snake_case(name)}s")\
-            .with_id()\
-            .with_code()\
-            .with_name()\
-            .with_description(nullable=True)\
-            .with_timestamps()\
+        return (
+            ModelBuilder(name, table_name or f"{ModelBuilder._to_snake_case(name)}s")
+            .with_id()
+            .with_code()
+            .with_name()
+            .with_description(nullable=True)
+            .with_timestamps()
             .build()
-    
+        )
+
     @staticmethod
     def tenant_scoped(name: str, table_name: str | None = None) -> ModelBuilder:
         """Create a tenant-scoped model builder with common columns."""
-        return ModelBuilder(name, table_name)\
-            .with_id()\
-            .with_urn()\
-            .with_tenant()\
-            .with_timestamps()\
-            .with_audit()\
+        return (
+            ModelBuilder(name, table_name)
+            .with_id()
+            .with_urn()
+            .with_tenant()
+            .with_timestamps()
+            .with_audit()
             .with_soft_delete()
-    
+        )
+
     @staticmethod
     def organization_scoped(name: str, table_name: str | None = None) -> ModelBuilder:
         """Create an organization-scoped model builder with common columns."""
-        return ModelBuilder(name, table_name)\
-            .with_id()\
-            .with_urn()\
-            .with_organization()\
-            .with_timestamps()\
-            .with_audit()\
+        return (
+            ModelBuilder(name, table_name)
+            .with_id()
+            .with_urn()
+            .with_organization()
+            .with_timestamps()
+            .with_audit()
             .with_soft_delete()
-    
+        )
+
     @staticmethod
     def user_model(name: str = "User", table_name: str = "users") -> type:
         """Create a standard user model."""
-        return ModelBuilder(name, table_name)\
-            .with_id()\
-            .with_urn()\
-            .with_email()\
-            .with_phone(nullable=True)\
-            .with_password()\
-            .with_name()\
-            .with_boolean("email_verified", default=False)\
-            .with_timestamps()\
-            .with_audit()\
-            .with_soft_delete()\
+        return (
+            ModelBuilder(name, table_name)
+            .with_id()
+            .with_urn()
+            .with_email()
+            .with_phone(nullable=True)
+            .with_password()
+            .with_name()
+            .with_boolean("email_verified", default=False)
+            .with_timestamps()
+            .with_audit()
+            .with_soft_delete()
             .build()
-    
+        )
+
     @staticmethod
     def product_model(name: str = "Product", table_name: str = "products") -> type:
         """Create a standard product model."""
-        return ModelBuilder(name, table_name)\
-            .with_id()\
-            .with_urn()\
-            .with_code()\
-            .with_name(nullable=False)\
-            .with_description()\
-            .with_column("price", String(20), nullable=False, default="0.00")\
-            .with_column("currency", String(3), nullable=False, default="USD")\
-            .with_status(default="draft")\
-            .with_timestamps()\
-            .with_audit()\
-            .with_soft_delete()\
+        return (
+            ModelBuilder(name, table_name)
+            .with_id()
+            .with_urn()
+            .with_code()
+            .with_name(nullable=False)
+            .with_description()
+            .with_column("price", String(20), nullable=False, default="0.00")
+            .with_column("currency", String(3), nullable=False, default="USD")
+            .with_status(default="draft")
+            .with_timestamps()
+            .with_audit()
+            .with_soft_delete()
             .build()
+        )
 
 
 # ==================== Decorator API ====================
 
+
 def configurable_model(table_name: str | None = None, **features):
-    """
-    Decorator for creating configurable models.
-    
+    """Decorator for creating configurable models.
+
     Example:
         >>> @configurable_model("custom_users", timestamps=True, soft_delete=True)
         >>> class MyUser:
         ...     email: str = column(String(255), unique=True)
         ...     name: str = column(String(100))
+
     """
+
     def decorator(cls: type) -> type:
+        """Execute decorator operation.
+
+        Returns:
+            The result of the operation.
+        """
         name = cls.__name__
         tbl_name = table_name or ModelBuilder._to_snake_case(name)
-        
+
         builder = ModelBuilder(name, tbl_name)
-        
+
         # Add standard features
         if features.get("id", True):
             builder.with_id()
@@ -598,11 +652,11 @@ def configurable_model(table_name: str | None = None, **features):
             builder.with_organization()
         if features.get("version", False):
             builder.with_version()
-        
+
         # Process class annotations for columns
-        annotations = getattr(cls, '__annotations__', {})
+        annotations = getattr(cls, "__annotations__", {})
         for attr_name, attr_type in annotations.items():
-            if not attr_name.startswith('_'):
+            if not attr_name.startswith("_"):
                 # Check if there's a default value with column info
                 default = getattr(cls, attr_name, None)
                 if isinstance(default, ColumnConfig):
@@ -610,9 +664,9 @@ def configurable_model(table_name: str | None = None, **features):
                 elif isinstance(default, Column):
                     # Extract column info from existing Column
                     pass
-        
+
         return builder.build()
-    
+
     return decorator
 
 

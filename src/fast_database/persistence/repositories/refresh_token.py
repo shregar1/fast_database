@@ -1,12 +1,9 @@
-"""
-Refresh Token Repository.
+"""Refresh Token Repository.
 
 Data access for RefreshToken (jti, user_id, family_id, revoked_at).
 Create, get by jti, list by user, revoke by jti, revoke all for user except jti.
 Used for refresh token rotation and session/device list and revoke.
 """
-
-
 
 from datetime import datetime, timezone
 
@@ -17,6 +14,8 @@ from fast_database.persistence.models.refresh_token import RefreshToken
 
 
 class RefreshTokenRepository(IRepository):
+    """Represents the RefreshTokenRepository class."""
+
     def __init__(
         self,
         session: Session | None = None,
@@ -26,6 +25,15 @@ class RefreshTokenRepository(IRepository):
         api_name: str | None = None,
         user_id: str | None = None,
     ) -> None:
+        """Execute __init__ operation.
+
+        Args:
+            session: The session parameter.
+            urn: The urn parameter.
+            user_urn: The user_urn parameter.
+            api_name: The api_name parameter.
+            user_id: The user_id parameter.
+        """
         super().__init__(
             urn=urn,
             user_urn=user_urn,
@@ -40,9 +48,27 @@ class RefreshTokenRepository(IRepository):
 
     @property
     def session(self) -> Session:
+        """Execute session operation.
+
+        Returns:
+            The result of the operation.
+        """
         return self._session
 
-    def create(self, jti: str, user_id: int, family_id: str, expires_at: datetime) -> RefreshToken:
+    def create(
+        self, jti: str, user_id: int, family_id: str, expires_at: datetime
+    ) -> RefreshToken:
+        """Execute create operation.
+
+        Args:
+            jti: The jti parameter.
+            user_id: The user_id parameter.
+            family_id: The family_id parameter.
+            expires_at: The expires_at parameter.
+
+        Returns:
+            The result of the operation.
+        """
         record = RefreshToken(
             jti=jti,
             user_id=user_id,
@@ -55,11 +81,15 @@ class RefreshTokenRepository(IRepository):
         return record
 
     def get_by_jti(self, jti: str) -> RefreshToken | None:
-        return (
-            self.session.query(RefreshToken)
-            .filter(RefreshToken.jti == jti)
-            .first()
-        )
+        """Execute get_by_jti operation.
+
+        Args:
+            jti: The jti parameter.
+
+        Returns:
+            The result of the operation.
+        """
+        return self.session.query(RefreshToken).filter(RefreshToken.jti == jti).first()
 
     def list_by_user(
         self,
@@ -67,6 +97,16 @@ class RefreshTokenRepository(IRepository):
         include_revoked: bool = False,
         limit: int = 100,
     ) -> list[RefreshToken]:
+        """Execute list_by_user operation.
+
+        Args:
+            user_id: The user_id parameter.
+            include_revoked: The include_revoked parameter.
+            limit: The limit parameter.
+
+        Returns:
+            The result of the operation.
+        """
         q = self.session.query(RefreshToken).filter(RefreshToken.user_id == user_id)
         if not include_revoked:
             q = q.filter(RefreshToken.revoked_at.is_(None))
@@ -75,6 +115,14 @@ class RefreshTokenRepository(IRepository):
         return q.order_by(RefreshToken.created_at.desc()).limit(limit).all()
 
     def revoke_by_jti(self, jti: str) -> bool:
+        """Execute revoke_by_jti operation.
+
+        Args:
+            jti: The jti parameter.
+
+        Returns:
+            The result of the operation.
+        """
         now = datetime.now(timezone.utc)
         n = (
             self.session.query(RefreshToken)
@@ -85,6 +133,15 @@ class RefreshTokenRepository(IRepository):
         return n > 0
 
     def revoke_all_for_user_except_jti(self, user_id: int, except_jti: str) -> int:
+        """Execute revoke_all_for_user_except_jti operation.
+
+        Args:
+            user_id: The user_id parameter.
+            except_jti: The except_jti parameter.
+
+        Returns:
+            The result of the operation.
+        """
         now = datetime.now(timezone.utc)
         subq = (
             self.session.query(RefreshToken.id)

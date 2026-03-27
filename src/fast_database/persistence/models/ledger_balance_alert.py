@@ -1,5 +1,4 @@
-"""
-Ledger balance alert model (Pure.cam).
+"""Ledger balance alert model (Pure.cam).
 
 Maps `BalanceAlert` — at most one row per workspace (sync payload).
 
@@ -9,7 +8,16 @@ Usage:
 
 from datetime import datetime
 
-from sqlalchemy import BigInteger, Boolean, Column, DateTime, ForeignKey, Numeric, String, UniqueConstraint
+from sqlalchemy import (
+    BigInteger,
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    Numeric,
+    String,
+    UniqueConstraint,
+)
 
 from fast_database.core.constants.table import Table
 from fast_database.persistence.models import Base
@@ -19,11 +27,20 @@ class LedgerBalanceAlert(Base):
     """Notify when balance drops below threshold."""
 
     __tablename__ = Table.LEDGER_BALANCE_ALERT
-    __table_args__ = (UniqueConstraint("ledger_workspace_id", name="uq_ledger_balance_alert_workspace"),)
+    __table_args__ = (
+        UniqueConstraint(
+            "ledger_workspace_id", name="uq_ledger_balance_alert_workspace"
+        ),
+    )
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     urn = Column(String(128), nullable=False, unique=True, index=True)
-    user_id = Column(BigInteger, ForeignKey("user.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(
+        BigInteger,
+        ForeignKey("user.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
     ledger_workspace_id = Column(
         BigInteger,
         ForeignKey(Table.LEDGER_WORKSPACE + ".id", ondelete="CASCADE"),
@@ -37,6 +54,11 @@ class LedgerBalanceAlert(Base):
     updated_at = Column(DateTime(timezone=True), nullable=True)
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "id": self.id,
             "urn": self.urn,

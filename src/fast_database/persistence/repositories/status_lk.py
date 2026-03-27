@@ -1,5 +1,4 @@
-"""
-Status Lookup Repository.
+"""Status Lookup Repository.
 
 Data access for the StatusLk model (generic status codes: e.g. draft, paid,
 cancelled). Uses LookupRepositoryBase for standard lookup operations.
@@ -19,8 +18,7 @@ from fast_database.persistence.repositories.lookup_base import LookupRepositoryB
 
 
 class StatusLkRepository(LookupRepositoryBase[StatusLk]):
-    """
-    Repository for StatusLk (generic status) records.
+    """Repository for StatusLk (generic status) records.
 
     Provides standard lookup operations inherited from LookupRepositoryBase:
     - list_all(): Get all statuses ordered by code
@@ -37,6 +35,15 @@ class StatusLkRepository(LookupRepositoryBase[StatusLk]):
         api_name: str | None = None,
         user_id: str | None = None,
     ):
+        """Execute __init__ operation.
+
+        Args:
+            session: The session parameter.
+            urn: The urn parameter.
+            user_urn: The user_urn parameter.
+            api_name: The api_name parameter.
+            user_id: The user_id parameter.
+        """
         super().__init__(
             model=StatusLk,
             session=session,

@@ -1,5 +1,4 @@
-"""
-Organization and membership models.
+"""Organization and membership models.
 
 SQLAlchemy ORM models for organizations (workspaces), organization members,
 and pending invites. Referenced by document.organization_id and subscription.organization_id.
@@ -7,9 +6,6 @@ and pending invites. Referenced by document.organization_id and subscription.org
 Usage:
     >>> from fast_database.persistence.models.organization import Organization, OrganizationMember, OrganizationInvite
 """
-
-
-
 
 from datetime import datetime
 
@@ -20,8 +16,7 @@ from fast_database.persistence.models import Base
 
 
 class Organization(Base):
-    """
-    Organization (tenant/workspace) with an owner.
+    """Organization (tenant/workspace) with an owner.
 
     Attributes:
         id: Primary key.
@@ -30,10 +25,8 @@ class Organization(Base):
         owner_id: FK to user (owner).
         slug: Optional URL-friendly slug.
         created_at: When the org was created.
+
     """
-
-
-
 
     __tablename__ = Table.ORGANIZATION
 
@@ -42,9 +35,16 @@ class Organization(Base):
     name = Column(String(255), nullable=False)
     owner_id = Column(BigInteger, ForeignKey("user.id"), nullable=False, index=True)
     slug = Column(String(64), nullable=True, unique=True, index=True)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "id": self.id,
             "urn": self.urn,
@@ -56,18 +56,15 @@ class Organization(Base):
 
 
 class OrganizationMember(Base):
-    """
-    User–organization membership with role.
+    """User–organization membership with role.
 
     Attributes:
         id: Primary key.
         organization_id: FK to organizations.
         user_id: FK to user.
         role: Role (e.g. owner, admin, member).
+
     """
-
-
-
 
     __tablename__ = Table.ORGANIZATION_MEMBER
 
@@ -83,8 +80,7 @@ class OrganizationMember(Base):
 
 
 class OrganizationInvite(Base):
-    """
-    Pending invite to an organization (by email, token, role).
+    """Pending invite to an organization (by email, token, role).
 
     Attributes:
         id: Primary key.
@@ -95,10 +91,8 @@ class OrganizationInvite(Base):
         invited_by_id: FK to user.
         expires_at: When the invite expires.
         accepted_at: Set when accepted (null until then).
+
     """
-
-
-
 
     __tablename__ = Table.ORGANIZATION_INVITE
 
@@ -112,11 +106,18 @@ class OrganizationInvite(Base):
     email = Column(String(255), nullable=False, index=True)
     role = Column(String(32), nullable=False, index=True)
     token = Column(String(255), nullable=False, unique=True, index=True)
-    invited_by_id = Column(BigInteger, ForeignKey("user.id"), nullable=False, index=True)
+    invited_by_id = Column(
+        BigInteger, ForeignKey("user.id"), nullable=False, index=True
+    )
     expires_at = Column(DateTime(timezone=True), nullable=False)
     accepted_at = Column(DateTime(timezone=True), nullable=True)
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "id": self.id,
             "organization_id": self.organization_id,

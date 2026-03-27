@@ -1,5 +1,4 @@
-"""
-Audit Repository.
+"""Audit Repository.
 
 Data access for the AuditLog model (actor, action, resource, resource_id,
 metadata, created_at). Create records from middleware or services; list with
@@ -13,8 +12,6 @@ Usage:
     >>> items, total = repo.retrieve_records(actor_id=1, action="user.update", skip=0, limit=50)
 """
 
-
-
 from datetime import datetime
 
 from sqlalchemy.orm import Session
@@ -24,8 +21,7 @@ from fast_database.persistence.models.audit import AuditLog
 
 
 class AuditRepository(IRepository):
-    """
-    Repository for AuditLog (audit trail) create and query.
+    """Repository for AuditLog (audit trail) create and query.
 
     Append-only audit entries. create_record adds and commits; retrieve_records
     supports filtering by actor, action, resource, resource_id, and time range
@@ -34,9 +30,8 @@ class AuditRepository(IRepository):
     Methods:
         create_record: Insert and commit an AuditLog instance.
         retrieve_records: Filtered, paginated list; returns (items, total).
+
     """
-
-
 
     def __init__(
         self,
@@ -46,6 +41,15 @@ class AuditRepository(IRepository):
         api_name: str = None,
         user_id: str = None,
     ) -> None:
+        """Execute __init__ operation.
+
+        Args:
+            session: The session parameter.
+            urn: The urn parameter.
+            user_urn: The user_urn parameter.
+            api_name: The api_name parameter.
+            user_id: The user_id parameter.
+        """
         self._cache = None
         super().__init__(
             urn=urn,
@@ -59,15 +63,37 @@ class AuditRepository(IRepository):
 
     @property
     def session(self) -> Session:
+        """Execute session operation.
 
+        Returns:
+            The result of the operation.
+        """
         return self._session
 
     @session.setter
     def session(self, value: Session) -> None:
+        """Execute session operation.
+
+        Args:
+            value: The value parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self._session = value
 
     def create_record(self, record: AuditLog) -> AuditLog:
-        self.logger.debug(f"Creating audit: action={record.action}, resource={record.resource}")
+        """Execute create_record operation.
+
+        Args:
+            record: The record parameter.
+
+        Returns:
+            The result of the operation.
+        """
+        self.logger.debug(
+            f"Creating audit: action={record.action}, resource={record.resource}"
+        )
         self.session.add(record)
         self.session.commit()
         self.session.refresh(record)
@@ -85,6 +111,21 @@ class AuditRepository(IRepository):
         skip: int = 0,
         limit: int = 100,
     ) -> tuple[list[AuditLog], int]:
+        """Execute retrieve_records operation.
+
+        Args:
+            actor_id: The actor_id parameter.
+            action: The action parameter.
+            resource: The resource parameter.
+            resource_id: The resource_id parameter.
+            from_ts: The from_ts parameter.
+            to_ts: The to_ts parameter.
+            skip: The skip parameter.
+            limit: The limit parameter.
+
+        Returns:
+            The result of the operation.
+        """
         query = self.session.query(AuditLog)
         if actor_id is not None:
             query = query.filter(AuditLog.actor_id == actor_id)
@@ -100,6 +141,8 @@ class AuditRepository(IRepository):
             query = query.filter(AuditLog.created_at <= to_ts)
         total = query.count()
 
-        items = query.order_by(AuditLog.created_at.desc()).offset(skip).limit(limit).all()
+        items = (
+            query.order_by(AuditLog.created_at.desc()).offset(skip).limit(limit).all()
+        )
 
         return items, total

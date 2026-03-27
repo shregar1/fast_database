@@ -20,7 +20,15 @@ from fast_database.core.soft_delete import (
 
 
 def test_where_not_deleted_and_select_active():
+    """Execute test_where_not_deleted_and_select_active operation.
+
+    Returns:
+        The result of the operation.
+    """
+
     class M(Base, SoftDeleteMixin):
+        """Represents the M class."""
+
         __tablename__ = "t_soft_m"
         id = Column(Integer, primary_key=True)
 
@@ -31,6 +39,11 @@ def test_where_not_deleted_and_select_active():
 
 
 def test_mark_and_restore_soft_deleted():
+    """Execute test_mark_and_restore_soft_deleted operation.
+
+    Returns:
+        The result of the operation.
+    """
     bare = MagicMock()
     bare.is_deleted = False
     mark_soft_deleted(bare)
@@ -49,6 +62,11 @@ def test_mark_and_restore_soft_deleted():
 
 
 def test_filter_active_legacy_query():
+    """Execute test_filter_active_legacy_query operation.
+
+    Returns:
+        The result of the operation.
+    """
     q = MagicMock(spec=Query)
     attr = MagicMock()
     filter_active(q, attr)

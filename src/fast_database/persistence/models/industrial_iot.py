@@ -1,5 +1,4 @@
-"""
-Generic industrial IoT & automation models (multi-domain).
+"""Generic industrial IoT & automation models (multi-domain).
 
 Use for factory floors, warehouses, energy sites, logistics hubs, or any **physical site**
 with **equipment hierarchy**, **edge devices**, and **telemetry channels**. Amounts of
@@ -20,7 +19,17 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from sqlalchemy import BigInteger, Column, DateTime, ForeignKey, Index, Numeric, String, Text, UniqueConstraint
+from sqlalchemy import (
+    BigInteger,
+    Column,
+    DateTime,
+    ForeignKey,
+    Index,
+    Numeric,
+    String,
+    Text,
+    UniqueConstraint,
+)
 from sqlalchemy.sql import func
 from sqlalchemy.dialects.postgresql import JSONB
 
@@ -30,12 +39,16 @@ from fast_database.persistence.models import Base
 
 
 def _utc_now() -> datetime:
+    """Execute _utc_now operation.
+
+    Returns:
+        The result of the operation.
+    """
     return datetime.now(timezone.utc)
 
 
 class IndustrialFacility(Base, TimestampMixin, SoftDeleteMixin):
-    """
-    A logical site: plant, warehouse, substation, farm, hospital wing, etc.
+    """A logical site: plant, warehouse, substation, farm, hospital wing, etc.
 
     ``facility_code`` is **globally unique** (stable external id / slug for integrations).
     ``organization_id`` is optional tenant scope when applicable.
@@ -60,8 +73,7 @@ class IndustrialFacility(Base, TimestampMixin, SoftDeleteMixin):
 
 
 class IndustrialAsset(Base, TimestampMixin, SoftDeleteMixin):
-    """
-    A physical or logical asset: line, machine, cell, sensor rack, AGV route, etc.
+    """A physical or logical asset: line, machine, cell, sensor rack, AGV route, etc.
 
     Optional ``parent_asset_id`` forms a tree under one :class:`IndustrialFacility`.
     ``external_ref`` is an optional ERP/MES key; uniqueness is enforced in application
@@ -99,8 +111,7 @@ class IndustrialAsset(Base, TimestampMixin, SoftDeleteMixin):
 
 
 class IndustrialIoTDevice(Base, TimestampMixin, SoftDeleteMixin):
-    """
-    A connected edge device: gateway, PLC, IPC, sensor hub, robot controller, etc.
+    """A connected edge device: gateway, PLC, IPC, sensor hub, robot controller, etc.
 
     ``device_key`` is stable within the facility (used in MQTT/OPC mapping).
     """
@@ -135,7 +146,9 @@ class IndustrialIoTDevice(Base, TimestampMixin, SoftDeleteMixin):
     model_name = Column(String(256), nullable=True)
     serial_number = Column(String(256), nullable=True)
 
-    connection_status = Column(String(32), nullable=False, default="unknown", index=True)
+    connection_status = Column(
+        String(32), nullable=False, default="unknown", index=True
+    )
     last_seen_at = Column(DateTime(timezone=True), nullable=True, index=True)
     firmware_version = Column(String(128), nullable=True)
 
@@ -143,8 +156,7 @@ class IndustrialIoTDevice(Base, TimestampMixin, SoftDeleteMixin):
 
 
 class IndustrialTelemetryChannel(Base, TimestampMixin, SoftDeleteMixin):
-    """
-    A logical signal on a device (tag, topic leaf, OPC node id, register map).
+    """A logical signal on a device (tag, topic leaf, OPC node id, register map).
 
     ``channel_key`` is unique per device; ``quantity_kind`` and ``unit`` are free-form strings.
     """
@@ -175,8 +187,7 @@ class IndustrialTelemetryChannel(Base, TimestampMixin, SoftDeleteMixin):
 
 
 class IndustrialTelemetrySample(Base):
-    """
-    One observed value (bounded history / edge buffer; not a full historian).
+    """One observed value (bounded history / edge buffer; not a full historian).
 
     Prefer external TSDBs for high-cardinality long retention; use this for automation
     state, recent windows, or cross-domain sync.

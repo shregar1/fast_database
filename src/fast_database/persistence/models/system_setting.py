@@ -1,5 +1,4 @@
-"""
-Runtime system settings — feature flags and operational knobs stored in DB.
+"""Runtime system settings — feature flags and operational knobs stored in DB.
 
 Use for values that must change without redeploying; keep secrets in KMS/Vault when
 ``is_secret`` is True and store only ciphertext or references in ``value_text``.
@@ -12,7 +11,15 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from sqlalchemy import BigInteger, Boolean, Column, DateTime, String, Text, UniqueConstraint
+from sqlalchemy import (
+    BigInteger,
+    Boolean,
+    Column,
+    DateTime,
+    String,
+    Text,
+    UniqueConstraint,
+)
 
 from sqlalchemy.dialects.postgresql import JSONB
 
@@ -21,8 +28,7 @@ from fast_database.persistence.models import Base
 
 
 class SystemSetting(Base):
-    """
-    Key/value (or JSON) setting scoped by ``namespace`` (e.g. ``app``, ``billing``).
+    """Key/value (or JSON) setting scoped by ``namespace`` (e.g. ``app``, ``billing``).
 
     Attributes:
         id: Primary key.
@@ -33,6 +39,7 @@ class SystemSetting(Base):
         is_secret: If True, ``value_*`` should be ciphertext or a vault reference only.
         updated_by_user_id: Optional admin who last changed the row.
         created_at / updated_at: Audit timestamps (UTC).
+
     """
 
     __tablename__ = Table.SYSTEM_SETTING
@@ -47,5 +54,12 @@ class SystemSetting(Base):
     value_json = Column(JSONB, nullable=True)
     is_secret = Column(Boolean, nullable=False, default=False)
     updated_by_user_id = Column(BigInteger, nullable=True, index=True)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
+    updated_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
+    )

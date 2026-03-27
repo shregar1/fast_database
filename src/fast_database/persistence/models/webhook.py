@@ -1,5 +1,4 @@
-"""
-Webhook Models.
+"""Webhook Models.
 
 SQLAlchemy ORM models for outbound webhooks:
 - Webhook: endpoint configuration (URL, secret, subscribed events, enabled).
@@ -33,8 +32,7 @@ from fast_database.persistence.models import Base
 
 
 class Webhook(Base):
-    """
-    Outbound webhook endpoint configuration.
+    """Outbound webhook endpoint configuration.
 
     Attributes:
         id: Primary key.
@@ -45,12 +43,15 @@ class Webhook(Base):
         events: List of event types (stored as JSON array of strings).
         enabled: Whether this webhook is active.
         created_at, updated_at: Timestamps.
+
     """
 
     __tablename__ = Table.WEBHOOK
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
-    user_id = Column(BigInteger, ForeignKey(Table.USER + ".id"), nullable=True, index=True)
+    user_id = Column(
+        BigInteger, ForeignKey(Table.USER + ".id"), nullable=True, index=True
+    )
 
     url = Column(String(1024), nullable=False)
     secret = Column(String(255), nullable=False)
@@ -61,10 +62,19 @@ class Webhook(Base):
 
     enabled = Column(Boolean, nullable=False, default=True, index=True)
 
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow, index=True)
-    updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow, index=True
+    )
+    updated_at = Column(
+        DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow
+    )
 
     def to_dict(self) -> dict[str, Any]:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "id": self.id,
             "user_id": self.user_id,
@@ -78,8 +88,7 @@ class Webhook(Base):
 
 
 class WebhookDelivery(Base):
-    """
-    Delivery attempt record for an outbound webhook.
+    """Delivery attempt record for an outbound webhook.
 
     Unique per (webhook_id, event_id) to make deliveries idempotent.
     """
@@ -105,13 +114,22 @@ class WebhookDelivery(Base):
     error_message = Column(String(512), nullable=True)
     last_attempt_at = Column(DateTime(timezone=True), nullable=True)
 
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow, index=True)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow, index=True
+    )
 
     __table_args__ = (
-        UniqueConstraint("webhook_id", "event_id", name="uq_webhook_delivery_webhook_id_event_id"),
+        UniqueConstraint(
+            "webhook_id", "event_id", name="uq_webhook_delivery_webhook_id_event_id"
+        ),
     )
 
     def to_dict(self) -> dict[str, Any]:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "id": self.id,
             "webhook_id": self.webhook_id,
@@ -122,7 +140,8 @@ class WebhookDelivery(Base):
             "attempts": self.attempts,
             "response_code": self.response_code,
             "error_message": self.error_message,
-            "last_attempt_at": self.last_attempt_at.isoformat() if self.last_attempt_at else None,
+            "last_attempt_at": self.last_attempt_at.isoformat()
+            if self.last_attempt_at
+            else None,
             "created_at": self.created_at.isoformat() if self.created_at else None,
         }
-

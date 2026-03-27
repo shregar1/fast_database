@@ -1,5 +1,4 @@
-"""
-API Key Model.
+"""API Key Model.
 
 SQLAlchemy ORM model for server-to-server authentication. API keys are stored as
 one-way hashes; the raw key is shown only at creation time. Scopes (e.g. read_only)
@@ -9,8 +8,6 @@ Usage:
     >>> from fast_database.persistence.models.api_key import ApiKey
     >>> # Keys are created via repository; auth middleware validates key_hash and scopes
 """
-
-
 
 from datetime import datetime
 
@@ -22,8 +19,7 @@ from fast_database.persistence.models import Base
 
 
 class ApiKey(Base):
-    """
-    API key for server-to-server authentication.
+    """API key for server-to-server authentication.
 
     Stores a hash of the secret key; the plaintext is never persisted. Scopes
     (JSON array) limit which endpoints or actions the key can call. Optional
@@ -38,9 +34,8 @@ class ApiKey(Base):
         last_used_at: Last time the key was used for a request.
         created_at: When the key was created.
         revoked_at: If set, key is invalid and must not be accepted.
+
     """
-
-
 
     __tablename__ = Table.API_KEY
 
@@ -58,10 +53,17 @@ class ApiKey(Base):
     expires_at = Column(DateTime(timezone=True), nullable=True)
     last_used_at = Column(DateTime(timezone=True), nullable=True)
     last_used_ip = Column(String(45), nullable=True)  # IPv4 or IPv6
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
     revoked_at = Column(DateTime(timezone=True), nullable=True)
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "id": self.id,
             "user_id": self.user_id,
@@ -70,7 +72,9 @@ class ApiKey(Base):
             "prefix": "kiv_***",
             "scopes": self.scopes or [],
             "expires_at": self.expires_at.isoformat() if self.expires_at else None,
-            "last_used_at": self.last_used_at.isoformat() if self.last_used_at else None,
+            "last_used_at": self.last_used_at.isoformat()
+            if self.last_used_at
+            else None,
             "last_used_ip": self.last_used_ip,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "revoked_at": self.revoked_at.isoformat() if self.revoked_at else None,

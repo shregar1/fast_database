@@ -15,7 +15,15 @@ from fast_database.core.mixins import (
 
 
 def test_tenant_id_mixin_columns():
+    """Execute test_tenant_id_mixin_columns operation.
+
+    Returns:
+        The result of the operation.
+    """
+
     class T(Base, TenantIdMixin):
+        """Represents the T class."""
+
         __tablename__ = "t_tenant"
         id = Column(Integer, primary_key=True)
 
@@ -23,7 +31,15 @@ def test_tenant_id_mixin_columns():
 
 
 def test_organization_scoped_mixin_fk():
+    """Execute test_organization_scoped_mixin_fk operation.
+
+    Returns:
+        The result of the operation.
+    """
+
     class O(Base, OrganizationScopedMixin):
+        """Represents the O class."""
+
         __tablename__ = "t_org_scoped"
         id = Column(Integer, primary_key=True)
 
@@ -32,7 +48,15 @@ def test_organization_scoped_mixin_fk():
 
 
 def test_audit_actor_mixin_fk():
+    """Execute test_audit_actor_mixin_fk operation.
+
+    Returns:
+        The result of the operation.
+    """
+
     class A(Base, AuditActorMixin):
+        """Represents the A class."""
+
         __tablename__ = "t_audit"
         id = Column(Integer, primary_key=True)
 
@@ -41,13 +65,26 @@ def test_audit_actor_mixin_fk():
 
 
 def test_optimistic_lock_version_mapper():
+    """Execute test_optimistic_lock_version_mapper operation.
+
+    Returns:
+        The result of the operation.
+    """
+
     class V(Base, OptimisticLockMixin):
+        """Represents the V class."""
+
         __tablename__ = "t_versioned"
         id = Column(Integer, primary_key=True)
         name = Column(String(32), nullable=False)
 
         @declared_attr
         def __mapper_args__(cls):  # noqa: N805 — SQLAlchemy class API
+            """Execute __mapper_args__ operation.
+
+            Returns:
+                The result of the operation.
+            """
             return {"version_id_col": cls.version}
 
     from sqlalchemy import create_engine

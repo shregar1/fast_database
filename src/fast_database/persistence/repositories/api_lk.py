@@ -1,5 +1,4 @@
-"""
-API Lookup Repository.
+"""API Lookup Repository.
 
 Data access for the ApiLk model (API definitions: method, endpoint, name, for
 transaction logging). IRepository wrapper; use for retrieve by id or
@@ -10,8 +9,6 @@ Usage:
     >>> repo = ApiLkRepository(session=db_session)
 """
 
-
-
 from sqlalchemy.orm import Session
 
 from fast_database.persistence.repositories.abstraction import IRepository
@@ -19,14 +16,11 @@ from fast_database.persistence.models.api_lk import ApiLk
 
 
 class ApiLkRepository(IRepository):
-    """
-    Repository for ApiLk (API endpoint lookup) records.
+    """Repository for ApiLk (API endpoint lookup) records.
 
     Provides session and IRepository base. Use for looking up API id by
     method+endpoint or listing APIs for transaction log resolution.
     """
-
-
 
     def __init__(
         self,
@@ -36,6 +30,15 @@ class ApiLkRepository(IRepository):
         api_name: str = None,
         user_id: str = None,
     ):
+        """Execute __init__ operation.
+
+        Args:
+            session: The session parameter.
+            urn: The urn parameter.
+            user_urn: The user_urn parameter.
+            api_name: The api_name parameter.
+            user_id: The user_id parameter.
+        """
         self._cache = None
         super().__init__(
             urn=urn,
@@ -49,18 +52,25 @@ class ApiLkRepository(IRepository):
 
     @property
     def session(self) -> Session:
+        """Execute session operation.
 
+        Returns:
+            The result of the operation.
+        """
         return self._session
 
     @session.setter
     def session(self, value: Session):
+        """Execute session operation.
+
+        Args:
+            value: The value parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self._session = value
 
     def list_all(self):
         """Return all API lookup entries ordered by name."""
-
-        return (
-            self.session.query(ApiLk)
-            .order_by(ApiLk.name)
-            .all()
-        )
+        return self.session.query(ApiLk).order_by(ApiLk.name).all()

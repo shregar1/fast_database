@@ -1,5 +1,4 @@
-"""
-Login attempt audit — success and failure rows for security monitoring.
+"""Login attempt audit — success and failure rows for security monitoring.
 
 Use for rate limiting, account lockout, anomaly detection, and compliance.
 Do not store passwords or raw tokens.
@@ -19,8 +18,7 @@ from fast_database.persistence.models import Base
 
 
 class UserLoginEvent(Base):
-    """
-    Append-only record of a login attempt (password, OTP, SSO callback, etc.).
+    """Append-only record of a login attempt (password, OTP, SSO callback, etc.).
 
     Attributes:
         id: Primary key.
@@ -32,16 +30,24 @@ class UserLoginEvent(Base):
         failure_reason: e.g. ``bad_password``, ``locked``, ``mfa_failed`` (no PII).
         auth_method: e.g. ``password``, ``oauth_google``, ``webauthn``.
         created_at: Event time (UTC).
+
     """
 
     __tablename__ = Table.USER_LOGIN_EVENT
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
-    user_id = Column(BigInteger, ForeignKey(f"{Table.USER}.id", ondelete="SET NULL"), nullable=True, index=True)
+    user_id = Column(
+        BigInteger,
+        ForeignKey(f"{Table.USER}.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
     email_attempt = Column(String(255), nullable=True, index=True)
     ip_address = Column(String(64), nullable=True, index=True)
     user_agent = Column(Text, nullable=True)
     success = Column(Boolean, nullable=False, index=True)
     failure_reason = Column(String(64), nullable=True)
     auth_method = Column(String(32), nullable=False, default="password", index=True)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow, index=True)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow, index=True
+    )

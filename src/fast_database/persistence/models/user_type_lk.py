@@ -1,5 +1,4 @@
-"""
-User Type Lookup Model.
+"""User Type Lookup Model.
 
 SQLAlchemy ORM model for user type codes (e.g. candidate, employer). Lookup
 table referenced by user.user_type_id.
@@ -19,8 +18,7 @@ from fast_database.persistence.models import Base
 
 
 class UserTypeLk(Base, LookupModelMixin):
-    """
-    Lookup: user type (e.g. candidate, employer).
+    """Lookup: user type (e.g. candidate, employer).
 
     Attributes (from LookupModelMixin):
         id: Primary key.

@@ -1,5 +1,4 @@
-"""
-Webhook and WebhookDelivery Repositories.
+"""Webhook and WebhookDelivery Repositories.
 
 Data access for Webhook (endpoint URL, secret, enabled) and WebhookDelivery
 (delivery attempts and payloads). WebhookRepository: create, retrieve by id,
@@ -13,8 +12,6 @@ Usage:
     >>> webhooks, total = repo.retrieve_records(user_id=1, enabled_only=True)
 """
 
-
-
 from sqlalchemy import func, nulls_last
 from sqlalchemy.orm import Session
 
@@ -23,14 +20,11 @@ from fast_database.persistence.models.webhook import Webhook, WebhookDelivery
 
 
 class WebhookRepository(IRepository):
-    """
-    Repository for Webhook (webhook endpoint) records.
+    """Repository for Webhook (webhook endpoint) records.
 
     Create, retrieve by id, and retrieve_records with user_id and enabled_only
     filters and pagination. Used by webhook list and create/update APIs.
     """
-
-
 
     def __init__(
         self,
@@ -41,6 +35,15 @@ class WebhookRepository(IRepository):
         api_name: str | None = None,
         user_id: str | None = None,
     ) -> None:
+        """Execute __init__ operation.
+
+        Args:
+            session: The session parameter.
+            urn: The urn parameter.
+            user_urn: The user_urn parameter.
+            api_name: The api_name parameter.
+            user_id: The user_id parameter.
+        """
         super().__init__(
             urn=urn,
             user_urn=user_urn,
@@ -53,14 +56,34 @@ class WebhookRepository(IRepository):
 
     @property
     def session(self) -> Session:
+        """Execute session operation.
 
+        Returns:
+            The result of the operation.
+        """
         return self._session
 
     @session.setter
     def session(self, value: Session) -> None:
+        """Execute session operation.
+
+        Args:
+            value: The value parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self._session = value
 
     def create_record(self, record: Webhook) -> Webhook:
+        """Execute create_record operation.
+
+        Args:
+            record: The record parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self.session.add(record)
         self.session.commit()
         self.session.refresh(record)
@@ -68,7 +91,14 @@ class WebhookRepository(IRepository):
         return record
 
     def retrieve_record_by_id(self, record_id: int) -> Webhook | None:
+        """Execute retrieve_record_by_id operation.
 
+        Args:
+            record_id: The record_id parameter.
+
+        Returns:
+            The result of the operation.
+        """
         return self.session.query(Webhook).filter(Webhook.id == record_id).first()
 
     def retrieve_records(
@@ -78,6 +108,17 @@ class WebhookRepository(IRepository):
         skip: int = 0,
         limit: int = 100,
     ) -> tuple[list[Webhook], int]:
+        """Execute retrieve_records operation.
+
+        Args:
+            user_id: The user_id parameter.
+            enabled_only: The enabled_only parameter.
+            skip: The skip parameter.
+            limit: The limit parameter.
+
+        Returns:
+            The result of the operation.
+        """
         query = self.session.query(Webhook)
         if user_id is not None:
             query = query.filter(Webhook.user_id == user_id)
@@ -85,25 +126,38 @@ class WebhookRepository(IRepository):
             query = query.filter(Webhook.enabled.is_(True))
         total = query.count()
 
-        items = query.order_by(Webhook.created_at.desc()).offset(skip).limit(limit).all()
+        items = (
+            query.order_by(Webhook.created_at.desc()).offset(skip).limit(limit).all()
+        )
 
         return items, total
 
-    def retrieve_by_event(self, event_type: str, user_id: int | None = None) -> list[Webhook]:
+    def retrieve_by_event(
+        self, event_type: str, user_id: int | None = None
+    ) -> list[Webhook]:
         """Return webhooks that subscribe to this event (and optionally for this user)."""
-
         query = self.session.query(Webhook).filter(
             Webhook.enabled.is_(True),
             Webhook.events.contains([event_type]),
         )
         if user_id is not None:
-            query = query.filter((Webhook.user_id == user_id) | (Webhook.user_id.is_(None)))
+            query = query.filter(
+                (Webhook.user_id == user_id) | (Webhook.user_id.is_(None))
+            )
         else:
             query = query.filter(Webhook.user_id.is_(None))
 
         return query.all()
 
     def update_record(self, record: Webhook) -> Webhook:
+        """Execute update_record operation.
+
+        Args:
+            record: The record parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self.session.commit()
         self.session.refresh(record)
 
@@ -119,9 +173,16 @@ class WebhookRepository(IRepository):
         return {"total": total, "active": active, "inactive": total - active}
 
     def delete_record(self, record_id: int) -> bool:
+        """Execute delete_record operation.
+
+        Args:
+            record_id: The record_id parameter.
+
+        Returns:
+            The result of the operation.
+        """
         record = self.retrieve_record_by_id(record_id)
         if not record:
-
             return False
         self.session.delete(record)
 
@@ -131,15 +192,12 @@ class WebhookRepository(IRepository):
 
 
 class WebhookDeliveryRepository(IRepository):
-    """
-    Repository for WebhookDelivery (delivery attempt) records.
+    """Repository for WebhookDelivery (delivery attempt) records.
 
     get_or_create: Find or create delivery for webhook_id + event_id (idempotent).
     update_attempt: Set status, response_code, error_message, increment attempts.
     Used by webhook delivery workers.
     """
-
-
 
     def __init__(
         self,
@@ -150,6 +208,15 @@ class WebhookDeliveryRepository(IRepository):
         api_name: str | None = None,
         user_id: str | None = None,
     ) -> None:
+        """Execute __init__ operation.
+
+        Args:
+            session: The session parameter.
+            urn: The urn parameter.
+            user_urn: The user_urn parameter.
+            api_name: The api_name parameter.
+            user_id: The user_id parameter.
+        """
         super().__init__(
             urn=urn,
             user_urn=user_urn,
@@ -162,16 +229,29 @@ class WebhookDeliveryRepository(IRepository):
 
     @property
     def session(self) -> Session:
+        """Execute session operation.
 
+        Returns:
+            The result of the operation.
+        """
         return self._session
 
     @session.setter
     def session(self, value: Session) -> None:
+        """Execute session operation.
+
+        Args:
+            value: The value parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self._session = value
 
-    def get_or_create(self, webhook_id: int, event_id: str, event_type: str, payload: dict | None) -> tuple[WebhookDelivery, bool]:
+    def get_or_create(
+        self, webhook_id: int, event_id: str, event_type: str, payload: dict | None
+    ) -> tuple[WebhookDelivery, bool]:
         """Get existing delivery or create pending one. Returns (delivery, created)."""
-
         existing = (
             self.session.query(WebhookDelivery)
             .filter(
@@ -181,7 +261,6 @@ class WebhookDeliveryRepository(IRepository):
             .first()
         )
         if existing:
-
             return existing, False
         delivery = WebhookDelivery(
             webhook_id=webhook_id,
@@ -222,10 +301,25 @@ class WebhookDeliveryRepository(IRepository):
         response_code: int | None = None,
         error_message: str | None = None,
     ) -> None:
-        from datetime import datetime
-        delivery = self.session.query(WebhookDelivery).filter(WebhookDelivery.id == delivery_id).first()
-        if not delivery:
+        """Execute update_attempt operation.
 
+        Args:
+            delivery_id: The delivery_id parameter.
+            status: The status parameter.
+            response_code: The response_code parameter.
+            error_message: The error_message parameter.
+
+        Returns:
+            The result of the operation.
+        """
+        from datetime import datetime
+
+        delivery = (
+            self.session.query(WebhookDelivery)
+            .filter(WebhookDelivery.id == delivery_id)
+            .first()
+        )
+        if not delivery:
             return
         delivery.status = status
 
@@ -236,32 +330,28 @@ class WebhookDeliveryRepository(IRepository):
         self.session.commit()
 
     def dashboard_stats(self, user_id: int | None = None) -> dict:
-        """
-        Aggregate delivery stats for the dashboard.
+        """Aggregate delivery stats for the dashboard.
         Returns counts by status, by event_type, success rate, and total.
         """
         base = self.session.query(WebhookDelivery)
         if user_id is not None:
-            base = (
-                base.join(Webhook, Webhook.id == WebhookDelivery.webhook_id)
-                .filter(Webhook.user_id == user_id)
+            base = base.join(Webhook, Webhook.id == WebhookDelivery.webhook_id).filter(
+                Webhook.user_id == user_id
             )
 
         total = base.count()
 
-        status_rows = (
-            self.session.query(WebhookDelivery.status, func.count(WebhookDelivery.id))
-            .join(Webhook, Webhook.id == WebhookDelivery.webhook_id)
-        )
+        status_rows = self.session.query(
+            WebhookDelivery.status, func.count(WebhookDelivery.id)
+        ).join(Webhook, Webhook.id == WebhookDelivery.webhook_id)
         if user_id is not None:
             status_rows = status_rows.filter(Webhook.user_id == user_id)
         status_rows = status_rows.group_by(WebhookDelivery.status).all()
         by_status = {row[0]: row[1] for row in status_rows}
 
-        event_rows = (
-            self.session.query(WebhookDelivery.event_type, func.count(WebhookDelivery.id))
-            .join(Webhook, Webhook.id == WebhookDelivery.webhook_id)
-        )
+        event_rows = self.session.query(
+            WebhookDelivery.event_type, func.count(WebhookDelivery.id)
+        ).join(Webhook, Webhook.id == WebhookDelivery.webhook_id)
         if user_id is not None:
             event_rows = event_rows.filter(Webhook.user_id == user_id)
         event_rows = event_rows.group_by(WebhookDelivery.event_type).all()
@@ -287,13 +377,11 @@ class WebhookDeliveryRepository(IRepository):
         skip: int = 0,
         limit: int = 50,
     ) -> tuple[list[dict], int]:
-        """
-        List recent delivery records (url, event, status, time, error) for support/debugging.
+        """List recent delivery records (url, event, status, time, error) for support/debugging.
         Joins with Webhook to include url; optionally filter by webhook_id, user_id, status, event_type.
         """
-        query = (
-            self.session.query(WebhookDelivery, Webhook.url)
-            .join(Webhook, Webhook.id == WebhookDelivery.webhook_id)
+        query = self.session.query(WebhookDelivery, Webhook.url).join(
+            Webhook, Webhook.id == WebhookDelivery.webhook_id
         )
         if webhook_id is not None:
             query = query.filter(WebhookDelivery.webhook_id == webhook_id)
@@ -316,16 +404,18 @@ class WebhookDeliveryRepository(IRepository):
         items = []
         for delivery, url in rows:
             last_at = getattr(delivery, "last_attempt_at", None)
-            items.append({
-                "id": delivery.id,
-                "webhook_id": delivery.webhook_id,
-                "url": url or "",
-                "event_type": delivery.event_type,
-                "event_id": delivery.event_id,
-                "status": delivery.status,
-                "response_code": getattr(delivery, "response_code", None),
-                "last_attempt_at": last_at.isoformat() if last_at else None,
-                "error_message": getattr(delivery, "error_message", None),
-                "attempts": delivery.attempts,
-            })
+            items.append(
+                {
+                    "id": delivery.id,
+                    "webhook_id": delivery.webhook_id,
+                    "url": url or "",
+                    "event_type": delivery.event_type,
+                    "event_id": delivery.event_id,
+                    "status": delivery.status,
+                    "response_code": getattr(delivery, "response_code", None),
+                    "last_attempt_at": last_at.isoformat() if last_at else None,
+                    "error_message": getattr(delivery, "error_message", None),
+                    "attempts": delivery.attempts,
+                }
+            )
         return items, total

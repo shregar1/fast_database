@@ -1,5 +1,4 @@
-"""
-FastMVC Geo-Partitioning Module
+"""FastMVC Geo-Partitioning Module.
 
 Automatic geo-aware data sharding for global applications with data residency compliance.
 """

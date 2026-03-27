@@ -1,5 +1,4 @@
-"""
-Coupon Model.
+"""Coupon Model.
 
 SQLAlchemy ORM model for discount codes used at checkout.
 
@@ -19,8 +18,7 @@ from fast_database.persistence.models import Base
 
 
 class Coupon(Base):
-    """
-    Discount coupon code.
+    """Discount coupon code.
 
     Attributes:
         id: Primary key.
@@ -31,6 +29,7 @@ class Coupon(Base):
         max_redemptions: Optional max total redemptions.
         redemptions_count: Current redemption count.
         created_at, updated_at: Timestamps.
+
     """
 
     __tablename__ = Table.COUPON
@@ -46,10 +45,19 @@ class Coupon(Base):
     max_redemptions = Column(Integer, nullable=True)
     redemptions_count = Column(Integer, nullable=False, default=0)
 
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
+    updated_at = Column(
+        DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow
+    )
 
     def to_dict(self) -> dict[str, Any]:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "id": self.id,
             "code": self.code,
@@ -62,4 +70,3 @@ class Coupon(Base):
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
         }
-

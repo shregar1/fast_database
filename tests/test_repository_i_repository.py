@@ -1,6 +1,4 @@
-"""
-Tests for Repository abstraction with filter methods.
-"""
+"""Tests for Repository abstraction with filter methods."""
 
 from unittest.mock import MagicMock
 
@@ -51,6 +49,11 @@ class ConcreteRepository(IRepository):
     """Concrete repository for testing."""
 
     def __init__(self, session=None, **kwargs):
+        """Execute __init__ operation.
+
+        Args:
+            session: The session parameter.
+        """
         super().__init__(**kwargs)
         self.session = session or MagicMock()
 
@@ -242,7 +245,7 @@ class TestUpdateRecordByFilter:
 
         result = repo.update_record_by_filter(
             filters={"email": "notfound@example.com"},
-            new_data={"email": "new@example.com"}
+            new_data={"email": "new@example.com"},
         )
 
         assert result is None

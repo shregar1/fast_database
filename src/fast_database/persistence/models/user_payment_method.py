@@ -1,5 +1,4 @@
-"""
-User Payment Method Model.
+"""User Payment Method Model.
 
 SQLAlchemy ORM model for saved payment methods (e.g. cards) per user and
 provider. One row per (user_id, provider_id, provider_payment_method_id).
@@ -10,19 +9,25 @@ Usage:
     >>> # payment_method_type_id -> payment_method_type_lk; provider_id -> payment_provider_lk
 """
 
-
-
 from datetime import datetime
 
-from sqlalchemy import BigInteger, Boolean, Column, DateTime, ForeignKey, Integer, String, UniqueConstraint
+from sqlalchemy import (
+    BigInteger,
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    UniqueConstraint,
+)
 
 from fast_database.core.constants.table import Table
 from fast_database.persistence.models import Base
 
 
 class UserPaymentMethod(Base):
-    """
-    Saved payment method (e.g. card) for a user at a payment provider.
+    """Saved payment method (e.g. card) for a user at a payment provider.
 
     Links user, provider, and provider_payment_method_id. Stores display info
     (last4, brand, expiry_month, expiry_year), is_default, and is_deleted.
@@ -39,9 +44,8 @@ class UserPaymentMethod(Base):
         is_default: Default method for this user/provider.
         is_deleted: Soft-delete flag.
         created_at, updated_at: Timestamps.
+
     """
-
-
 
     __tablename__ = Table.USER_PAYMENT_METHOD
     __table_args__ = (
@@ -69,10 +73,19 @@ class UserPaymentMethod(Base):
     expiry_year = Column(Integer, nullable=True)
     is_default = Column(Boolean, nullable=False, default=False)
     is_deleted = Column(Boolean, nullable=False, default=False)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
+    updated_at = Column(
+        DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow
+    )
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "urn": self.urn,
             "user_id": self.user_id,

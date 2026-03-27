@@ -1,5 +1,4 @@
-"""
-Ledger recurring transaction model (Pure.cam).
+"""Ledger recurring transaction model (Pure.cam).
 
 Maps `RecurringTransaction`.
 
@@ -7,7 +6,17 @@ Usage:
     >>> from fast_database.persistence.models.ledger_recurring_transaction import LedgerRecurringTransaction
 """
 
-from sqlalchemy import BigInteger, Column, Date, DateTime, ForeignKey, Numeric, String, Text, UniqueConstraint
+from sqlalchemy import (
+    BigInteger,
+    Column,
+    Date,
+    DateTime,
+    ForeignKey,
+    Numeric,
+    String,
+    Text,
+    UniqueConstraint,
+)
 
 from sqlalchemy.dialects.postgresql import JSONB
 
@@ -29,7 +38,12 @@ class LedgerRecurringTransaction(Base):
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     urn = Column(String(128), nullable=False, unique=True, index=True)
-    user_id = Column(BigInteger, ForeignKey("user.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(
+        BigInteger,
+        ForeignKey("user.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
     ledger_workspace_id = Column(
         BigInteger,
         ForeignKey(Table.LEDGER_WORKSPACE + ".id", ondelete="CASCADE"),
@@ -46,6 +60,11 @@ class LedgerRecurringTransaction(Base):
     next_due_date = Column(Date, nullable=False, index=True)
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "id": self.id,
             "urn": self.urn,
@@ -58,5 +77,7 @@ class LedgerRecurringTransaction(Base):
             "note": self.note,
             "tags": self.tags,
             "frequency": self.frequency,
-            "nextDueDate": self.next_due_date.isoformat() if self.next_due_date else None,
+            "nextDueDate": self.next_due_date.isoformat()
+            if self.next_due_date
+            else None,
         }

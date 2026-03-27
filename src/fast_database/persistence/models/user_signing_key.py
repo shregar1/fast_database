@@ -1,5 +1,4 @@
-"""
-User signing keypair (Ed25519) — separate table from ``user``.
+"""User signing keypair (Ed25519) — separate table from ``user``.
 
 PEM public key and Fernet-encrypted private key live here so the core ``user`` row
 stays focused on credentials and profile linkage. At most one row per ``user_id``.
@@ -17,8 +16,7 @@ from fast_database.persistence.models import Base
 
 
 class UserSigningKey(Base):
-    """
-    Ed25519 signing key material for a user account.
+    """Ed25519 signing key material for a user account.
 
     Attributes:
         id: Primary key.
@@ -26,6 +24,7 @@ class UserSigningKey(Base):
         public_key_pem: PEM-encoded Ed25519 public key (generated at signup).
         encrypted_private_key_pem: Fernet-encrypted PEM private key; plaintext
             shown once at registration if your app flow provides it.
+
     """
 
     __tablename__ = Table.USER_SIGNING_KEY

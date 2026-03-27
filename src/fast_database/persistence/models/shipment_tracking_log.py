@@ -1,5 +1,4 @@
-"""
-Shipment tracking log model.
+"""Shipment tracking log model.
 
 One row per carrier or aggregator event (scan, status change, exception). Used to
 render timelines, reconcile webhooks, and debug integrations. Typically append-only.
@@ -10,7 +9,15 @@ Usage:
 
 from datetime import datetime
 
-from sqlalchemy import BigInteger, Column, DateTime, ForeignKey, String, Text, UniqueConstraint
+from sqlalchemy import (
+    BigInteger,
+    Column,
+    DateTime,
+    ForeignKey,
+    String,
+    Text,
+    UniqueConstraint,
+)
 from sqlalchemy.dialects.postgresql import JSONB
 
 from fast_database.core.constants.table import Table
@@ -18,8 +25,7 @@ from fast_database.persistence.models import Base
 
 
 class ShipmentTrackingLog(Base):
-    """
-    A single tracking milestone for a shipment.
+    """A single tracking milestone for a shipment.
 
     `event_at` is when the carrier reports the event (often in local time; store
     as provided or normalized in application code). `recorded_at` is when this row
@@ -42,6 +48,7 @@ class ShipmentTrackingLog(Base):
         external_event_id: Idempotency key from carrier or aggregator.
         event_metadata: JSONB (coordinates, substatus, raw nested fields).
         raw_payload: Full provider response for audit and reprocessing.
+
     """
 
     __tablename__ = Table.SHIPMENT_TRACKING_LOG
@@ -62,7 +69,9 @@ class ShipmentTrackingLog(Base):
         index=True,
     )
     event_at = Column(DateTime(timezone=True), nullable=False, index=True)
-    recorded_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow, index=True)
+    recorded_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow, index=True
+    )
     status_code = Column(String(64), nullable=True, index=True)
     status_label = Column(String(256), nullable=True)
     location_line = Column(String(512), nullable=True)
@@ -77,6 +86,11 @@ class ShipmentTrackingLog(Base):
     raw_payload = Column(JSONB, nullable=True)
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "id": self.id,
             "urn": self.urn,

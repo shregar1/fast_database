@@ -1,5 +1,4 @@
-"""
-Shopping cart and cart line models.
+"""Shopping cart and cart line models.
 
 `Cart` holds session state before checkout (authenticated user, optional org, or
 guest via token). `CartItem` stores denormalized product fields so cart survives
@@ -19,8 +18,7 @@ from fast_database.persistence.models import Base
 
 
 class Cart(Base):
-    """
-    Shopping basket before an order is placed.
+    """Shopping basket before an order is placed.
 
     Status examples: draft, active, merged, converted, abandoned, locked.
     Either `user_id` or `guest_token` typically identifies the owner; both may be
@@ -41,6 +39,7 @@ class Cart(Base):
         expires_at: Optional TTL for abandoned-cart cleanup.
         cart_metadata: JSONB (device, campaign, sales channel, custom).
         created_at, updated_at, created_by, updated_by: Audit fields.
+
     """
 
     __tablename__ = Table.CART
@@ -66,12 +65,21 @@ class Cart(Base):
     total_cents = Column(BigInteger, nullable=False, default=0)
     expires_at = Column(DateTime(timezone=True), nullable=True, index=True)
     cart_metadata = Column("metadata", JSONB, nullable=True)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
+    updated_at = Column(
+        DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow
+    )
     created_by = Column(BigInteger, ForeignKey("user.id"), nullable=True)
     updated_by = Column(BigInteger, ForeignKey("user.id"), nullable=True)
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "id": self.id,
             "urn": self.urn,
@@ -95,8 +103,7 @@ class Cart(Base):
 
 
 class CartItem(Base):
-    """
-    Single line in a cart.
+    """Single line in a cart.
 
     Snapshots `title` / `variant_title` / `sku` so display stays stable if the
     catalog changes. `quantity` supports fractional units (weight, hours) via Numeric.
@@ -120,6 +127,7 @@ class CartItem(Base):
         sort_order: Display order within the cart.
         item_metadata: JSONB (bundle children, custom options, engraving).
         created_at, updated_at: Timestamps.
+
     """
 
     __tablename__ = Table.CART_ITEM
@@ -151,10 +159,19 @@ class CartItem(Base):
     notes = Column(String(1024), nullable=True)
     sort_order = Column(BigInteger, nullable=False, default=0)
     item_metadata = Column("metadata", JSONB, nullable=True)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
+    updated_at = Column(
+        DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow
+    )
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         q = float(self.quantity) if self.quantity is not None else None
         return {
             "id": self.id,

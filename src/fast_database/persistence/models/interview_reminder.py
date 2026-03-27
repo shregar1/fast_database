@@ -1,5 +1,4 @@
-"""
-Alias for the interview reminder ORM class (table `reminder`).
+"""Alias for the interview reminder ORM class (table `reminder`).
 
 The implementation lives in `reminder.py` as `Reminder`.
 """

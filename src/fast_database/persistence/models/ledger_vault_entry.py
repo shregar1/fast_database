@@ -1,5 +1,4 @@
-"""
-Ledger vault entry metadata (Pure.cam).
+"""Ledger vault entry metadata (Pure.cam).
 
 Maps `VaultEntry` shape at the **metadata** level only. Secrets live encrypted
 client-side; `encrypted_payload` can store an opaque blob for cloud backup.
@@ -10,7 +9,15 @@ Usage:
 
 from datetime import datetime
 
-from sqlalchemy import BigInteger, Column, DateTime, ForeignKey, LargeBinary, String, UniqueConstraint
+from sqlalchemy import (
+    BigInteger,
+    Column,
+    DateTime,
+    ForeignKey,
+    LargeBinary,
+    String,
+    UniqueConstraint,
+)
 
 from sqlalchemy.dialects.postgresql import JSONB
 
@@ -19,8 +26,7 @@ from fast_database.persistence.models import Base
 
 
 class LedgerVaultEntry(Base):
-    """
-    Vault entry row: type, name, folder link, optional ciphertext.
+    """Vault entry row: type, name, folder link, optional ciphertext.
 
     Do not store plaintext passwords or card numbers in non-encrypted columns.
     """
@@ -37,7 +43,12 @@ class LedgerVaultEntry(Base):
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     urn = Column(String(128), nullable=False, unique=True, index=True)
-    user_id = Column(BigInteger, ForeignKey("user.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(
+        BigInteger,
+        ForeignKey("user.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
     ledger_workspace_id = Column(
         BigInteger,
         ForeignKey(Table.LEDGER_WORKSPACE + ".id", ondelete="CASCADE"),
@@ -49,12 +60,24 @@ class LedgerVaultEntry(Base):
     name = Column(String(512), nullable=False)
     tags = Column(JSONB, nullable=True)
     folder_client_id = Column(String(128), nullable=True)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
+    updated_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
+    )
     encrypted_payload = Column(LargeBinary, nullable=True)
     field_metadata_json = Column(JSONB, nullable=True)
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "id": self.client_vault_entry_id,
             "type": self.type,

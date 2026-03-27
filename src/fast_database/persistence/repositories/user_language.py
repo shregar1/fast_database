@@ -1,5 +1,4 @@
-"""
-User Language Repository.
+"""User Language Repository.
 
 Data access for the UserLanguage model (user–language association: which
 languages a user speaks). IRepository wrapper; use for list by user, add,
@@ -10,8 +9,6 @@ Usage:
     >>> repo = UserLanguageRepository(session=db_session)
 """
 
-
-
 from sqlalchemy.orm import Session
 
 from fast_database.persistence.repositories.abstraction import IRepository
@@ -19,14 +16,11 @@ from fast_database.persistence.models.user_language import UserLanguage
 
 
 class UserLanguageRepository(IRepository):
-    """
-    Repository for UserLanguage (user–language) records.
+    """Repository for UserLanguage (user–language) records.
 
     Provides session and IRepository base for UserLanguage. Use for listing
     languages per user, adding a language, and soft delete in services.
     """
-
-
 
     def __init__(
         self,
@@ -36,6 +30,15 @@ class UserLanguageRepository(IRepository):
         api_name: str = None,
         user_id: str = None,
     ):
+        """Execute __init__ operation.
+
+        Args:
+            session: The session parameter.
+            urn: The urn parameter.
+            user_urn: The user_urn parameter.
+            api_name: The api_name parameter.
+            user_id: The user_id parameter.
+        """
         self._cache = None
         super().__init__(
             urn=urn,
@@ -49,9 +52,21 @@ class UserLanguageRepository(IRepository):
 
     @property
     def session(self) -> Session:
+        """Execute session operation.
 
+        Returns:
+            The result of the operation.
+        """
         return self._session
 
     @session.setter
     def session(self, value: Session):
+        """Execute session operation.
+
+        Args:
+            value: The value parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self._session = value

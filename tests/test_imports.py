@@ -2,6 +2,11 @@
 
 
 def test_mixin_and_soft_delete_exported_from_package():
+    """Execute test_mixin_and_soft_delete_exported_from_package operation.
+
+    Returns:
+        The result of the operation.
+    """
     from fast_database import (
         Base,
         SoftDeleteMixin,

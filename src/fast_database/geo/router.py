@@ -1,6 +1,4 @@
-"""
-Geo Sharding Router
-"""
+"""Geo Sharding Router."""
 
 from typing import Dict, Optional, Type, TYPE_CHECKING
 from uuid import UUID
@@ -12,10 +10,8 @@ if TYPE_CHECKING:
 
 
 class GeoShardingRouter:
-    """
-    Routes database operations to appropriate geo-shards
-    """
-    
+    """Routes database operations to appropriate geo-shards."""
+
     # Shard locations for distance calculation
     _shard_locations: Dict[str, GeoPoint] = {
         "us-east": GeoPoint(latitude=39.0, longitude=-77.0),
@@ -26,69 +22,68 @@ class GeoShardingRouter:
         "apac-singapore": GeoPoint(latitude=1.0, longitude=104.0),
         "apac-sydney": GeoPoint(latitude=-33.0, longitude=151.0),
     }
-    
+
     # Database connections (placeholder)
     _shard_databases: Dict[str, any] = {}
     _shard_cache: Dict[str, any] = {}
-    
+
     @classmethod
     def get_shard_location(cls, shard_id: str) -> Optional[GeoPoint]:
-        """Get geographic location of a shard"""
+        """Get geographic location of a shard."""
         return cls._shard_locations.get(shard_id)
-    
+
     @classmethod
     def find_nearest_shard(cls, point: GeoPoint) -> str:
-        """Find nearest shard to a geographic point"""
+        """Find nearest shard to a geographic point."""
         min_distance = float("inf")
         nearest_shard = None
-        
+
         for shard_id, shard_location in cls._shard_locations.items():
             distance = point.distance_to(shard_location)
             if distance < min_distance:
                 min_distance = distance
                 nearest_shard = shard_id
-        
+
         return nearest_shard or "us-east"
-    
+
     @classmethod
     def get_database(cls, shard_id: str):
-        """Get database connection for shard"""
+        """Get database connection for shard."""
         # Placeholder - real implementation would return actual DB connection
         if shard_id not in cls._shard_databases:
             cls._shard_databases[shard_id] = MockDatabase(shard_id)
         return cls._shard_databases[shard_id]
-    
+
     @classmethod
     def get_cache(cls, shard_id: str):
-        """Get cache connection for shard"""
+        """Get cache connection for shard."""
         if shard_id not in cls._shard_cache:
             cls._shard_cache[shard_id] = MockCache(shard_id)
         return cls._shard_cache[shard_id]
-    
+
     @classmethod
     async def find_shard_for_record(
-        cls,
-        model_class: Type[BaseGeoModel],
-        record_id: UUID
+        cls, model_class: Type[BaseGeoModel], record_id: UUID
     ) -> str:
-        """Find which shard contains a record"""
+        """Find which shard contains a record."""
         # In real implementation, would query a shard registry
         # or check all shards
-        
+
         # For now, use consistent hashing
         import hashlib
+
         hash_val = int(hashlib.md5(str(record_id).encode()).hexdigest(), 16)
         shard_list = list(cls._shard_locations.keys())
         return shard_list[hash_val % len(shard_list)]
-    
+
     @classmethod
     def list_shards(cls) -> list:
-        """List all available shards"""
+        """List all available shards."""
         return list(cls._shard_locations.keys())
-    
+
     @classmethod
     def get_shard_regions(cls) -> Dict[str, str]:
-        """Get mapping of shard to region name"""
+        """Get mapping of shard to region name."""
         return {
             "us-east": "US East (N. Virginia)",
             "us-west": "US West (N. California)",
@@ -102,23 +97,29 @@ class GeoShardingRouter:
 
 # Mock implementations for development
 
+
 class MockDatabase:
-    """Mock database for development"""
-    
+    """Mock database for development."""
+
     def __init__(self, shard_id: str):
+        """Execute __init__ operation.
+
+        Args:
+            shard_id: The shard_id parameter.
+        """
         self.shard_id = shard_id
         self._data: Dict[str, any] = {}
-    
+
     async def save(self, model: BaseGeoModel) -> None:
-        """Save model to database"""
+        """Save model to database."""
         self._data[str(model.id)] = model
-    
+
     async def get(self, model_class: Type[BaseGeoModel], id: UUID):
-        """Get model by ID"""
+        """Get model by ID."""
         return self._data.get(str(id))
-    
+
     async def query(self, model_class: Type[BaseGeoModel], **filters):
-        """Query models"""
+        """Query models."""
         results = []
         for item in self._data.values():
             match = True
@@ -132,18 +133,49 @@ class MockDatabase:
 
 
 class MockCache:
-    """Mock cache for development"""
-    
+    """Mock cache for development."""
+
     def __init__(self, shard_id: str):
+        """Execute __init__ operation.
+
+        Args:
+            shard_id: The shard_id parameter.
+        """
         self.shard_id = shard_id
         self._data: Dict[str, any] = {}
-    
+
     async def get(self, key: str):
+        """Execute get operation.
+
+        Args:
+            key: The key parameter.
+
+        Returns:
+            The result of the operation.
+        """
         return self._data.get(key)
-    
+
     async def set(self, key: str, value: any, ttl: int = None):
+        """Execute set operation.
+
+        Args:
+            key: The key parameter.
+            value: The value parameter.
+            ttl: The ttl parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self._data[key] = value
-    
+
     async def delete(self, key: str):
+        """Execute delete operation.
+
+        Args:
+            key: The key parameter.
+
+        Returns:
+            The result of the operation.
+        """
         if key in self._data:
             del self._data[key]

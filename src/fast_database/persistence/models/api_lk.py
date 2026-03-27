@@ -1,5 +1,4 @@
-"""
-API Lookup Model.
+"""API Lookup Model.
 
 SQLAlchemy ORM model for API endpoint definitions used in transaction logging.
 One row per (method, endpoint): name, common_name, description. Unique on
@@ -10,8 +9,6 @@ Usage:
     >>> # Used to identify which API was called in TransactionLog
 """
 
-
-
 from datetime import datetime
 
 from sqlalchemy import BigInteger, Column, DateTime, String, UniqueConstraint
@@ -21,8 +18,7 @@ from fast_database.persistence.models import Base
 
 
 class ApiLk(Base):
-    """
-    Lookup: API definition (method + endpoint) for transaction logging.
+    """Lookup: API definition (method + endpoint) for transaction logging.
 
     Attributes:
         id: Primary key.
@@ -32,12 +28,13 @@ class ApiLk(Base):
         description: Endpoint description.
         endpoint: Path or endpoint pattern.
         created_at, updated_at: Timestamps.
+
     """
 
-
-
     __tablename__ = Table.API_LK
-    __table_args__ = (UniqueConstraint("method", "endpoint", name="uq_api_lk_method_endpoint"),)
+    __table_args__ = (
+        UniqueConstraint("method", "endpoint", name="uq_api_lk_method_endpoint"),
+    )
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     urn = Column(String(128), unique=True, index=True)
@@ -46,11 +43,19 @@ class ApiLk(Base):
     method = Column(String(16), nullable=False)
     description = Column(String(512), nullable=False)
     endpoint = Column(String(512), nullable=False, index=True)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
+    updated_at = Column(
+        DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow
+    )
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
 
+        Returns:
+            The result of the operation.
+        """
         return {
             "urn": self.urn,
             "name": self.name,

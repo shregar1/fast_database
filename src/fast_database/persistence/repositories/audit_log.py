@@ -1,5 +1,4 @@
-"""
-Audit Log Repository.
+"""Audit Log Repository.
 
 Data access for the AuditLog model (immutable audit trail: actor, action,
 resource, metadata). Thin IRepository wrapper: session and base init only; use
@@ -11,8 +10,6 @@ Usage:
     >>> repo = AuditLogRepository(session=db_session, urn="req-1")
 """
 
-
-
 from sqlalchemy.orm import Session
 
 from fast_database.persistence.repositories.abstraction import IRepository
@@ -20,15 +17,12 @@ from fast_database.persistence.models.audit_log import AuditLog
 
 
 class AuditLogRepository(IRepository):
-    """
-    Repository for AuditLog (audit trail) table.
+    """Repository for AuditLog (audit trail) table.
 
     Provides session and IRepository base (urn, user_urn, api_name, user_id,
     model=AuditLog). Use inherited or service-level methods for creating and
     querying audit records.
     """
-
-
 
     def __init__(
         self,
@@ -38,6 +32,15 @@ class AuditLogRepository(IRepository):
         api_name: str = None,
         user_id: str = None,
     ):
+        """Execute __init__ operation.
+
+        Args:
+            session: The session parameter.
+            urn: The urn parameter.
+            user_urn: The user_urn parameter.
+            api_name: The api_name parameter.
+            user_id: The user_id parameter.
+        """
         self._cache = None
         super().__init__(
             urn=urn,
@@ -51,9 +54,21 @@ class AuditLogRepository(IRepository):
 
     @property
     def session(self) -> Session:
+        """Execute session operation.
 
+        Returns:
+            The result of the operation.
+        """
         return self._session
 
     @session.setter
     def session(self, value: Session):
+        """Execute session operation.
+
+        Args:
+            value: The value parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self._session = value

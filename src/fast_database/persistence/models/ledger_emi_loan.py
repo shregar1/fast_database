@@ -1,5 +1,4 @@
-"""
-Ledger EMI loan model (Pure.cam).
+"""Ledger EMI loan model (Pure.cam).
 
 Maps `EmiLoan`.
 
@@ -9,7 +8,19 @@ Usage:
 
 from datetime import date, datetime
 
-from sqlalchemy import BigInteger, Boolean, Column, Date, DateTime, ForeignKey, Integer, Numeric, String, Text, UniqueConstraint
+from sqlalchemy import (
+    BigInteger,
+    Boolean,
+    Column,
+    Date,
+    DateTime,
+    ForeignKey,
+    Integer,
+    Numeric,
+    String,
+    Text,
+    UniqueConstraint,
+)
 
 from fast_database.core.constants.table import Table
 from fast_database.persistence.models import Base
@@ -29,7 +40,12 @@ class LedgerEmiLoan(Base):
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     urn = Column(String(128), nullable=False, unique=True, index=True)
-    user_id = Column(BigInteger, ForeignKey("user.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(
+        BigInteger,
+        ForeignKey("user.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
     ledger_workspace_id = Column(
         BigInteger,
         ForeignKey(Table.LEDGER_WORKSPACE + ".id", ondelete="CASCADE"),
@@ -50,16 +66,32 @@ class LedgerEmiLoan(Base):
     reminder_day_of_month = Column(Integer, nullable=True)
     reminder_hour = Column(Integer, nullable=True)
     reminder_minute = Column(Integer, nullable=True)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
+    updated_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
+    )
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "id": self.client_emi_loan_id,
             "name": self.name,
             "lender": self.lender,
-            "principalTotal": float(self.principal_total) if self.principal_total is not None else None,
-            "monthlyEmi": float(self.monthly_emi) if self.monthly_emi is not None else None,
+            "principalTotal": float(self.principal_total)
+            if self.principal_total is not None
+            else None,
+            "monthlyEmi": float(self.monthly_emi)
+            if self.monthly_emi is not None
+            else None,
             "totalMonths": self.total_months,
             "paidMonths": self.paid_months,
             "currency": self.currency,

@@ -1,5 +1,4 @@
-"""
-User Profile Photo Repository.
+"""User Profile Photo Repository.
 
 Data access for the UserProfilePhoto model (profile photo URL, order_sequence,
 is_deleted). IRepository wrapper; use for create, retrieve by id/user_id,
@@ -10,8 +9,6 @@ Usage:
     >>> repo = UserProfilePhotoRepository(session=db_session)
 """
 
-
-
 from sqlalchemy.orm import Session
 
 from fast_database.persistence.repositories.abstraction import IRepository
@@ -19,15 +16,12 @@ from fast_database.persistence.models.user_profile_photo import UserProfilePhoto
 
 
 class UserProfilePhotoRepository(IRepository):
-    """
-    Repository for UserProfilePhoto records.
+    """Repository for UserProfilePhoto records.
 
     Provides session and IRepository base for UserProfilePhoto. Use for
     managing profile photos: create, retrieve by user, set primary, reorder,
     soft delete in services.
     """
-
-
 
     def __init__(
         self,
@@ -37,6 +31,15 @@ class UserProfilePhotoRepository(IRepository):
         api_name: str = None,
         user_id: str = None,
     ):
+        """Execute __init__ operation.
+
+        Args:
+            session: The session parameter.
+            urn: The urn parameter.
+            user_urn: The user_urn parameter.
+            api_name: The api_name parameter.
+            user_id: The user_id parameter.
+        """
         self._cache = None
         super().__init__(
             urn=urn,
@@ -50,9 +53,21 @@ class UserProfilePhotoRepository(IRepository):
 
     @property
     def session(self) -> Session:
+        """Execute session operation.
 
+        Returns:
+            The result of the operation.
+        """
         return self._session
 
     @session.setter
     def session(self, value: Session):
+        """Execute session operation.
+
+        Args:
+            value: The value parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self._session = value

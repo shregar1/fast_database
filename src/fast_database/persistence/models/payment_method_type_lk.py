@@ -1,5 +1,4 @@
-"""
-Payment Method Type Lookup Model.
+"""Payment Method Type Lookup Model.
 
 SQLAlchemy ORM model for payment method types (e.g. card, upi, netbanking,
 wallet). Code is unique. Referenced by payment_transaction.payment_method_type_id
@@ -10,8 +9,6 @@ Usage:
     >>> # Identifies type of saved or used payment method
 """
 
-
-
 from datetime import datetime
 
 from sqlalchemy import BigInteger, Column, DateTime, String
@@ -21,8 +18,7 @@ from fast_database.persistence.models import Base
 
 
 class PaymentMethodTypeLk(Base):
-    """
-    Lookup: payment method type (card, UPI, netbanking, wallet, etc.).
+    """Lookup: payment method type (card, UPI, netbanking, wallet, etc.).
 
     Attributes:
         id: Primary key.
@@ -30,9 +26,8 @@ class PaymentMethodTypeLk(Base):
         code: Unique code.
         description: Human-readable label.
         created_at, updated_at: Timestamps.
+
     """
-
-
 
     __tablename__ = Table.PAYMENT_METHOD_TYPE_LK
 
@@ -40,11 +35,19 @@ class PaymentMethodTypeLk(Base):
     urn = Column(String(128), nullable=False, unique=True, index=True)
     code = Column(String(64), nullable=False, unique=True, index=True)
     description = Column(String(255), nullable=False)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
+    updated_at = Column(
+        DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow
+    )
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
 
+        Returns:
+            The result of the operation.
+        """
         return {
             "urn": self.urn,
             "code": self.code,

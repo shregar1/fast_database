@@ -1,5 +1,4 @@
-"""
-Helpers for optimistic locking with :class:`~fast_database.core.mixins.OptimisticLockMixin`.
+"""Helpers for optimistic locking with :class:`~fast_database.core.mixins.OptimisticLockMixin`.
 
 SQLAlchemy can enforce version checks when ``__mapper_args__`` includes
 ``version_id_col``; these helpers cover manual checks in services.
@@ -20,8 +19,7 @@ def expected_version(instance: Any) -> int | None:
 
 
 def assert_version_matches(instance: Any, expected: int | None) -> None:
-    """
-    Ensure ``instance.version == expected`` before applying updates.
+    """Ensure ``instance.version == expected`` before applying updates.
 
     Pass ``expected`` from the DTO / API (client-sent version). If ``expected``
     is ``None``, the check is skipped (e.g. create flow).

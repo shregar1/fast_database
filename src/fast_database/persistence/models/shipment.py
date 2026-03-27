@@ -1,5 +1,4 @@
-"""
-Shipment model.
+"""Shipment model.
 
 Tracks outbound fulfillment for a commerce order: carrier, tracking, and
 delivery lifecycle. One order may have several shipments (partial fulfillments).
@@ -18,8 +17,7 @@ from fast_database.persistence.models import Base
 
 
 class Shipment(Base):
-    """
-    Physical (or third-party) shipment tied to an order.
+    """Physical (or third-party) shipment tied to an order.
 
     `status_id` can reference `status_lk` for carrier-agnostic states (label_created,
     in_transit, delivered). Destination may duplicate order shipping JSON for
@@ -40,6 +38,7 @@ class Shipment(Base):
         destination_json: Optional JSON snapshot if different from order address.
         shipment_metadata: JSONB (label id, customs, package dimensions).
         created_at, updated_at: Audit fields.
+
     """
 
     __tablename__ = Table.SHIPMENT
@@ -52,7 +51,9 @@ class Shipment(Base):
         nullable=False,
         index=True,
     )
-    status_id = Column(BigInteger, ForeignKey("status_lk.id"), nullable=False, index=True)
+    status_id = Column(
+        BigInteger, ForeignKey("status_lk.id"), nullable=False, index=True
+    )
     carrier_code = Column(String(64), nullable=True, index=True)
     carrier_name = Column(String(128), nullable=True)
     service_level = Column(String(64), nullable=True)
@@ -64,10 +65,19 @@ class Shipment(Base):
     estimated_delivery_at = Column(DateTime(timezone=True), nullable=True)
     destination_json = Column(JSONB, nullable=True)
     shipment_metadata = Column("metadata", JSONB, nullable=True)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
+    updated_at = Column(
+        DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow
+    )
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "id": self.id,
             "urn": self.urn,
@@ -80,9 +90,13 @@ class Shipment(Base):
             "tracking_url": self.tracking_url,
             "weight_grams": self.weight_grams,
             "shipped_at": self.shipped_at.isoformat() if self.shipped_at else None,
-            "delivered_at": self.delivered_at.isoformat() if self.delivered_at else None,
+            "delivered_at": self.delivered_at.isoformat()
+            if self.delivered_at
+            else None,
             "estimated_delivery_at": (
-                self.estimated_delivery_at.isoformat() if self.estimated_delivery_at else None
+                self.estimated_delivery_at.isoformat()
+                if self.estimated_delivery_at
+                else None
             ),
             "destination_json": self.destination_json,
             "metadata": self.shipment_metadata,

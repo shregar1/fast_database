@@ -1,5 +1,4 @@
-"""
-FastMVC Event Sourcing Module
+"""FastMVC Event Sourcing Module.
 
 Event-driven architecture with event stores and aggregates.
 """

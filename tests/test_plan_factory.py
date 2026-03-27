@@ -16,6 +16,11 @@ from fast_database.persistence.models.plan import Plan
 
 @pytest.fixture()
 def plan_session():
+    """Execute plan_session operation.
+
+    Returns:
+        The result of the operation.
+    """
     engine = create_engine("sqlite:///:memory:")
     Plan.__table__.create(engine)
     Session = sessionmaker(bind=engine)
@@ -28,6 +33,14 @@ def plan_session():
 
 
 def test_plan_factory_creates_row(plan_session):
+    """Execute test_plan_factory_creates_row operation.
+
+    Args:
+        plan_session: The plan_session parameter.
+
+    Returns:
+        The result of the operation.
+    """
     p = PlanFactory()
     plan_session.commit()
     assert p.id is not None

@@ -1,5 +1,4 @@
-"""
-Ledger custom category model (Pure.cam).
+"""Ledger custom category model (Pure.cam).
 
 Maps `CustomCategory`.
 
@@ -27,7 +26,12 @@ class LedgerCustomCategory(Base):
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     urn = Column(String(128), nullable=False, unique=True, index=True)
-    user_id = Column(BigInteger, ForeignKey("user.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(
+        BigInteger,
+        ForeignKey("user.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
     ledger_workspace_id = Column(
         BigInteger,
         ForeignKey(Table.LEDGER_WORKSPACE + ".id", ondelete="CASCADE"),
@@ -39,6 +43,11 @@ class LedgerCustomCategory(Base):
     icon = Column(String(128), nullable=True)
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
+
+        Returns:
+            The result of the operation.
+        """
         return {
             "id": self.client_category_id,
             "name": self.name,

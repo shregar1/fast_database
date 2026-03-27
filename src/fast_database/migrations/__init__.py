@@ -1,5 +1,4 @@
-"""
-Fast Database Migrations Package.
+"""Fast Database Migrations Package.
 
 Provides automatic migration discovery and registration for models.
 Each model can define its migration inline, and migrations are automatically
@@ -8,10 +7,10 @@ discovered when the model is imported.
 Usage:
     >>> from fast_database.persistence.models import User
     >>> from fast_database.migrations import get_model_migration, run_model_migrations
-    >>> 
+    >>>
     >>> # Get migration for a specific model
     >>> migration = get_model_migration(User)
-    >>> 
+    >>>
     >>> # Run all pending model migrations
     >>> run_model_migrations(engine)
 """

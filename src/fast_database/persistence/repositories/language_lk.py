@@ -1,5 +1,4 @@
-"""
-Language Lookup Repository.
+"""Language Lookup Repository.
 
 Data access for the LanguageLk model (language code and description). IRepository
 wrapper; use for retrieve by id or code, list all. Used by UserLanguage and
@@ -10,8 +9,6 @@ Usage:
     >>> repo = LanguageLkRepository(session=db_session)
 """
 
-
-
 from sqlalchemy.orm import Session
 
 from fast_database.persistence.repositories.abstraction import IRepository
@@ -19,14 +16,11 @@ from fast_database.persistence.models.language_lk import LanguageLk
 
 
 class LanguageLkRepository(IRepository):
-    """
-    Repository for LanguageLk (language) records.
+    """Repository for LanguageLk (language) records.
 
     Provides session and IRepository base. Use for resolving language_id and
     listing languages for user profile and preferences.
     """
-
-
 
     def __init__(
         self,
@@ -36,6 +30,15 @@ class LanguageLkRepository(IRepository):
         api_name: str = None,
         user_id: str = None,
     ):
+        """Execute __init__ operation.
+
+        Args:
+            session: The session parameter.
+            urn: The urn parameter.
+            user_urn: The user_urn parameter.
+            api_name: The api_name parameter.
+            user_id: The user_id parameter.
+        """
         self._cache = None
         super().__init__(
             urn=urn,
@@ -49,18 +52,25 @@ class LanguageLkRepository(IRepository):
 
     @property
     def session(self) -> Session:
+        """Execute session operation.
 
+        Returns:
+            The result of the operation.
+        """
         return self._session
 
     @session.setter
     def session(self, value: Session):
+        """Execute session operation.
+
+        Args:
+            value: The value parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self._session = value
 
     def list_all(self):
         """Return all language lookup entries ordered by code."""
-
-        return (
-            self.session.query(LanguageLk)
-            .order_by(LanguageLk.code)
-            .all()
-        )
+        return self.session.query(LanguageLk).order_by(LanguageLk.code).all()

@@ -1,5 +1,4 @@
-"""
-Transaction Log Repository.
+"""Transaction Log Repository.
 
 Data access for the TransactionLog model (API request/response audit: api_id,
 reference_number, payloads, timestamps, http_status_code). IRepository
@@ -11,8 +10,6 @@ Usage:
     >>> repo = TransactionLogRepository(session=db_session)
 """
 
-
-
 from sqlalchemy.orm import Session
 
 from fast_database.persistence.repositories.abstraction import IRepository
@@ -20,15 +17,12 @@ from fast_database.persistence.models.transaction_log import TransactionLog
 
 
 class TransactionLogRepository(IRepository):
-    """
-    Repository for TransactionLog (API request/response log) records.
+    """Repository for TransactionLog (API request/response log) records.
 
     Provides session and IRepository base for TransactionLog. Use for
     appending log entries and querying by api_id, reference_number, or
     other filters in services.
     """
-
-
 
     def __init__(
         self,
@@ -38,6 +32,15 @@ class TransactionLogRepository(IRepository):
         api_name: str = None,
         user_id: str = None,
     ):
+        """Execute __init__ operation.
+
+        Args:
+            session: The session parameter.
+            urn: The urn parameter.
+            user_urn: The user_urn parameter.
+            api_name: The api_name parameter.
+            user_id: The user_id parameter.
+        """
         self._cache = None
         super().__init__(
             urn=urn,
@@ -51,9 +54,21 @@ class TransactionLogRepository(IRepository):
 
     @property
     def session(self) -> Session:
+        """Execute session operation.
 
+        Returns:
+            The result of the operation.
+        """
         return self._session
 
     @session.setter
     def session(self, value: Session):
+        """Execute session operation.
+
+        Args:
+            value: The value parameter.
+
+        Returns:
+            The result of the operation.
+        """
         self._session = value

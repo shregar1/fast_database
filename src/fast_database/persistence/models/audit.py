@@ -1,5 +1,4 @@
-"""
-Audit Model (alternate).
+"""Audit Model (alternate).
 
 SQLAlchemy ORM model for audit events: actor, action, resource, optional
 resource_id, and JSONB metadata. Alternative or legacy definition for the
@@ -12,8 +11,6 @@ Usage:
 Note: Table name matches models.audit_log; extend_existing=True allows both
 modules to be imported without "table already defined" error.
 """
-
-
 
 from datetime import datetime
 
@@ -30,8 +27,7 @@ from fast_database.persistence.models import Base
 
 
 class AuditLog(Base):
-    """
-    Audit log entry: actor, action, resource, and optional metadata.
+    """Audit log entry: actor, action, resource, and optional metadata.
 
     Same table as audit_log.AuditLog (Table.AUDIT). actor_id is optional (null
     for system). action and resource are indexed for querying. metadata_ (DB
@@ -46,6 +42,7 @@ class AuditLog(Base):
         resource_id: Optional target ID.
         metadata_: JSONB; DB column name "metadata".
         created_at: Event timestamp.
+
     """
 
     __tablename__ = Table.AUDIT
@@ -53,20 +50,32 @@ class AuditLog(Base):
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
 
-    actor_id = Column(BigInteger, nullable=True, index=True)  # user id or null for system
+    actor_id = Column(
+        BigInteger, nullable=True, index=True
+    )  # user id or null for system
     actor_urn = Column(String(64), nullable=True, index=True)
 
-    action = Column(String(64), nullable=False, index=True)  # e.g. "session.create", "document.upload"
-    resource = Column(String(64), nullable=False, index=True)  # e.g. "session", "document"
+    action = Column(
+        String(64), nullable=False, index=True
+    )  # e.g. "session.create", "document.upload"
+    resource = Column(
+        String(64), nullable=False, index=True
+    )  # e.g. "session", "document"
     resource_id = Column(String(128), nullable=True, index=True)
 
     # Optional diff or extra context (JSON)
     metadata_ = Column("metadata", JSONB, nullable=True)
 
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
 
+        Returns:
+            The result of the operation.
+        """
         return {
             "actor_id": self.actor_id,
             "actor_urn": self.actor_urn,

@@ -1,5 +1,4 @@
-"""
-Database Table Name Constants Module.
+"""Database Table Name Constants Module.
 
 This module defines constants for database table names. Using these
 constants instead of string literals prevents typos and enables
@@ -11,15 +10,11 @@ Usage:
     ...     __tablename__ = Table.USER
 """
 
-
-
-
 from typing import Final
 
 
 class Table:
-    """
-    Database table name constants.
+    """Database table name constants.
 
     This class provides centralized constants for all database table names
     used in the application. Using these constants ensures consistency
@@ -43,114 +38,86 @@ class Table:
     Note:
         Add new table name constants here as the application grows.
         Follow the pattern: TABLE_NAME: Final[str] = "table_name"
+
     """
-
-
-
 
     USER: Final[str] = "user"
     """Table name for user accounts and authentication data."""
 
-
     USER_SIGNING_KEY: Final[str] = "user_signing_key"
     """Ed25519 keypair material per user (PEM public + Fernet-encrypted private); one row per user."""
-
 
     SESSION: Final[str] = "sessions"
     """Table name for interview sessions."""
 
-
     DOCUMENT: Final[str] = "documents"
     """Table name for uploaded documents (resume/JD)."""
-
 
     AUDIT: Final[str] = "audit_log"
     """Table name for audit log (actor, action, resource, timestamp, metadata)."""
 
-
     WEBHOOK: Final[str] = "webhooks"
     """Table name for webhook endpoint config (URL, secret, events)."""
-
 
     WEBHOOK_DELIVERY: Final[str] = "webhook_deliveries"
     """Table name for webhook delivery log (idempotency, retries)."""
 
-
     PLAN: Final[str] = "plans"
     """Table name for plan/entitlement limits (sessions_per_month, models_allowed)."""
-
 
     SUBSCRIPTION: Final[str] = "subscriptions"
     """Table name for user subscriptions to plans."""
 
-
     INVOICE: Final[str] = "invoices"
     """Table name for billing invoices (Stripe or other provider)."""
-
 
     COUPON: Final[str] = "coupons"
     """Table name for promo/coupon codes."""
 
-
     API_KEY: Final[str] = "api_keys"
     """Table name for server-to-server API keys (per user, hashed key, scopes)."""
-
 
     USER_LLM_PROVIDER_KEY: Final[str] = "user_llm_provider_keys"
     """Per-user encrypted LLM provider API keys (OpenAI, Anthropic, OpenRouter, Gemini, …)."""
 
-
     CONSENT: Final[str] = "consent_records"
     """Table name for ToS/Privacy consent (user_id, type, version, accepted_at)."""
-
 
     IDEMPOTENCY_RECORD: Final[str] = "idempotency_records"
     """HTTP / payment idempotency: dedupe writes and optionally cache replay responses."""
 
-
     USER_ONE_TIME_TOKEN: Final[str] = "user_one_time_tokens"
     """Single-use tokens: password reset, email verification, magic links (hashed at rest)."""
-
 
     USER_LOGIN_EVENT: Final[str] = "user_login_events"
     """Append-only login attempts (success/fail) for security analytics and lockout policies."""
 
-
     OUTBOX_EVENT: Final[str] = "outbox_events"
     """Transactional outbox for reliable async delivery (Kafka, webhooks, workers)."""
-
 
     SYSTEM_SETTING: Final[str] = "system_settings"
     """Namespaced key/value settings (feature toggles, limits) without redeploy; optional JSON or secret flag."""
 
-
     USER_MFA_FACTOR: Final[str] = "user_mfa_factors"
     """Second factors per user (TOTP, WebAuthn credentials); secrets stored encrypted or as opaque handles."""
-
 
     DATA_EXPORT_REQUEST: Final[str] = "data_export_requests"
     """GDPR / data-portability export jobs (status, artifact location, expiry)."""
 
-
     SECURITY_EVENT: Final[str] = "security_events"
     """High-signal security signals (lockouts, impossible travel, admin actions) for SIEM and dashboards."""
-
 
     USAGE_COUNTER: Final[str] = "usage_counters"
     """Idempotent daily/hourly usage buckets for quotas, billing, and rate-limit analytics."""
 
-
     ORGANIZATION: Final[str] = "organizations"
     """Table name for organizations (workspaces)."""
-
 
     ORGANIZATION_MEMBER: Final[str] = "organization_members"
     """Table name for user-org membership (user_id, organization_id, role)."""
 
-
     ORGANIZATION_INVITE: Final[str] = "organization_invites"
     """Table name for pending invites (email, organization_id, role, token)."""
-
 
     # Lookup tables (schema.dbml)
     USER_TYPE_LK: Final[str] = "user_type_lk"

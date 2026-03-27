@@ -1,5 +1,4 @@
-"""
-Invoice Model.
+"""Invoice Model.
 
 SQLAlchemy ORM model for billing invoices. Each row is an invoice from a
 payment provider, linked to a user and optionally to a payment transaction
@@ -10,11 +9,16 @@ Usage:
     >>> # amount_cents and currency; status_id references status_lk
 """
 
-
-
 from datetime import datetime
 
-from sqlalchemy import BigInteger, Column, DateTime, ForeignKey, String, UniqueConstraint
+from sqlalchemy import (
+    BigInteger,
+    Column,
+    DateTime,
+    ForeignKey,
+    String,
+    UniqueConstraint,
+)
 from sqlalchemy.dialects.postgresql import JSONB
 
 from fast_database.core.constants.table import Table
@@ -26,8 +30,7 @@ _INVOICE_TABLE = "invoice"
 
 
 class Invoice(Base):
-    """
-    Billing invoice from a payment provider, tied to user and optional txn/subscription.
+    """Billing invoice from a payment provider, tied to user and optional txn/subscription.
 
     Represents an invoice record (e.g. from Stripe): amount, currency, status,
     optional period (period_start, period_end), and external_id for provider
@@ -45,13 +48,14 @@ class Invoice(Base):
         external_id: Provider's invoice ID.
         period_start, period_end: Optional billing period.
         created_at, updated_at: Timestamps.
+
     """
-
-
 
     __tablename__ = _INVOICE_TABLE
     __table_args__ = (
-        UniqueConstraint("provider_id", "external_id", name="uq_invoice_provider_external"),
+        UniqueConstraint(
+            "provider_id", "external_id", name="uq_invoice_provider_external"
+        ),
     )
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
@@ -68,15 +72,25 @@ class Invoice(Base):
     )
     amount_cents = Column(BigInteger, nullable=False)
     currency = Column(String(8), nullable=False)
-    status_id = Column(BigInteger, ForeignKey("status_lk.id"), nullable=False, index=True)
+    status_id = Column(
+        BigInteger, ForeignKey("status_lk.id"), nullable=False, index=True
+    )
     external_id = Column(String(128), nullable=True, index=True)
     period_start = Column(DateTime(timezone=True), nullable=True)
     period_end = Column(DateTime(timezone=True), nullable=True)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+    )
+    updated_at = Column(
+        DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow
+    )
 
     def to_dict(self) -> dict:
+        """Execute to_dict operation.
 
+        Returns:
+            The result of the operation.
+        """
         return {
             "urn": self.urn,
             "user_id": self.user_id,
@@ -87,7 +101,9 @@ class Invoice(Base):
             "currency": self.currency,
             "status_id": self.status_id,
             "external_id": self.external_id,
-            "period_start": self.period_start.isoformat() if self.period_start else None,
+            "period_start": self.period_start.isoformat()
+            if self.period_start
+            else None,
             "period_end": self.period_end.isoformat() if self.period_end else None,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
